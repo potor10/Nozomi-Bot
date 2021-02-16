@@ -272,6 +272,7 @@ client
             if (message.attachments.every(getOcrImage)){
                 message.channel.send("Detected Image");
                 message.react("409910974607392770");
+                returnOCR(message);
             }
         }
 
