@@ -236,10 +236,15 @@ const worker = createWorker({
 });
 
 const returnOCR = async message => {
-    const { data: { text } } = await worker.recognize(message.attachments.first().url);
-    console.log(text);
-
-    await message.reply(`The text in the image is: ${text}`);
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+    message.attachments.forEach(function(attachment) {
+        const { data: { text } } = await worker.recognize(attachment.url);
+        await message.reply(`The text in the image is: ${text}`);
+        console.log(text);
+    });
+    await worker.terminate();
 }
 
 // Chaining Events
@@ -248,11 +253,6 @@ client
         // Bot Ready
         console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
         client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
-
-        // Loading OCR Worker
-        worker.load();
-        worker.loadLanguage('eng');
-        worker.initialize('eng');
     })
     .on("guildCreate", guild => {
         console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
@@ -286,7 +286,7 @@ client
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
-process.on("SIGINT", () => (worker.terminate(), saveUsers(), process.exit(0)));
+process.on("SIGINT", () => (saveUsers(), process.exit(0)));
 
 // Log In
 console.log("Logging In To Princonne Bot");
