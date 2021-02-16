@@ -175,13 +175,10 @@ const retrieveStats = (id) => {
     pgdb.connect();
 
     const query = `
-        CASE
-            WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
-                INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0);
-                SELECT * FROM STATS WHERE uid = ${id};
-            ELSE
-                SELECT * FROM STATS WHERE uid = ${id};
-        END;
+        WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
+            INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0);
+
+        SELECT * FROM STATS WHERE uid = ${id};
     `;
 
     pgdb.query(query, (err, res) => {
