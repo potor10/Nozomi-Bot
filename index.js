@@ -139,37 +139,22 @@ const retrieveDamageDB = async (id, date) => {
     const query = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE cbid = ${cbid} AND uid = '${id}';
-    `;
 
-    const query1 = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
-            FROM ATTACKS WHERE date = ${date} AND uid = '${id}';
-    `;
+            FROM ATTACKS WHERE date = '${date}' AND uid = '${id}';
 
-    const query2 = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE uid = '${id}';
     `;
 
-    const values = [];
+    //const values = [];
+    console.log("LMFAOOOOOO827492387439247329843274972");
     try {
         const res = await pgdb.query(query);
-        const res1 = await pgdb.query(query1);
-        const res2 = await pgdb.query(query2);
-        
-        console.log(res);
-
+        console.log("Retrieve:" + res);
         for (let row of res.rows) {
             console.log(`LOG: Retrieved damage value:` + row);
-            values.push(row);
-        }
-        for (let row of res1.rows) {
-            console.log(`LOG: Retrieved damage value:` + row);
-            values.push(row);
-        }
-        for (let row of res2.rows) {
-            console.log(`LOG: Retrieved damage value:` + row);
-            values.push(row);
+            //values.push(row);
         }
     } catch (err) {
         console.log(err.stack);
