@@ -26,7 +26,7 @@ const pgdb = new PGdb({
     port: db_port,
 });
 
-const initDB = id => {
+const initDB = async () => {
     pgdb.connect();
 
     const query = `
@@ -58,14 +58,14 @@ const initDB = id => {
         VALUES (0)
     `;
 
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.log(`Tables are successfully created`);
+    try {
+        const res = await pgdb.query(query);
+        console.log('Table is successfully created');
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
 }
 
 const updateCBID = (cbid) => {
@@ -448,7 +448,6 @@ client
     .on("message", async message => {
         // Ignore Bot
         if(message.author.bot) return;
-        initDB();
 
         addXp(message);
 
@@ -474,3 +473,5 @@ process.on("SIGINT", () => (saveUsers(), process.exit(0)));
 // Log In
 console.log("Logging In To Princonne Bot");
 client.login(token);
+
+initDB();
