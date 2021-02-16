@@ -150,8 +150,9 @@ const retrieveDamageDB = async (id, date) => {
     const values = [];
     try {
         const res = await pgdb.query(query);
+        console.log("Retrieve:" + res);
         for (let row of res.rows) {
-            console.log(row);
+            console.log(`LOG: Retrieved damage value:` + row);
             values.push(row);
         }
     } catch (err) {
@@ -228,9 +229,9 @@ const reactionFilter = (author, reaction, user) =>
         ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
 
 /** @param {import("discord.js").Message} message */
-const reset = async message => {
+const reset = message => {
     if (message.author.id = 154775062178824192) {
-        await initDB();
+        initDB();
         console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
     } else {
         console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
