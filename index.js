@@ -26,27 +26,35 @@ const pgdb = new PGdb({
     port: db_port,
 });
 
-const fs = require("fs");
-/** @type {{clanDamage:Number,dailyDamage:Number,totalDamage:Number,level:Number,exp:Number,rank:Number, lastMessage:Number}[]} */
-let userdata = JSON.parse(fs.readFileSync("./userdata.json", "utf8"));
-
-// Rad Dream Constants
-const updateVal = 6000;
-let marketCrash = false;
-let marketUpdateSkew = 0;
-let marketUpdateAmt = 0;
-let timeUpdate = 0;
-
-const createDB = id => {
+const initDB = id => {
     pgdb.connect();
 
     const query = `
-        CREATE TABLE ${id} (
+        DROP TABLE IF EXISTS ATTACKS
+        DROP TABLE IF EXISTS STATS
+        DROP TABLE IF EXISTS CB
+
+        CREATE TABLE ATTACKS (
+            uid int,
             attackDate date,
             attempt1damage int,
             attempt2damage int,
-            attempt3damage int
+            attempt3damage int,
+            cbid int
         );
+
+        CREATE TABLE STATS (
+            uid int,
+            level int,
+            exp int
+        );
+
+        CREATE TABLE CB (
+            cbid int
+        )
+
+        INSERT INTO CB (cbid)
+        VALUES (0)
     `;
 
     pgdb.query(query, (err, res) => {
@@ -54,48 +62,156 @@ const createDB = id => {
             console.error(err);
             return;
         }
-        console.log('Table is successfully created');
+        console.log(`Tables are successfully created`);
+        pgdb.end();
+    });
+}
+
+const updateCBID = (cbid) => {
+    pgdb.connect();
+
+    const query = `
+        UPDATE CB
+        SET cbid = ${cbid}
+    `;
+
+    pgdb.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(`LOG: CB table is successfully updated with value ${cbid}`);
         pgdb.end();
     });
 }
 
 const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {    
+    cbid = retrieveCBID();
     pgdb.connect();
 
+    const query = `
+        INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
+        VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid})
+        ON DUPLICATE KEY UPDATE attempt1damage = VALUES(${attempt1}), attempt2damage = VALUES(${attempt2}), attempt3damage = VALUES(${attempt3}, cbid = VALUES(${cbid}))
+    `;
+
+    pgdb.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(`LOG: ATTACKS table is successfully updated with values: ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
+        pgdb.end();
+    });
+}
+
+const updateStatsDB = (id, level, xp) => {    
+    pgdb.connect();
 
     const query = `
-        UPDATE TABLE users (
-            email varchar,
-            firstName varchar,
-            lastName varchar,
-            age int
-        );
+        INSERT INTO STATS (uid, level, exp)
+        VALUES (${id}, ${level}, ${xp})
+        ON DUPLICATE KEY UPDATE level = VALUES(${level}), exp = VALUES(${xp})
     `;
+
+    pgdb.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(`LOG: STATS table is successfully updated with values: ${id}, ${level}, ${xp}`);
+        pgdb.end();
+    });
 }
 
-const retrieveDamageDB = id => {
-    
+const retrieveDamageDB = (id, date) => {
+    cbid = retrieveCBID();
+    pgdb.connect();
+
+    const query = `
+        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
+        FROM ATTACKS
+        WHERE cbid = ${cbid} AND uid = ${id}
+
+        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
+        FROM ATTACKS
+        WHERE date = ${date} AND uid = ${id}
+
+        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
+        FROM ATTACKS
+        WHERE uid = ${id}
+    `;
+
+    const values = [];
+    client.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return 0;
+        }
+        for (let row of res.rows) {
+            console.log(row);
+            values.push(row);
+        }
+        client.end();
+    });
+
+    return values;
 }
 
+const retrieveStats = (id) => {
+    pgdb.connect();
+
+    const query = `
+        CASE
+            WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
+                INSERT INTO STATS (uid, level, exp)
+                VALUES(${id}, 1, 0)
+                SELECT * FROM STATS WHERE uid = ${id}
+            ELSE
+            SELECT * FROM STATS WHERE uid = ${id}
+        END
+    `;
+
+    client.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return 0;
+        }
+        for (let row of res.rows) {
+            console.log(row);
+            return row;
+        }
+        client.end();
+    });
+}
+
+const retrieveCBID = () => {
+    pgdb.connect();
+
+    const query = `
+        SELECT cbid
+        FROM CB
+    `;
+
+    client.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return 0;
+        }
+        for (let row of res.rows) {
+            console.log(row);
+            return row;
+        }
+        client.end();
+    });
+}
 
 const reactionFilter = (author, reaction, user) => 
         ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
 
-const saveUsers = () => fs.writeFileSync("./userdata.json", 
-                                    JSON.stringify(userdata, null, 4));
-
-const resetusers = message => {
+const reset = message => {
     if (message.author.id = 154775062178824192) {
-        for (let x in userdata) {
-            userdata[x].clanDamage = 0;
-            userdata[x].dailyDamage = 0;
-            userdata[x].totalDamage = 0;
-            userdata[x].level = 1;
-            userdata[x].exp = 0;
-            userdata[x].rank = 0;
-            userdata[x].lastMessage = 0;
-        }
-        saveUsers();
+        initDB();
         console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
     } else {
         console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
@@ -103,6 +219,7 @@ const resetusers = message => {
 };
 
 const getOrCreateUser = id => {
+    retrieveStats(id);
     if (!userdata[id]) userdata[id] = {
         clanDamage: 0,
         dailyDamage: 0,
@@ -234,7 +351,7 @@ const awaitEmoji = async (message, text, emoji, option, cancelText) => {
              .catch(() => { message.channel.send(cancelText); });
 };
 
-const COMMANDS = { help, ping, resetusers, say, profile };
+const COMMANDS = { help, ping, reset, say, profile };
 
 const getOcrImage = msgAttach => {
     let url = msgAttach.url;
@@ -313,8 +430,7 @@ const returnOCR = async message => {
         }
 
         if (isClan) {
-            await message.channel.send(`On: ${values[1]}, ${message.author.username} 
-                hit for ${values[2]}${values[3]}${values[4]}`);
+            await message.channel.send(`On: ${values[1]}, ${message.author.username} hit for:\n${values[2]}${values[3]}${values[4]}`);
             console.log(values);
         }
         await worker.terminate();
