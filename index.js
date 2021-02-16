@@ -65,19 +65,23 @@ const getOrCreateUser = id => {
     return userdata[id];
 };
 
+/** @param {import("discord.js").Message} message */
 const addXp = message => {
     let currentTime = Date.now();
     let profile = getOrCreateUser(message.author.id);
 
     if (currentTime - profile.lastMessage > 300000) {
-        profile.exp++;
+        profile.exp += 25;
         profile.lastMessage = currentTime;
+
+        message.reply(`You are level **${curLevel}**!`);
+        message.reply(`You have **${profile.exp}**!`);
 
         let curLevel = 1 + Math.floor(Math.sqrt(profile.exp));
         if (curLevel < profile.level) {
             // Level up!
             profile.level = curLevel;
-            message.reply(`You've leveled down to level **${curLevel}**!`);
+            message.reply(`You've leveled up to level **${curLevel}**!`);
         }
         saveUsers();
     }
