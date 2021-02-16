@@ -147,15 +147,13 @@ const retrieveDamageDB = async (id, date) => {
             FROM ATTACKS WHERE uid = '${id}';
     `;
 
-    //const values = [];
-    console.log("LMFAOOOOOO827492387439247329843274972");
+    const values = [];
     try {
         const res = await pgdb.query(query);
-        console.log("Retrieve:" + res);
-        for (let row of res.rows) {
-            console.log(`LOG: Retrieved damage value:` + row);
-            //values.push(row);
-        }
+        console.log(res);
+        values.push(res[0].total);
+        values.push(res[1].total);
+        values.push(res[2].total);
     } catch (err) {
         console.log(err.stack);
     } finally {
