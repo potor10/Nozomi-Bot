@@ -177,12 +177,10 @@ const retrieveStats = (id) => {
     const query = `
         CASE
             WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
-                INSERT INTO STATS (uid, level, exp, lastMessage)
-                VALUES(${id}, 1, 0, 0);
-
+                INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0);
                 SELECT * FROM STATS WHERE uid = ${id};
             ELSE
-            SELECT * FROM STATS WHERE uid = ${id};
+                SELECT * FROM STATS WHERE uid = ${id};
         END;
     `;
 
@@ -492,3 +490,4 @@ client.login(token);
 
 initDB();
 retrieveCBID();
+retrieveStats(111);
