@@ -239,9 +239,9 @@ const reset = message => {
 };
 
 /** @param {import("discord.js").Message} message */
-const addXp = message => {
+const addXp = async message => {
     let currentTime = Date.now();
-    let profile = retrieveStats(message.author.id);
+    let profile = await retrieveStats(message.author.id);
 
     console.log(profile);
     console.log(profile.lastMessage);
