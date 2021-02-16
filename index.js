@@ -86,7 +86,7 @@ const updateCBID = async (cbid) => {
 }
 
 const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
-    cbid = retrieveCBID();
+    cbid = await retrieveCBID();
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
@@ -131,7 +131,7 @@ const updateStatsDB = async (id, level, xp, lastMessage) => {
 }
 
 const retrieveDamageDB = async (id, date) => {
-    cbid = retrieveCBID();
+    cbid = await retrieveCBID();
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
