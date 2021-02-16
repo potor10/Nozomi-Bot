@@ -22,9 +22,9 @@ const client = new Client();
 // Initialize PG SQL DB Client
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
-const pgdb = new PGdb(dbConfig);
 
 const initDB = async () => {
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
@@ -67,6 +67,7 @@ const initDB = async () => {
 }
 
 const updateCBID = (cbid) => {
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
@@ -86,6 +87,8 @@ const updateCBID = (cbid) => {
 
 const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {    
     cbid = retrieveCBID();
+
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
@@ -110,6 +113,7 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
 }
 
 const updateStatsDB = (id, level, xp, lastMessage) => {    
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
@@ -135,6 +139,8 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
 
 const retrieveDamageDB = (id, date) => {
     cbid = retrieveCBID();
+
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
@@ -165,6 +171,7 @@ const retrieveDamageDB = (id, date) => {
 }
 
 const retrieveStats = (id) => {
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
@@ -193,6 +200,7 @@ const retrieveStats = (id) => {
 }
 
 const retrieveCBID = () => {
+    const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
