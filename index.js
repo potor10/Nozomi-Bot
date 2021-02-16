@@ -285,9 +285,8 @@ const returnOCR = async message => {
             const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
             if (i==0 && text!="Trial Run") {
                 isClan = false;
+                console.log(`Not Clan War but instead ${text}`);
                 break;
-            } else {
-                console.log("Not Clan War");
             }
             values.push(text);
         }
