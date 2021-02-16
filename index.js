@@ -49,7 +49,15 @@ const saveUsers = () => fs.writeFileSync("./userdata.json",
 
 const resetusers = message => {
     if (message.author.id = 154775062178824192) {
-        userdata = [{}];
+        for (let x in userdata) {
+            userdata[x].clanDamage = 0;
+            userdata[x].dailyDamage = 0;
+            userdata[x].totalDamage = 0;
+            userdata[x].level = 1;
+            userdata[x].exp = 0;
+            userdata[x].rank = 0;
+            userdata[x].lastMessage = 0;
+        }
         saveUsers();
         console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
     } else {
@@ -213,6 +221,21 @@ const attachIsImage = msgAttach => {
     return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
 }
 
+const { createWorker } = require('tesseract.js');
+
+const worker = createWorker({
+  logger: m => console.log(m), // Add logger here
+});
+
+const returnOCR = async message => {
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+    const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
+    console.log(text);
+    await worker.terminate();
+}
+
 // Chaining Events
 client
     .on("ready", () => {
@@ -238,6 +261,7 @@ client
             if (message.attachments.every(attachIsImage)){
                 message.channel.send("Detected Image");
                 message.react("409910974607392770");
+                returnOCR(message);
             }
         }
 
