@@ -1,10 +1,4 @@
 { 
   "token"  : "ODExMTc4MjczODQ4NTU3NjEw.YCuaow.g2xr_LLrK5Rw4Ves2mcygrUDNzo",
-  "prefix" : ".",
-  
-  "db_user" : "cbpzuouhseobqs",
-  "db_host" : "ec2-34-203-155-237.compute-1.amazonaws.com",
-  "db_id" : "desdmiapd6n2oq",
-  "db_pass" : "fdd4bf301d158bf28e52e1346092a7cdeeddd2c69b7ed9e2e5366c2c346e3b90",
-  "db_port" : 5432
+  "prefix" : "."
 }

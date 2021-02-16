@@ -15,7 +15,8 @@
     "discord.js": "^11.5.1",
     "file-system": "^2.2.2",
     "tesseract.js": "^2.1.4",
-    "pg": "^8.5.1"
+    "pg": "^8.5.1",
+    "parse-database-url": "*"
   }
   
 }

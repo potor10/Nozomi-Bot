@@ -10,21 +10,19 @@ const { createWorker } = require('tesseract.js');
 
 const PGdb = require('pg').Client;
 
+var parseDbUrl = require("parse-database-url");
+
 // Load Config Json with Prefix and Token 
-let { token, prefix, db_user, db_host, db_id, db_pass, db_port } = require("./config.json");
+let { token, prefix } = require("./config.json");
 prefix = prefix || ".";
 
 // Initialize Discord Client
 const client = new Client();
 
 // Initialize PG SQL DB Client
-const pgdb = new PGdb({
-    user: db_user,
-    host: db_host,
-    database: db_id,
-    password: db_pass,
-    port: db_port,
-});
+let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
+console.log(dbConfig);
+const pgdb = new PGdb(dbConfig);
 
 const initDB = async () => {
     pgdb.connect();
