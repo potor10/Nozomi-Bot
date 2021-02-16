@@ -143,7 +143,7 @@ const retrieveDamageDB = (id, date) => {
     `;
 
     const values = [];
-    client.query(query, (err, res) => {
+    pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
             return 0;
@@ -152,7 +152,7 @@ const retrieveDamageDB = (id, date) => {
             console.log(row);
             values.push(row);
         }
-        client.end();
+        pgdb.end();
     });
 
     return values;
@@ -172,7 +172,7 @@ const retrieveStats = (id) => {
         END
     `;
 
-    client.query(query, (err, res) => {
+    pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
             return 0;
@@ -181,7 +181,7 @@ const retrieveStats = (id) => {
             console.log(row);
             return row;
         }
-        client.end();
+        pgdb.end();
     });
 }
 
@@ -193,7 +193,7 @@ const retrieveCBID = () => {
         FROM CB
     `;
 
-    client.query(query, (err, res) => {
+    pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
             return 0;
@@ -202,7 +202,7 @@ const retrieveCBID = () => {
             console.log(row);
             return row;
         }
-        client.end();
+        pgdb.end();
     });
 }
 
