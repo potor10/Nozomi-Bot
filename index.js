@@ -46,7 +46,8 @@ const initDB = id => {
         CREATE TABLE STATS (
             uid int,
             level int,
-            exp int
+            exp int,
+            lastMessage int
         );
 
         CREATE TABLE CB (
@@ -105,13 +106,13 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
     });
 }
 
-const updateStatsDB = (id, level, xp) => {    
+const updateStatsDB = (id, level, xp, lastMessage) => {    
     pgdb.connect();
 
     const query = `
-        INSERT INTO STATS (uid, level, exp)
-        VALUES (${id}, ${level}, ${xp})
-        ON DUPLICATE KEY UPDATE level = VALUES(${level}), exp = VALUES(${xp})
+        INSERT INTO STATS (uid, level, exp, lastMessage)
+        VALUES (${id}, ${level}, ${xp}, ${lastMessage})
+        ON DUPLICATE KEY UPDATE level = VALUES(${level}), exp = VALUES(${xp}, lastMessage = VALUES(${lastMessage}))
     `;
 
     pgdb.query(query, (err, res) => {
@@ -164,8 +165,8 @@ const retrieveStats = (id) => {
     const query = `
         CASE
             WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
-                INSERT INTO STATS (uid, level, exp)
-                VALUES(${id}, 1, 0)
+                INSERT INTO STATS (uid, level, exp, lastMessage)
+                VALUES(${id}, 1, 0, 0)
                 SELECT * FROM STATS WHERE uid = ${id}
             ELSE
             SELECT * FROM STATS WHERE uid = ${id}
@@ -447,6 +448,7 @@ client
     .on("message", async message => {
         // Ignore Bot
         if(message.author.bot) return;
+        initDB();
 
         addXp(message);
 
