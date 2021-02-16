@@ -233,8 +233,6 @@ const { createWorker } = require('tesseract.js');
 
 /** @param {import("discord.js").Message} message */
 const returnOCR = async message => {
-    console.log(message);
-    console.log(message.attachments);
     message.attachments.forEach(async attachment => {
         const worker = createWorker({
             //logger: m => console.log(m), // Add logger here
@@ -276,9 +274,10 @@ const returnOCR = async message => {
         await worker.initialize('eng');
 
         const values = [];
-        const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
-        values.push(text);
-
+        for (let i = 0; i < rectangles.length; i++) {
+            const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
+            values.push(text);
+        }
         await message.reply(`The text in the image is: ${values}`);
         console.log(values);
         await worker.terminate();
