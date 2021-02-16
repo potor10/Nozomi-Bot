@@ -151,9 +151,12 @@ const retrieveDamageDB = async (id, date) => {
     try {
         const res = await pgdb.query(query);
         console.log(res);
-        values.push(res[0].total);
-        values.push(res[1].total);
-        values.push(res[2].total);
+        console.log(res[0].rows);
+        console.log(res[1].rows);
+        console.log(res[2].rows);
+        values.push(res[0].rows.total);
+        values.push(res[1].rows.total);
+        values.push(res[2].rows.total);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -293,9 +296,9 @@ const profile = async message => {
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription("Displaying Profile.")
         .addField("Level", profileData.level)
-        .addField("Damage Dealt This Clan War", profileDamage[0].total)
-        .addField("Damage Dealt Today", profileDamage[1].total)
-        .addField("Total Damage Dealt", profileDamage[2].total)
+        .addField("Damage Dealt This Clan War", profileDamage[0])
+        .addField("Damage Dealt Today", profileDamage[1])
+        .addField("Total Damage Dealt", profileDamage[2])
         .setFooter("© Potor10's Autistic Industries 2021", client.user.avatarURL)
         .setTimestamp());
 };
