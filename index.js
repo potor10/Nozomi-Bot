@@ -42,7 +42,7 @@ const initDB = async () => {
         );
 
         CREATE TABLE STATS (
-            uid int UNIQUE,
+            uid int,
             level int,
             exp int,
             lastMessage int
@@ -92,11 +92,11 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
     pgdb.connect();
 
     const query = `
+        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
+            WHERE uid = ${id} AND date = ${date};
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
             VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid})
-            ON CONFLICT (uid, attackDate) DO UPDATE ATTACKS 
-            SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
-            WHERE uid = ${id} AND date = ${date};
+            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = ${id} AND date = ${date});
     `;
 
     pgdb.query(query, (err, res) => {
@@ -114,10 +114,9 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
     pgdb.connect();
 
     const query = `
+        UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage} WHERE uid = ${id};
         INSERT INTO STATS (uid, level, exp, lastMessage) VALUES (${id}, ${level}, ${xp}, ${lastMessage})
-            ON CONFLICT (uid) DO UPDATE STATS 
-            SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}
-            WHERE uid = ${id};
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
     `;
 
     pgdb.query(query, (err, res) => {
@@ -169,7 +168,7 @@ const retrieveStats = (id) => {
 
     const query = `
         INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0)
-            ON CONFLICT (uid) DO NOTHING;
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
 
         SELECT * FROM STATS WHERE uid = ${id};
     `;
