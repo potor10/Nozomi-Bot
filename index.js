@@ -198,13 +198,15 @@ const retrieveStats = (id) => {
         for (let row of res.rows) {
             console.log(row);
             pgdb.end();
-            
+
             let output = {
                 id: row.uid,
                 level: row.level,
                 exp: row.exp,
                 lastMessage: row.lastMessage
             }
+            console.log(row.uid);
+            console.log(row.exp);
             return output;
         }
         pgdb.end();
