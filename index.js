@@ -189,7 +189,6 @@ const retrieveStats = (id) => {
         }
     });
 
-    let output = 0;
     pgdb.query(selectQuery, (err, res) => {
         if (err) {
             console.error(err);
@@ -198,12 +197,11 @@ const retrieveStats = (id) => {
         }
         for (let row of res.rows) {
             console.log(`LOG: STATS table is successfully retrieved with values: ${row}`);
-            output = row;
+            pgdb.end();
+            return row;
         }
         pgdb.end();
     });
-
-    return output;
 }
 
 const retrieveCBID = () => {
@@ -215,7 +213,6 @@ const retrieveCBID = () => {
         FROM CB;
     `;
 
-    let output = 0;
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
@@ -223,12 +220,11 @@ const retrieveCBID = () => {
             return 0;
         }
         for (let row of res.rows) {
-            output = row.cbid;
+            pgdb.end();
+            return row.cbid;
         }
         pgdb.end();
     });
-
-    return output;
 }
 
 const reactionFilter = (author, reaction, user) => 
