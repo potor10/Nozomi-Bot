@@ -231,15 +231,15 @@ const getOcrImage = msgAttach => {
 
 const { createWorker } = require('tesseract.js');
 
-const worker = createWorker({
-  //logger: m => console.log(m), // Add logger here
-});
-
 /** @param {import("discord.js").Message} message */
 const returnOCR = async message => {
     console.log(message);
     console.log(message.attachments);
     message.attachments.forEach(async attachment => {
+        const worker = createWorker({
+            //logger: m => console.log(m), // Add logger here
+          });
+          
         console.log(attachment.url);
         await worker.load();
         await worker.loadLanguage('eng');
