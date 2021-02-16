@@ -137,13 +137,13 @@ const retrieveDamageDB = async (id, date) => {
     pgdb.connect();
 
     const query = `
-        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
+        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'total'
         FROM ATTACKS WHERE cbid = ${cbid} AND uid = '${id}';
 
-        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
+        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'total'
         FROM ATTACKS WHERE date = ${date} AND uid = '${id}';
 
-        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
+        SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'total'
         FROM ATTACKS WHERE uid = '${id}';
     `;
 
@@ -283,6 +283,8 @@ const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
     let profileData = retrieveStats(profileUser.id);
+    const sqlDate = (new Date()).toLocaleString("en-US")
+    let profileDamage = retrieveDamageDB(profileUser.id, sqlDate);
 
     await message.channel.send(new RichEmbed()
         .setURL("https://youtu.be/_zlGR5i9u_Q")
@@ -292,9 +294,9 @@ const profile = async message => {
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription("Displaying Profile.")
         .addField("Level", profileData.level)
-        .addField("Damage Dealt This Clan War", profileData.clanDamage)
-        .addField("Damage Dealt Today", profileData.dailyDamage)
-        .addField("Total Damage Dealt", profileData.totalDamage)
+        .addField("Damage Dealt This Clan War", profileDamage[0].total)
+        .addField("Damage Dealt Today", profileDamage[1].total)
+        .addField("Total Damage Dealt", profileDamage[2].total)
         .setFooter("© Potor10's Autistic Industries 2021", client.user.avatarURL)
         .setTimestamp());
 };
