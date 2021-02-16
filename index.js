@@ -287,6 +287,9 @@ const returnOCR = async message => {
                 isClan = false;
                 console.log(`Not Clan War but instead:${text}`);
                 break;
+            } else {
+                await message.react('✅');
+                await message.reply(`Analyzing Image`);
             }
             values.push(text);
         }
