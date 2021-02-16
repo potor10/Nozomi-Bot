@@ -62,7 +62,7 @@ const initDB = async () => {
     } catch (err) {
         console.log(err.stack);
     } finally {
-        pgdb.close();
+        pgdb.end();
     }
 }
 
@@ -81,7 +81,7 @@ const updateCBID = (cbid) => {
             return;
         }
         console.log(`LOG: CB table is successfully updated with value ${cbid}`);
-        pgdb.close();
+        pgdb.end();
     });
 }
 
@@ -92,14 +92,11 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
     pgdb.connect();
 
     const query = `
-        CASE 
-            WHEN NOT EXISTS (SELECT * FROM ATTACKS WHERE uid = ${id} AND date = ${date}) THEN
-                INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-                    VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid});
-            ELSE
-                UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
-                    WHERE uid = ${id} AND date = ${date};
-        END;
+        INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
+            VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid})
+            ON CONFLICT (uid, attackDate) DO UPDATE ATTACKS 
+            SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
+            WHERE uid = ${id} AND date = ${date};
     `;
 
     pgdb.query(query, (err, res) => {
@@ -108,7 +105,7 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
             return;
         }
         console.log(`LOG: ATTACKS table is successfully updated with values: ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
-        pgdb.close();
+        pgdb.end();
     });
 }
 
@@ -117,14 +114,10 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
     pgdb.connect();
 
     const query = `
-        CASE 
-            WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
-                INSERT INTO STATS (uid, level, exp, lastMessage)
-                    VALUES (${id}, ${level}, ${xp}, ${lastMessage});
-            ELSE
-                UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}
-                    WHERE uid = ${id};
-        END;
+        INSERT INTO STATS (uid, level, exp, lastMessage) VALUES (${id}, ${level}, ${xp}, ${lastMessage})
+            ON CONFLICT (uid) DO UPDATE STATS 
+            SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}
+            WHERE uid = ${id};
     `;
 
     pgdb.query(query, (err, res) => {
@@ -133,7 +126,7 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
             return;
         }
         console.log(`LOG: STATS table is successfully updated with values: ${id}, ${level}, ${xp}`);
-        pgdb.close();
+        pgdb.end();
     });
 }
 
@@ -164,7 +157,7 @@ const retrieveDamageDB = (id, date) => {
             console.log(row);
             values.push(row);
         }
-        pgdb.close();
+        pgdb.end();
     });
 
     return values;
@@ -175,10 +168,8 @@ const retrieveStats = (id) => {
     pgdb.connect();
 
     const query = `
-        CASE
-            WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
-                INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0);
-        END;
+        INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0)
+            ON CONFLICT (uid) DO NOTHING;
 
         SELECT * FROM STATS WHERE uid = ${id};
     `;
@@ -192,7 +183,7 @@ const retrieveStats = (id) => {
             console.log(row);
             return row;
         }
-        pgdb.close();
+        pgdb.end();
     });
 }
 
@@ -214,7 +205,7 @@ const retrieveCBID = () => {
             console.log(row.cbid);
             return row.cbid;
         }
-        pgdb.close();
+        pgdb.end();
     });
 }
 
