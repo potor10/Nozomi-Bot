@@ -235,16 +235,17 @@ const worker = createWorker({
   //logger: m => console.log(m), // Add logger here
 });
 
+/** @param {import("discord.js").Message} message */
 const returnOCR = async message => {
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-    message.attachments.forEach(attachment => {
-        const { data: { text } } = await worker.recognize(attachment.url);
+    message.attachments.forEach(async attachment => {
+        await worker.load();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        const { data: { text } } = await worker.recognize(message.attachments.first().url);
         await message.reply(`The text in the image is: ${text}`);
         console.log(text);
+        await worker.terminate();
     });
-    await worker.terminate();
 }
 
 // Chaining Events
