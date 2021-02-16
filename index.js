@@ -66,7 +66,7 @@ const initDB = async () => {
     }
 }
 
-const updateCBID = (cbid) => {
+const updateCBID = async (cbid) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
@@ -75,18 +75,17 @@ const updateCBID = (cbid) => {
             SET cbid = ${cbid};
     `;
 
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return;
-        }
+    try {
+        const res = await pgdb.query(query);
         console.log(`LOG: CB table is successfully updated with value ${cbid}`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
 }
 
-const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {    
+const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
     cbid = retrieveCBID();
 
     const pgdb = new PGdb(dbConfig);
@@ -100,18 +99,17 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
             WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND date = ${date});
     `;
 
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return;
-        }
+    try {
+        const res = await pgdb.query(query);
         console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
 }
 
-const updateStatsDB = (id, level, xp, lastMessage) => {    
+const updateStatsDB = async (id, level, xp, lastMessage) => {    
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
@@ -122,18 +120,17 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
 
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return;
-        }
+    try {
+        const res = await pgdb.query(query);
         console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
 }
 
-const retrieveDamageDB = (id, date) => {
+const retrieveDamageDB = async (id, date) => {
     cbid = retrieveCBID();
 
     const pgdb = new PGdb(dbConfig);
@@ -151,23 +148,22 @@ const retrieveDamageDB = (id, date) => {
     `;
 
     const values = [];
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return 0;
-        }
+    try {
+        const res = await pgdb.query(query);
         for (let row of res.rows) {
             console.log(row);
             values.push(row);
         }
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
 
     return values;
 }
 
-const retrieveStats = (id) => {
+const retrieveStats = async (id) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
@@ -181,39 +177,31 @@ const retrieveStats = (id) => {
         SELECT * FROM STATS WHERE uid = '${id}';
     `;
 
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return 0;
-        }
-    });
+    try {
+        const res = await pgdb.query(query);
+    } catch (err) {
+        console.log(err.stack);
+    } 
 
-    pgdb.query(selectQuery, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return 0;
-        }
+    let output;
+    try {
+        const res = await pgdb.query(selectQuery);
         for (let row of res.rows) {
             console.log(row);
             pgdb.end();
 
-            let output = {
-                id: row.uid,
-                level: row.level,
-                exp: row.exp,
-                lastMessage: row.lastMessage
-            }
-            console.log(row.uid);
-            console.log(row.exp);
-            return output;
+            output = row;
         }
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
+
+    return output;
 }
 
-const retrieveCBID = () => {
+const retrieveCBID = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
@@ -222,18 +210,20 @@ const retrieveCBID = () => {
         FROM CB;
     `;
 
-    pgdb.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            pgdb.end();
-            return 0;
-        }
+    let output;
+    try {
+        const res = await pgdb.query(selectQuery);
         for (let row of res.rows) {
             pgdb.end();
-            return row.cbid;
+            output = row.cbid;
         }
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
         pgdb.end();
-    });
+    }
+
+    return output;
 }
 
 const reactionFilter = (author, reaction, user) => 
