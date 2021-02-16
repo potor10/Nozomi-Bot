@@ -78,6 +78,7 @@ const updateCBID = (cbid) => {
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return;
         }
         console.log(`LOG: CB table is successfully updated with value ${cbid}`);
@@ -102,6 +103,7 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return;
         }
         console.log(`LOG: ATTACKS table is successfully updated with values: ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
@@ -123,6 +125,7 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return;
         }
         console.log(`LOG: STATS table is successfully updated with values: ${id}, ${level}, ${xp}`);
@@ -151,6 +154,7 @@ const retrieveDamageDB = (id, date) => {
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return 0;
         }
         for (let row of res.rows) {
@@ -180,21 +184,26 @@ const retrieveStats = (id) => {
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return 0;
         }
     });
 
+    let output = 0;
     pgdb.query(selectQuery, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return 0;
         }
         for (let row of res.rows) {
             console.log(row);
-            return row;
+            output = row;
         }
+        pgdb.end();
     });
-    pgdb.end();
+
+    return output;
 }
 
 const retrieveCBID = () => {
@@ -206,17 +215,21 @@ const retrieveCBID = () => {
         FROM CB;
     `;
 
+    let output = 0;
     pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
+            pgdb.end();
             return 0;
         }
         for (let row of res.rows) {
             console.log(row.cbid);
-            return row.cbid;
+            output = row.cbid;
         }
         pgdb.end();
     });
+
+    return output;
 }
 
 const reactionFilter = (author, reaction, user) => 
