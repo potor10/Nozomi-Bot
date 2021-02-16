@@ -42,7 +42,7 @@ const initDB = async () => {
         );
 
         CREATE TABLE STATS (
-            uid int,
+            uid int UNIQUE,
             level int,
             exp int,
             lastMessage int
