@@ -5,13 +5,24 @@
  */
 
 const { Client, Attachment, RichEmbed } = require("discord.js");
+const { createWorker } = require('tesseract.js');
+const { PGClient } = require('pg');
+
+// Load Config Json with Prefix and Token 
+let { token, prefix, db_user, db_host, db_id, db_pass, db_port } = require("./config.json");
+prefix = prefix || ".";
 
 // Initialize Discord Client
 const client = new Client();
 
-// Load Config Json with Prefix and Token 
-let { token, prefix } = require("./config.json");
-prefix = prefix || ".";
+// Initialize PG SQL DB Client
+const pgclient = new PGClient({
+    user: db_user,
+    host: db_host,
+    database: db_id,
+    password: db_pass,
+    port: db_port,
+});
 
 const fs = require("fs");
 /** @type {{clanDamage:Number,dailyDamage:Number,totalDamage:Number,level:Number,exp:Number,rank:Number, lastMessage:Number}[]} */
@@ -23,18 +34,6 @@ let marketCrash = false;
 let marketUpdateSkew = 0;
 let marketUpdateAmt = 0;
 let timeUpdate = 0;
-
-const { createWorker } = require('tesseract.js');
-
-const { PGClient } = require('pg');
-
-const pgclient = new PGClient({
-    user: db_user,
-    host: db_host,
-    database: db_id,
-    password: db_pass,
-    port: db_port,
-});
 
 const createDB = id => {
     pgclient.connect();
