@@ -219,17 +219,9 @@ const reset = message => {
 };
 
 const getOrCreateUser = id => {
-    retrieveStats(id);
-    if (!userdata[id]) userdata[id] = {
-        clanDamage: 0,
-        dailyDamage: 0,
-        totalDamage: 0,
-        level: 1,
-        exp: 0,
-        rank: 0,
-        lastMessage: 0
-    };
-    return userdata[id];
+    userdata = retrieveStats(id);
+
+    return userdata;
 };
 
 /** @param {import("discord.js").Message} message */
