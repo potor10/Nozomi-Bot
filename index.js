@@ -281,7 +281,7 @@ const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
     let profileData = retrieveStats(profileUser.id);
-    const sqlDate = (new Date()).toLocaleString("en-US")
+    const sqlDate = (new Date()).toLocaleString("en-US");
     let profileDamage = retrieveDamageDB(profileUser.id, sqlDate);
 
     await message.channel.send(new RichEmbed()
