@@ -214,8 +214,8 @@ const retrieveCBID = () => {
             return 0;
         }
         for (let row of res.rows) {
-            console.log(row);
-            return row;
+            console.log(row.cbid);
+            return row.cbid;
         }
         pgdb.end();
     });
