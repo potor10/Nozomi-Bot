@@ -154,9 +154,9 @@ const retrieveDamageDB = async (id, date) => {
         console.log(res[0].rows);
         console.log(res[1].rows);
         console.log(res[2].rows);
-        values.push(res[0].rows.total);
-        values.push(res[1].rows.total);
-        values.push(res[2].rows.total);
+        values.push(res[0].rows[0].total);
+        values.push(res[1].rows[0].total);
+        values.push(res[2].rows[0].total);
     } catch (err) {
         console.log(err.stack);
     } finally {
