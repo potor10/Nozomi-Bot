@@ -62,7 +62,7 @@ const initDB = async () => {
     } catch (err) {
         console.log(err.stack);
     } finally {
-        pgdb.end();
+        pgdb.close();
     }
 }
 
@@ -81,7 +81,7 @@ const updateCBID = (cbid) => {
             return;
         }
         console.log(`LOG: CB table is successfully updated with value ${cbid}`);
-        pgdb.end();
+        pgdb.close();
     });
 }
 
@@ -108,7 +108,7 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
             return;
         }
         console.log(`LOG: ATTACKS table is successfully updated with values: ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
-        pgdb.end();
+        pgdb.close();
     });
 }
 
@@ -133,7 +133,7 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
             return;
         }
         console.log(`LOG: STATS table is successfully updated with values: ${id}, ${level}, ${xp}`);
-        pgdb.end();
+        pgdb.close();
     });
 }
 
@@ -164,7 +164,7 @@ const retrieveDamageDB = (id, date) => {
             console.log(row);
             values.push(row);
         }
-        pgdb.end();
+        pgdb.close();
     });
 
     return values;
@@ -192,7 +192,7 @@ const retrieveStats = (id) => {
             console.log(row);
             return row;
         }
-        pgdb.end();
+        pgdb.close();
     });
 }
 
@@ -214,7 +214,7 @@ const retrieveCBID = () => {
             console.log(row.cbid);
             return row.cbid;
         }
-        pgdb.end();
+        pgdb.close();
     });
 }
 
