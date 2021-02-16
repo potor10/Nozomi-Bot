@@ -171,7 +171,9 @@ const retrieveStats = (id) => {
         INSERT INTO STATS (uid, level, exp, lastMessage) 
             SELECT ${id}, 1, 0, 0
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
+    `;
 
+    const selectQuery = `
         SELECT * FROM STATS WHERE uid = ${id};
     `;
 
@@ -180,13 +182,19 @@ const retrieveStats = (id) => {
             console.error(err);
             return 0;
         }
-        console.log(res);
+    });
+
+    pgdb.query(selectQuery, (err, res) => {
+        if (err) {
+            console.error(err);
+            return 0;
+        }
         for (let row of res.rows) {
             console.log(row);
             return row;
         }
-        pgdb.end();
     });
+    pgdb.end();
 }
 
 const retrieveCBID = () => {
