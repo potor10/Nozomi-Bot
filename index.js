@@ -26,9 +26,9 @@ let timeUpdate = 0;
 
 const { createWorker } = require('tesseract.js');
 
-const { Client } = require('pg');
+const { PGClient } = require('pg');
 
-const client = new Client({
+const pgclient = new PGClient({
     user: db_user,
     host: db_host,
     database: db_id,
@@ -37,7 +37,7 @@ const client = new Client({
 });
 
 const createDB = id => {
-    client.connect();
+    pgclient.connect();
 
     const query = `
         CREATE TABLE ${id} (
@@ -48,18 +48,18 @@ const createDB = id => {
         );
     `;
 
-    client.query(query, (err, res) => {
+    pgclient.query(query, (err, res) => {
         if (err) {
             console.error(err);
             return;
         }
         console.log('Table is successfully created');
-        client.end();
+        pgclient.end();
     });
 }
 
 const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {    
-    client.connect();
+    pgclient.connect();
 
 
     const query = `
@@ -312,7 +312,8 @@ const returnOCR = async message => {
         }
 
         if (isClan) {
-            await message.channel.send(`The text in the image is: ${values}`);
+            await message.channel.send(`On: ${values[1]}, ${message.author.username} 
+                hit for ${values[2]}${values[3]}${values[4]}`);
             console.log(values);
         }
         await worker.terminate();
