@@ -231,9 +231,10 @@ const returnOCR = async message => {
     await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
-    const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
+    const { data: { text } } = await worker.recognize(message.attachments.url);
     console.log(text);
     await worker.terminate();
+    await message.reply(`The text in the image is: ${text}`);
 }
 
 // Chaining Events
