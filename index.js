@@ -1,5 +1,5 @@
 /**
- * @description Autistic Discord Bot
+ * @description Rad Dream Bot
  * @author Potor10 
  * @summary An Autistic Discord Bot For Princess Connect
  */
@@ -470,27 +470,27 @@ client
     .on("ready", () => {
         // Bot Ready
         console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
-        client.user.setActivity(`AUTISM HAS INFECTED ${client.guilds.size} SERVERS`);
+        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
     })
     .on("guildCreate", guild => {
         console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-        client.user.setActivity(`AUTISM HAS INFECTED ${client.guilds.size} SERVERS`);
+        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
     })
     .on("guildDelete", guild => {
         console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-        client.user.setActivity(`AUTISM HAS INFECTED ${client.guilds.size} SERVERS`);
+        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
     })
     .on("message", async message => {
         // Ignore Bot
         if(message.author.bot) return;
 
-        if (message.content.toLowerCase().includes("autism")) {
-            message.channel.send("YOU HAVE AUTISM");
-            message.channel.send("👀");
-            message.channel.send("<:pog:471222524320022528>");
-            message.react("409910974607392770");
-            return;
+        if (message.attachments.size > 0) {
+            if (message.attachments.every(attachIsImage)){
+                message.channel.send("Detected Image");
+                message.react("409910974607392770");
+            }
         }
+
         // Prefix Matches
         if(message.content.indexOf(prefix) !== 0) return;
         
@@ -505,5 +505,5 @@ process.on("unhandledRejection", console.error);
 process.on("SIGINT", () => (saveBitconnect(), saveUsers(), process.exit(0)));
 
 // Log In
-console.log("Logging In");
+console.log("Logging In To Princonne Bot");
 client.login(token);
