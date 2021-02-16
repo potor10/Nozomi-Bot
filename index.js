@@ -24,22 +24,58 @@ let marketUpdateSkew = 0;
 let marketUpdateAmt = 0;
 let timeUpdate = 0;
 
-/** @param {import("discord.js").Message} message */
-const checkCrash = async message => {
-    if (!marketCrash) {
-        await message.channel.send(`The Current Price For A Bitconnect Is:` + 
-                            ` **\$${bitconnectdata.slice(-1)[0].price}**`);
-    } else {
-        marketCrash = false;
-        for (let x in userdata) userdata[x].bitconnect = 0;
-        resetBitconnect();
-        saveBitconnect();
-        saveUsers();
-        await message.channel.send("Uh Oh! The Price Of Bitconnect Went Below 0, **IT'S A MARKET CRASH!**\n" +
-                                    "Everyone Loses Their Bitconnect (Market Will Reset)");
-        return true;
-    }
-};
+const { createWorker } = require('tesseract.js');
+
+const { Client } = require('pg');
+
+const client = new Client({
+    user: db_user,
+    host: db_host,
+    database: db_id,
+    password: db_pass,
+    port: db_port,
+});
+
+const createDB = id => {
+    client.connect();
+
+    const query = `
+        CREATE TABLE ${id} (
+            attackDate date,
+            attempt1damage int,
+            attempt2damage int,
+            attempt3damage int
+        );
+    `;
+
+    client.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log('Table is successfully created');
+        client.end();
+    });
+}
+
+const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {    
+    client.connect();
+
+
+    const query = `
+        UPDATE TABLE users (
+            email varchar,
+            firstName varchar,
+            lastName varchar,
+            age int
+        );
+    `;
+}
+
+const retrieveDamageDB = id => {
+    
+}
+
 
 const reactionFilter = (author, reaction, user) => 
         ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
@@ -141,22 +177,6 @@ const profile = async message => {
 };
 
 /** @param {import("discord.js").Message} message */
-const disable = async message => {
-    getOrCreateUser(message.author.id).disabled = true;
-    saveUsers();
-    await message.reply(`Your profile has been disabled and you are now excluded from random events, type .enable to enable your account`);
-    await message.channel.send(new Attachment("https://i.imgur.com/gUHvwFD.png"));
-};
-
-/** @param {import("discord.js").Message} message */
-const enable = async message => {
-    getOrCreateUser(message.author.id).disabled = false;
-    saveUsers();
-    await message.reply(`Your profile has been enabled`);
-    await message.channel.send(new Attachment("https://i.imgur.com/FQ3d0Zk.png"));
-};
-
-/** @param {import("discord.js").Message} message */
 const ebola = async message => {
     await message.react(BITCONNECT_EMOJI);
     let collected = await message.awaitReactions((reaction, user) => 
@@ -229,8 +249,6 @@ const getOcrImage = msgAttach => {
     return isImage;
 }
 
-const { createWorker } = require('tesseract.js');
-
 /** @param {import("discord.js").Message} message */
 const returnOCR = async message => {
     message.attachments.forEach(async attachment => {
@@ -287,15 +305,14 @@ const returnOCR = async message => {
                 isClan = false;
                 console.log(`Not Clan War but instead:${text}`);
                 break;
-            } else {
+            } else if (i==0) {
                 await message.react('✅');
-                await message.reply(`Analyzing Image`);
             }
             values.push(text);
         }
 
         if (isClan) {
-            await message.reply(`The text in the image is: ${values}`);
+            await message.channel.send(`The text in the image is: ${values}`);
             console.log(values);
         }
         await worker.terminate();

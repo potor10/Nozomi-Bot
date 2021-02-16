@@ -1,20 +1,21 @@
 {
-    "name": "RDB",
-    "description": "Rad Dream Bot",
-    "version": "1.0.0",
-    "main": "index.js",
-    "scripts": {
-      "start": "node index.js"
-    },
+  "name": "RDB",
+  "description": "Rad Dream Bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
 
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-  
-    "dependencies": {
-      "discord.js": "^11.5.1",
-      "file-system": "^2.2.2",
-      "tesseract.js": "^2.1.4"
-    }
-  
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "file-system": "^2.2.2",
+    "tesseract.js": "^2.1.4",
+    "pg": "^8.5.1"
   }
+  
+}
