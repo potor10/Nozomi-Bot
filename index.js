@@ -284,6 +284,7 @@ const profile = async message => {
     let profileUser = message.mentions.members.first() || message.author;
     let profileData = await retrieveStats(profileUser.id);
     const sqlDate = (new Date()).toLocaleString("en-US");
+    console.log(sqlDate);
     let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
 
     await message.channel.send(new RichEmbed()
@@ -463,11 +464,11 @@ client
         // Ignore Bot
         if(message.author.bot) return;
 
-        addXp(message);
+        await addXp(message);
 
         if (message.attachments.size > 0) {
             if (message.attachments.every(getOcrImage)){
-                returnOCR(message);
+                await returnOCR(message);
             }
         }
 
