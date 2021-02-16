@@ -9,8 +9,12 @@ const { Client, Attachment, RichEmbed } = require("discord.js");
 // Initialize Discord Client
 const client = new Client();
 
+// Load Config Json with Prefix and Token 
+let { token, prefix } = require("./config.json");
+prefix = prefix || ".";
+
 const fs = require("fs");
-/** @type {{clanDamage:Number,dailyDamage:Number,totalDamage:Number,level:Number,exp:Number,rank:Number}[]} */
+/** @type {{clanDamage:Number,dailyDamage:Number,totalDamage:Number,level:Number,exp:Number,rank:Number, lastMessage:Number}[]} */
 let userdata = JSON.parse(fs.readFileSync("./userdata.json", "utf8"));
 
 // Rad Dream Constants
@@ -19,23 +23,6 @@ let marketCrash = false;
 let marketUpdateSkew = 0;
 let marketUpdateAmt = 0;
 let timeUpdate = 0;
-
-// Load Config Json with Prefix and Token 
-let { token, prefix } = require("./config.json");
-prefix = prefix || ".";
-
-const saveBitconnect = () => fs.writeFileSync("./bitconnect.json", 
-                                    JSON.stringify(bitconnectdata, null, 4));
-
-const resetBitconnect = () => {
-    bitconnectdata = [{
-        time: Date.now(),
-        price: 400,
-        flucSkew: 0.5,
-        flucAmt: 10
-    }];
-    saveBitconnect();
-};
 
 /** @param {import("discord.js").Message} message */
 const checkCrash = async message => {
@@ -61,9 +48,7 @@ const saveUsers = () => fs.writeFileSync("./userdata.json",
                                     JSON.stringify(userdata, null, 4));
 
 const resetUsers = () => {
-    userdata = [{
-        
-    }];
+    userdata = [{}];
     saveUsers();
 };
 
@@ -72,12 +57,32 @@ const getOrCreateUser = id => {
         clanDamage: 0,
         dailyDamage: 0,
         totalDamage: 0,
-        level: 0,
+        level: 1,
         exp: 0,
-        rank: 0
+        rank: 0,
+        lastMessage: 0
     };
     return userdata[id];
 };
+
+const addXp = message => {
+    let currentTime = Date.now();
+    let profile = getOrCreateUser(message.author.id);
+
+    if (currentTime - profile.lastMessage > 300000) {
+        profile.exp++;
+        profile.lastMessage = currentTime;
+
+        let curLevel = 1 + Math.floor(Math.sqrt(profile.exp));
+        if (curLevel < profile.level) {
+            // Level up!
+            profile.level = curLevel;
+            message.reply(`You've leveled down to level **${curLevel}**!`);
+        }
+        saveUsers();
+    }
+};
+
 
 // Commands
 const help = message => message.author.send(`HEY HEY HENLO 👀 \n\n` + 
@@ -193,6 +198,12 @@ const awaitEmoji = async (message, text, emoji, option, cancelText) => {
 
 const COMMANDS = { help, ping, resetUsers, say, profile };
 
+const attachIsImage = msgAttach => {
+    var url = msgAttach.url;
+    //True if this url is a png image.
+    return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
+}
+
 // Chaining Events
 client
     .on("ready", () => {
@@ -212,6 +223,8 @@ client
         // Ignore Bot
         if(message.author.bot) return;
 
+        addXp(message);
+
         if (message.attachments.size > 0) {
             if (message.attachments.every(attachIsImage)){
                 message.channel.send("Detected Image");
@@ -226,12 +239,6 @@ client
         const command = args.shift().toLowerCase();
         COMMANDS[command] && COMMANDS[command](message, args);
     });
-
-function attachIsImage(msgAttach) {
-    var url = msgAttach.url;
-    //True if this url is a png image.
-    return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
-}
 
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
