@@ -21,7 +21,7 @@ const client = new Client();
 
 // Initialize PG SQL DB Client
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
-dbConfig.sslmode = "require";
+dbConfig.ssl = true;
 const pgdb = new PGdb(dbConfig);
 
 const initDB = async () => {
