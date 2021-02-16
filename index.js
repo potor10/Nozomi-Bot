@@ -262,15 +262,15 @@ const returnOCR = async message => {
         },
         {
             left: Math.floor(1950/2208 * width),
-            top: Math.floor(634/1242 * height),
+            top: Math.floor(590/1242 * height),
             width: Math.floor(140/2208 * width),
-            height: Math.floor(39/1242 * height),
+            height: Math.floor(100/1242 * height),
         },
         {
             left: Math.floor(1950/2208 * width),
-            top: Math.floor(875/1242 * height),
+            top: Math.floor(835/1242 * height),
             width: Math.floor(140/2208 * width),
-            height: Math.floor(39/1242 * height),
+            height: Math.floor(100/1242 * height),
         },
         ];
           
@@ -281,7 +281,6 @@ const returnOCR = async message => {
 
         const values = [];
         isClan = true;
-        /*
         for (let i = 0; i < rectangles.length; i++) {
             const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
             if (i==0 && text.localeCompare("Trial Run\n") != 0) {
@@ -291,18 +290,11 @@ const returnOCR = async message => {
             }
             values.push(text);
         }
-        */
-        const { data: { text } } = await worker.recognize(attachment.url);
 
-        await message.reply(`The text in the image is: ${text}`);
-        console.log(text);
-
-        /*
         if (isClan) {
             await message.reply(`The text in the image is: ${values}`);
             console.log(values);
         }
-        */
         await worker.terminate();
     });
 }
