@@ -223,7 +223,6 @@ const retrieveCBID = () => {
             return 0;
         }
         for (let row of res.rows) {
-            console.log(row.cbid);
             output = row.cbid;
         }
         pgdb.end();
@@ -249,22 +248,18 @@ const addXp = message => {
     let currentTime = Date.now();
     let profile = retrieveStats(message.author.id);
 
-    console.log(profile);
-
-    if (currentTime - profile.lastMessage > 30000) { //missing 0
-        profile.exp += 1;
-        profile.lastMessage = currentTime;
-
+    if (currentTime - profile.lastMessage > 3000) { //missing 00
+        let newXP = profile.exp + Math.floor(Math.random() * 5);
         console.log(`LOG: 1 XP has been granted to ${message.author.username} (${message.author.id})`);
 
-        let curLevel = 1 + Math.floor(Math.sqrt(profile.exp));
+        let curLevel = 1 + Math.floor(Math.sqrt(newXP));
         if (curLevel > profile.level) {
             // Level up!
             profile.level = curLevel;
             message.reply(`You've leveled up to level **${curLevel}**!`);
             console.log(`LOG: ${message.author.username} (${message.author.id}) has leveled up to ${curLevel}`);
         }
-        saveUsers();
+        updateStatsDB(message.author.id, curLevel, newXP, currentTime)
     }
 };
 
@@ -489,12 +484,10 @@ client
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
-process.on("SIGINT", () => (saveUsers(), process.exit(0)));
+process.on("SIGINT", () => (process.exit(0)));
 
 // Log In
 console.log("Logging In To Princonne Bot");
 client.login(token);
 
 initDB();
-retrieveCBID();
-retrieveStats(111);
