@@ -45,7 +45,7 @@ const initDB = async () => {
             uid varchar,
             level int,
             exp int,
-            lastMessage int
+            lastMessage bigint
         );
 
         CREATE TABLE CB (
@@ -197,7 +197,7 @@ const retrieveStats = (id) => {
             return 0;
         }
         for (let row of res.rows) {
-            console.log(row);
+            console.log(`LOG: STATS table is successfully retrieved with values: ${row}`);
             output = row;
         }
         pgdb.end();
