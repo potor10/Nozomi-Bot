@@ -1,15 +1,19 @@
 {
-    "name": "Example",
-    "description": "Example",
-    "version": "0.0.0",
+    "name": "RDB",
+    "description": "Rad Dream Bot",
+    "version": "1.0.0",
     "main": "index.js",
     "scripts": {
       "start": "node index.js"
     },
+
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
   
     "dependencies": {
-      "discord.js": "11.1.0",
-      "request": "2.81.0"
+      "discord.js": "^11.5.1",
+      "file-system": "^2.2.2"
     }
   
   }
