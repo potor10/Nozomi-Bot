@@ -47,9 +47,14 @@ const reactionFilter = (author, reaction, user) =>
 const saveUsers = () => fs.writeFileSync("./userdata.json", 
                                     JSON.stringify(userdata, null, 4));
 
-const resetUsers = () => {
-    userdata = [{}];
-    saveUsers();
+const resetUsers = message => {
+    if (message.author.id = 154775062178824192) {
+        userdata = [{}];
+        saveUsers();
+        console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
+    } else {
+        console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
+    }
 };
 
 const getOrCreateUser = id => {
@@ -70,18 +75,18 @@ const addXp = message => {
     let currentTime = Date.now();
     let profile = getOrCreateUser(message.author.id);
 
-    if (currentTime - profile.lastMessage > 300000) {
+    if (currentTime - profile.lastMessage > 30000) { //missing 0
         profile.exp += 1;
         profile.lastMessage = currentTime;
 
-        console.log(`LOG: 1 XP has been granted to ${message.author} (${message.author.id})`);
+        console.log(`LOG: 1 XP has been granted to ${message.author.username} (${message.author.id})`);
 
         let curLevel = 1 + Math.floor(Math.sqrt(profile.exp));
-        if (curLevel < profile.level) {
+        if (curLevel > profile.level) {
             // Level up!
             profile.level = curLevel;
             message.reply(`You've leveled up to level **${curLevel}**!`);
-            console.log(`LOG: ${message.author} (${message.author.id}) has leveled up to ${curLevel}`);
+            console.log(`LOG: ${message.author.username} (${message.author.id}) has leveled up to ${curLevel}`);
         }
         saveUsers();
     }
