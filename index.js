@@ -6,7 +6,7 @@
 
 const { Client, Attachment, RichEmbed } = require("discord.js");
 const { createWorker } = require('tesseract.js');
-const { PGClient } = require('pg');
+const { PGdb } = require('pg');
 
 // Load Config Json with Prefix and Token 
 let { token, prefix, db_user, db_host, db_id, db_pass, db_port } = require("./config.json");
@@ -16,7 +16,7 @@ prefix = prefix || ".";
 const client = new Client();
 
 // Initialize PG SQL DB Client
-const pgclient = new PGClient({
+const pgdb = new PGdb({
     user: db_user,
     host: db_host,
     database: db_id,
@@ -36,7 +36,7 @@ let marketUpdateAmt = 0;
 let timeUpdate = 0;
 
 const createDB = id => {
-    pgclient.connect();
+    pgdb.connect();
 
     const query = `
         CREATE TABLE ${id} (
@@ -53,12 +53,12 @@ const createDB = id => {
             return;
         }
         console.log('Table is successfully created');
-        pgclient.end();
+        pgdb.end();
     });
 }
 
 const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {    
-    pgclient.connect();
+    pgdb.connect();
 
 
     const query = `
