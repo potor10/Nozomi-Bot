@@ -499,6 +499,12 @@ client
         COMMANDS[command] && COMMANDS[command](message, args);
     });
 
+function attachIsImage(msgAttach) {
+    var url = msgAttach.url;
+    //True if this url is a png image.
+    return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
+}
+
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
