@@ -189,10 +189,7 @@ const retrieveStats = async (id) => {
     let output;
     try {
         const res = await pgdb.query(selectQuery);
-        for (let row of res.rows) {
-            pgdb.end();
-            output = row;
-        }
+        output = res.rows[0];
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -214,10 +211,7 @@ const retrieveCBID = async () => {
     let output;
     try {
         const res = await pgdb.query(query);
-        for (let row of res.rows) {
-            pgdb.end();
-            output = row.cbid;
-        }
+        output = res.rows[0].cbid;
     } catch (err) {
         console.log(err.stack);
     } finally {
