@@ -235,7 +235,7 @@ const reset = message => {
 
 const getOrCreateUser = id => {
     userdata = retrieveStats(id);
-
+    console.log(userdata);
     return userdata;
 };
 
@@ -243,6 +243,8 @@ const getOrCreateUser = id => {
 const addXp = message => {
     let currentTime = Date.now();
     let profile = getOrCreateUser(message.author.id);
+
+    console.log(profile);
 
     if (currentTime - profile.lastMessage > 30000) { //missing 0
         profile.exp += 1;
