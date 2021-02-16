@@ -28,32 +28,32 @@ const initDB = async () => {
     pgdb.connect();
 
     const query = `
-        DROP TABLE IF EXISTS ATTACKS
-        DROP TABLE IF EXISTS STATS
-        DROP TABLE IF EXISTS CB
+    DROP TABLE IF EXISTS ATTACKS
+    DROP TABLE IF EXISTS STATS
+    DROP TABLE IF EXISTS CB
 
-        CREATE TABLE ATTACKS (
-            uid int,
-            attackDate date,
-            attempt1damage int,
-            attempt2damage int,
-            attempt3damage int,
-            cbid int
-        );
+    CREATE TABLE ATTACKS (
+        uid int,
+        attackDate date,
+        attempt1damage int,
+        attempt2damage int,
+        attempt3damage int,
+        cbid int
+    );
 
-        CREATE TABLE STATS (
-            uid int,
-            level int,
-            exp int,
-            lastMessage int
-        );
+    CREATE TABLE STATS (
+        uid int,
+        level int,
+        exp int,
+        lastMessage int
+    );
 
-        CREATE TABLE CB (
-            cbid int
-        )
+    CREATE TABLE CB (
+        cbid int
+    )
 
-        INSERT INTO CB (cbid)
-        VALUES (0)
+    INSERT INTO CB (cbid)
+    VALUES (0)
     `;
 
     try {
