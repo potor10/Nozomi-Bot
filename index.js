@@ -196,9 +196,16 @@ const retrieveStats = (id) => {
             return 0;
         }
         for (let row of res.rows) {
-            console.log(`LOG: STATS table is successfully retrieved with values: ${row}`);
+            console.log(row);
             pgdb.end();
-            return row;
+            
+            let output = {
+                id: row.uid,
+                level: row.level,
+                exp: row.exp,
+                lastMessage: row.lastMessage
+            }
+            return output;
         }
         pgdb.end();
     });
