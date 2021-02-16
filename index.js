@@ -33,7 +33,7 @@ const initDB = async () => {
         DROP TABLE IF EXISTS CB;
 
         CREATE TABLE ATTACKS (
-            uid int,
+            uid varchar,
             attackDate date,
             attempt1damage int,
             attempt2damage int,
@@ -42,7 +42,7 @@ const initDB = async () => {
         );
 
         CREATE TABLE STATS (
-            uid int,
+            uid varchar,
             level int,
             exp int,
             lastMessage int
@@ -244,16 +244,10 @@ const reset = message => {
     }
 };
 
-const getOrCreateUser = id => {
-    userdata = retrieveStats(id);
-    console.log(userdata);
-    return userdata;
-};
-
 /** @param {import("discord.js").Message} message */
 const addXp = message => {
     let currentTime = Date.now();
-    let profile = getOrCreateUser(message.author.id);
+    let profile = retrieveStats(`${message.author.id}`);
 
     console.log(profile);
 
@@ -297,7 +291,7 @@ const parseFirstArgAsInt = (args, defaultValue) => {
 const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
-    let profileData = getOrCreateUser(profileUser.id);
+    let profileData = retrieveStats(`${profileUser.id}`);
 
     await message.channel.send(new RichEmbed()
         .setURL("https://youtu.be/_zlGR5i9u_Q")
@@ -503,4 +497,4 @@ client.login(token);
 
 initDB();
 retrieveCBID();
-retrieveStats(111);
+retrieveStats('111');
