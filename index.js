@@ -191,8 +191,7 @@ const awaitEmoji = async (message, text, emoji, option, cancelText) => {
              .catch(() => { message.channel.send(cancelText); });
 };
 
-const COMMANDS = { help, price, sell, buy, daily, ping, spin, 
-    reset, say, ebola, enable, disable, profile };
+const COMMANDS = { help, ping, resetUsers, say, profile };
 
 // Chaining Events
 client
