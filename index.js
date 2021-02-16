@@ -95,7 +95,7 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
         UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
             WHERE uid = ${id} AND date = ${date};
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-            VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid})
+            SELECT ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
             WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = ${id} AND date = ${date});
     `;
 
@@ -115,7 +115,8 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
 
     const query = `
         UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage} WHERE uid = ${id};
-        INSERT INTO STATS (uid, level, exp, lastMessage) VALUES (${id}, ${level}, ${xp}, ${lastMessage})
+        INSERT INTO STATS (uid, level, exp, lastMessage)
+            SELECT ${id}, ${level}, ${xp}, ${lastMessage}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
     `;
 
@@ -167,7 +168,8 @@ const retrieveStats = (id) => {
     pgdb.connect();
 
     const query = `
-        INSERT INTO STATS (uid, level, exp, lastMessage) VALUES(${id}, 1, 0, 0)
+        INSERT INTO STATS (uid, level, exp, lastMessage) 
+            SELECT ${id}, 1, 0, 0
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
 
         SELECT * FROM STATS WHERE uid = ${id};
