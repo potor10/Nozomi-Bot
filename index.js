@@ -243,8 +243,8 @@ const addXp = async message => {
     let currentTime = Date.now();
     let profile = await retrieveStats(message.author.id);
 
-    console.log(profile);
-    console.log(profile.lastMessage);
+    console.log(`Test From here: ${profile}`);
+    console.log(`Last message: ${profile.lastMessage}`);
     if (currentTime - profile.lastMessage > 3000) { //missing 00
         let newXP = profile.exp + Math.floor(Math.random() * 5);
         console.log(`LOG: ${newXP - profile.exp} XP has been granted to ${message.author.username} (${message.author.id})`);
