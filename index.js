@@ -248,9 +248,11 @@ const addXp = message => {
     let currentTime = Date.now();
     let profile = retrieveStats(message.author.id);
 
+    console.log(profile);
+    console.log(profile.lastMessage);
     if (currentTime - profile.lastMessage > 3000) { //missing 00
         let newXP = profile.exp + Math.floor(Math.random() * 5);
-        console.log(`LOG: 1 XP has been granted to ${message.author.username} (${message.author.id})`);
+        console.log(`LOG: ${newXP - profile.exp} XP has been granted to ${message.author.username} (${message.author.id})`);
 
         let curLevel = 1 + Math.floor(Math.sqrt(newXP));
         if (curLevel > profile.level) {
