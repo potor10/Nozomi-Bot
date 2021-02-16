@@ -120,7 +120,7 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
         CASE 
             WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
                 INSERT INTO STATS (uid, level, exp, lastMessage)
-                VALUES (${id}, ${level}, ${xp}, ${lastMessage});
+                    VALUES (${id}, ${level}, ${xp}, ${lastMessage});
             ELSE
                 UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}
                     WHERE uid = ${id};
@@ -491,3 +491,4 @@ console.log("Logging In To Princonne Bot");
 client.login(token);
 
 initDB();
+retrieveCBID();
