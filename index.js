@@ -6,7 +6,7 @@
 
 const { Client, Attachment, RichEmbed } = require("discord.js");
 const { createWorker } = require('tesseract.js');
-const { PGdb } = require('pg');
+const { PGdb } = require('pg').Client;
 
 // Load Config Json with Prefix and Token 
 let { token, prefix, db_user, db_host, db_id, db_pass, db_port } = require("./config.json");
@@ -47,7 +47,7 @@ const createDB = id => {
         );
     `;
 
-    pgclient.query(query, (err, res) => {
+    pgdb.query(query, (err, res) => {
         if (err) {
             console.error(err);
             return;
