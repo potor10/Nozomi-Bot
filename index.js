@@ -243,28 +243,34 @@ const returnOCR = async message => {
 
         const rectangles = [
         {
-            left: Math.floor(0.46 * width),
-            top: Math.floor(0.23 * height),
-            width: Math.floor(0.27 * width),
-            height: 50,
+            left: Math.floor(1647/2208 * width),
+            top: Math.floor(70/1242 * height),
+            width: Math.floor(187/2208 * width),
+            height: Math.floor(40/1242 * height),
         },
         {
-            left: 1950,
-            top: 385,
-            width: 140,
-            height: 39,
+            left: Math.floor(1016/2208 * width),
+            top: Math.floor(285/1242 * height),
+            width: Math.floor(600/2208 * width),
+            height: Math.floor(50/1242 * height),
         },
         {
-            left: 1950,
-            top: 634,
-            width: 140,
-            height: 39,
+            left: Math.floor(1950/2208 * width),
+            top: Math.floor(385/1242 * height),
+            width: Math.floor(140/2208 * width),
+            height: Math.floor(39/1242 * height),
         },
         {
-            left: 1950,
-            top: 875,
-            width: 140,
-            height: 39,
+            left: Math.floor(1950/2208 * width),
+            top: Math.floor(634/1242 * height),
+            width: Math.floor(140/2208 * width),
+            height: Math.floor(39/1242 * height),
+        },
+        {
+            left: Math.floor(1950/2208 * width),
+            top: Math.floor(875/1242 * height),
+            width: Math.floor(140/2208 * width),
+            height: Math.floor(39/1242 * height),
         },
         ];
           
@@ -274,12 +280,22 @@ const returnOCR = async message => {
         await worker.initialize('eng');
 
         const values = [];
+        isClan = true;
         for (let i = 0; i < rectangles.length; i++) {
             const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
+            if (i==0 && text!="Trial Run") {
+                isClan = false;
+                break;
+            } else {
+                console.log("Not Clan War");
+            }
             values.push(text);
         }
-        await message.reply(`The text in the image is: ${values}`);
-        console.log(values);
+
+        if (isClan) {
+            await message.reply(`The text in the image is: ${values}`);
+            console.log(values);
+        }
         await worker.terminate();
     });
 }
