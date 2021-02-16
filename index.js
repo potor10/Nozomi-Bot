@@ -224,7 +224,7 @@ const attachIsImage = msgAttach => {
 const { createWorker } = require('tesseract.js');
 
 const worker = createWorker({
-  logger: m => console.log(m), // Add logger here
+  //logger: m => console.log(m), // Add logger here
 });
 
 const returnOCR = async message => {
@@ -261,6 +261,8 @@ client
         if (message.attachments.size > 0) {
             if (message.attachments.every(attachIsImage)){
                 message.channel.send("Detected Image");
+                console.log(message.attachments);
+                console.log(message.attachments.url);
                 message.react("409910974607392770");
                 returnOCR(message);
             }
