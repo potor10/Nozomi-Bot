@@ -94,10 +94,10 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
 
     const query = `
         UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
-            WHERE uid = ${id} AND date = ${date};
+            WHERE uid = '${id}' AND date = ${date};
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-            SELECT ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
-            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = ${id} AND date = ${date});
+            SELECT '${id}', ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
+            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND date = ${date});
     `;
 
     pgdb.query(query, (err, res) => {
@@ -106,7 +106,7 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
             pgdb.end();
             return;
         }
-        console.log(`LOG: ATTACKS table is successfully updated with values: ${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
+        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
         pgdb.end();
     });
 }
@@ -116,10 +116,10 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
     pgdb.connect();
 
     const query = `
-        UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage} WHERE uid = ${id};
+        UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage} WHERE uid = '${id}';
         INSERT INTO STATS (uid, level, exp, lastMessage)
-            SELECT ${id}, ${level}, ${xp}, ${lastMessage}
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
+            SELECT '${id}', ${level}, ${xp}, ${lastMessage}
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
 
     pgdb.query(query, (err, res) => {
@@ -128,7 +128,7 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
             pgdb.end();
             return;
         }
-        console.log(`LOG: STATS table is successfully updated with values: ${id}, ${level}, ${xp}`);
+        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}`);
         pgdb.end();
     });
 }
@@ -141,13 +141,13 @@ const retrieveDamageDB = (id, date) => {
 
     const query = `
         SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
-        FROM ATTACKS WHERE cbid = ${cbid} AND uid = ${id};
+        FROM ATTACKS WHERE cbid = ${cbid} AND uid = '${id}';
 
         SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
-        FROM ATTACKS WHERE date = ${date} AND uid = ${id};
+        FROM ATTACKS WHERE date = ${date} AND uid = '${id}';
 
         SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
-        FROM ATTACKS WHERE uid = ${id};
+        FROM ATTACKS WHERE uid = '${id}';
     `;
 
     const values = [];
@@ -173,12 +173,12 @@ const retrieveStats = (id) => {
 
     const query = `
         INSERT INTO STATS (uid, level, exp, lastMessage) 
-            SELECT ${id}, 1, 0, 0
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = ${id});
+            SELECT '${id}', 1, 0, 0
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
 
     const selectQuery = `
-        SELECT * FROM STATS WHERE uid = ${id};
+        SELECT * FROM STATS WHERE uid = '${id}';
     `;
 
     pgdb.query(query, (err, res) => {
@@ -247,7 +247,7 @@ const reset = message => {
 /** @param {import("discord.js").Message} message */
 const addXp = message => {
     let currentTime = Date.now();
-    let profile = retrieveStats(`${message.author.id}`);
+    let profile = retrieveStats(message.author.id);
 
     console.log(profile);
 
@@ -291,7 +291,7 @@ const parseFirstArgAsInt = (args, defaultValue) => {
 const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
-    let profileData = retrieveStats(`${profileUser.id}`);
+    let profileData = retrieveStats(profileUser.id);
 
     await message.channel.send(new RichEmbed()
         .setURL("https://youtu.be/_zlGR5i9u_Q")
@@ -497,4 +497,4 @@ client.login(token);
 
 initDB();
 retrieveCBID();
-retrieveStats('111');
+retrieveStats(111);
