@@ -47,7 +47,7 @@ const reactionFilter = (author, reaction, user) =>
 const saveUsers = () => fs.writeFileSync("./userdata.json", 
                                     JSON.stringify(userdata, null, 4));
 
-const resetUsers = message => {
+const resetusers = message => {
     if (message.author.id = 154775062178824192) {
         userdata = [{}];
         saveUsers();
@@ -205,7 +205,7 @@ const awaitEmoji = async (message, text, emoji, option, cancelText) => {
              .catch(() => { message.channel.send(cancelText); });
 };
 
-const COMMANDS = { help, ping, resetUsers, say, profile };
+const COMMANDS = { help, ping, resetusers, say, profile };
 
 const attachIsImage = msgAttach => {
     var url = msgAttach.url;
