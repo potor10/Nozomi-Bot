@@ -28,32 +28,32 @@ const initDB = async () => {
     pgdb.connect();
 
     const query = `
-    DROP TABLE IF EXISTS ATTACKS
-    DROP TABLE IF EXISTS STATS
-    DROP TABLE IF EXISTS CB
+        DROP TABLE IF EXISTS ATTACKS;
+        DROP TABLE IF EXISTS STATS;
+        DROP TABLE IF EXISTS CB;
 
-    CREATE TABLE ATTACKS (
-        uid int,
-        attackDate date,
-        attempt1damage int,
-        attempt2damage int,
-        attempt3damage int,
-        cbid int
-    );
+        CREATE TABLE ATTACKS (
+            uid int,
+            attackDate date,
+            attempt1damage int,
+            attempt2damage int,
+            attempt3damage int,
+            cbid int
+        );
 
-    CREATE TABLE STATS (
-        uid int,
-        level int,
-        exp int,
-        lastMessage int
-    );
+        CREATE TABLE STATS (
+            uid int,
+            level int,
+            exp int,
+            lastMessage int
+        );
 
-    CREATE TABLE CB (
-        cbid int
-    )
+        CREATE TABLE CB (
+            cbid int
+        );
 
-    INSERT INTO CB (cbid)
-    VALUES (0)
+        INSERT INTO CB (cbid)
+            VALUES (0);
     `;
 
     try {
@@ -71,7 +71,7 @@ const updateCBID = (cbid) => {
 
     const query = `
         UPDATE CB
-        SET cbid = ${cbid}
+            SET cbid = ${cbid};
     `;
 
     pgdb.query(query, (err, res) => {
@@ -89,9 +89,14 @@ const updateAttackDB = (id, date, attempt1, attempt2, attempt3) => {
     pgdb.connect();
 
     const query = `
-        INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-        VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid})
-        ON DUPLICATE KEY UPDATE attempt1damage = VALUES(${attempt1}), attempt2damage = VALUES(${attempt2}), attempt3damage = VALUES(${attempt3}, cbid = VALUES(${cbid}))
+        CASE 
+            WHEN NOT EXISTS (SELECT * FROM ATTACKS WHERE uid = ${id} AND date = ${date}) THEN
+                INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
+                    VALUES (${id}, ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid});
+            ELSE
+                UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
+                    WHERE uid = ${id} AND date = ${date};
+        END;
     `;
 
     pgdb.query(query, (err, res) => {
@@ -108,9 +113,14 @@ const updateStatsDB = (id, level, xp, lastMessage) => {
     pgdb.connect();
 
     const query = `
-        INSERT INTO STATS (uid, level, exp, lastMessage)
-        VALUES (${id}, ${level}, ${xp}, ${lastMessage})
-        ON DUPLICATE KEY UPDATE level = VALUES(${level}), exp = VALUES(${xp}, lastMessage = VALUES(${lastMessage}))
+        CASE 
+            WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
+                INSERT INTO STATS (uid, level, exp, lastMessage)
+                VALUES (${id}, ${level}, ${xp}, ${lastMessage});
+            ELSE
+                UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}
+                    WHERE uid = ${id};
+        END;
     `;
 
     pgdb.query(query, (err, res) => {
@@ -129,16 +139,13 @@ const retrieveDamageDB = (id, date) => {
 
     const query = `
         SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
-        FROM ATTACKS
-        WHERE cbid = ${cbid} AND uid = ${id}
+        FROM ATTACKS WHERE cbid = ${cbid} AND uid = ${id};
 
         SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
-        FROM ATTACKS
-        WHERE date = ${date} AND uid = ${id}
+        FROM ATTACKS WHERE date = ${date} AND uid = ${id};
 
         SELECT (SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)) as 'Total'
-        FROM ATTACKS
-        WHERE uid = ${id}
+        FROM ATTACKS WHERE uid = ${id};
     `;
 
     const values = [];
@@ -164,11 +171,12 @@ const retrieveStats = (id) => {
         CASE
             WHEN NOT EXISTS (SELECT * FROM STATS WHERE uid = ${id}) THEN
                 INSERT INTO STATS (uid, level, exp, lastMessage)
-                VALUES(${id}, 1, 0, 0)
-                SELECT * FROM STATS WHERE uid = ${id}
+                VALUES(${id}, 1, 0, 0);
+
+                SELECT * FROM STATS WHERE uid = ${id};
             ELSE
-            SELECT * FROM STATS WHERE uid = ${id}
-        END
+            SELECT * FROM STATS WHERE uid = ${id};
+        END;
     `;
 
     pgdb.query(query, (err, res) => {
@@ -189,7 +197,7 @@ const retrieveCBID = () => {
 
     const query = `
         SELECT cbid
-        FROM CB
+        FROM CB;
     `;
 
     pgdb.query(query, (err, res) => {
