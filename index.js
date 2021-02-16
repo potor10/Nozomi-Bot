@@ -281,9 +281,9 @@ const parseFirstArgAsInt = (args, defaultValue) => {
 const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
-    let profileData = retrieveStats(profileUser.id);
+    let profileData = await retrieveStats(profileUser.id);
     const sqlDate = (new Date()).toLocaleString("en-US");
-    let profileDamage = retrieveDamageDB(profileUser.id, sqlDate);
+    let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
 
     await message.channel.send(new RichEmbed()
         .setURL("https://youtu.be/_zlGR5i9u_Q")
