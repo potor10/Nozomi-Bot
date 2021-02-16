@@ -180,6 +180,7 @@ const retrieveStats = (id) => {
             console.error(err);
             return 0;
         }
+        console.log(res);
         for (let row of res.rows) {
             console.log(row);
             return row;
