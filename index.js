@@ -239,14 +239,48 @@ const returnOCR = async message => {
         const worker = createWorker({
             //logger: m => console.log(m), // Add logger here
           });
+
+        let height = attachment.height;
+        let width = attachment.width;
+
+        const rectangles = [
+        {
+            left: Math.floor(0.46 * width),
+            top: Math.floor(0.23 * height),
+            width: Math.floor(0.27 * width),
+            height: 50,
+        },
+        {
+            left: 1950,
+            top: 385,
+            width: 140,
+            height: 39,
+        },
+        {
+            left: 1950,
+            top: 634,
+            width: 140,
+            height: 39,
+        },
+        {
+            left: 1950,
+            top: 875,
+            width: 140,
+            height: 39,
+        },
+        ];
           
         console.log(attachment.url);
         await worker.load();
         await worker.loadLanguage('eng');
         await worker.initialize('eng');
-        const { data: { text } } = await worker.recognize(attachment.url);
-        await message.reply(`The text in the image is: ${text}`);
-        console.log(text);
+
+        const values = [];
+        const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
+        values.push(text);
+
+        await message.reply(`The text in the image is: ${values}`);
+        console.log(values);
         await worker.terminate();
     });
 }
