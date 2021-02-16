@@ -283,7 +283,7 @@ const returnOCR = async message => {
         isClan = true;
         for (let i = 0; i < rectangles.length; i++) {
             const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
-            if (i==0 && text.localeCompare("Trial Run") != 0) {
+            if (i==0 && text.localeCompare("Trial Run\n") != 0) {
                 isClan = false;
                 console.log(`Not Clan War but instead:${text}`);
                 break;
