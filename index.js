@@ -141,7 +141,7 @@ const retrieveDamageDB = async (id, date) => {
             FROM ATTACKS WHERE cbid = ${cbid} AND uid = '${id}';
 
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
-            FROM ATTACKS WHERE date = '${date}' AND uid = '${id}';
+            FROM ATTACKS WHERE attackDate = '${date}' AND uid = '${id}';
 
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE uid = '${id}';
