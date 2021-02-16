@@ -10,12 +10,10 @@ const { Client, Attachment, RichEmbed } = require("discord.js");
 const client = new Client();
 
 const fs = require("fs");
-/** @type {{bitconnect:Number,money:Number,kidneys:Number,credit_card:Number,level:Number,lastClaim:Number,exp:Number,disabled:Number}[]} */
+/** @type {{clanDamage:Number,dailyDamage:Number,totalDamage:Number,level:Number,exp:Number,rank:Number}[]} */
 let userdata = JSON.parse(fs.readFileSync("./userdata.json", "utf8"));
-/** @type {{time:Number,price:Number,flucSkew:Number,flucAmt:Number}[]} */
-let bitconnectdata = JSON.parse(fs.readFileSync("./bitconnect.json", "utf8"));
 
-// Bitconnect Constants
+// Rad Dream Constants
 const updateVal = 6000;
 let marketCrash = false;
 let marketUpdateSkew = 0;
@@ -56,89 +54,27 @@ const checkCrash = async message => {
     }
 };
 
-const updateBitconnect = () => {
-    if (!bitconnectdata.length) {
-        resetBitconnect();
-        return 0;
-    } else if (bitconnectdata.length > 300) {
-        bitconnectdata = bitconnectdata.slice(~~(bitconnectdata.length / 2));
-    }
-    
-    let latestData = bitconnectdata.slice(-1)[0];
-    
-    let remIter = Math.floor((Date.now() - latestData.time) / updateVal);
-    //console.log(remIter);
-
-    // Looks like cancer I don't want to touch 😂
-    while(remIter > 0) {
-        
-        latestData.price += Math.floor((Math.random() * latestData.flucAmt) - latestData.flucAmt * latestData.flucSkew);
-        
-        if (latestData.price <= 0) {
-            marketCrash = true;
-            remIter = 0;
-            break;
-        }
-    
-        let flucSkewCng = -((Math.random() * (latestData.flucSkew - 0.5)) * 0.1) +
-                            ((Math.random() - 0.5) * 0.01);
-        let flucAmtCng = -((Math.random() * (latestData.flucAmt - 10)) * 0.2) +
-                            ((Math.random() - 0.5) * 0.1);
-        
-        if (timeUpdate != 0 && latestData.time > timeUpdate) {
-            //console.log("Zuccsess");
-            flucSkewCng += marketUpdateSkew;
-            flucAmtCng += marketUpdateAmt;
-            timeUpdate = 0;
-            marketUpdateSkew = 0;
-            marketUpdateAmt = 0;
-        }
-        
-        let randomEvent = Math.floor(Math.random() * 100);
-        switch (randomEvent) {
-            case 0:
-                flucSkewCng += 4;
-                break;
-            case 1:
-                flucSkewCng -= 3;
-                break;
-            case 2:
-                flucSkewCng += 4;
-                flucAmtCng += 3;
-                break;
-        }
-        
-        // console.log("flucSkeyCng", flucSkewCng);
-        // console.log("flucAmtCng", flucAmtCng);
-        
-        bitconnectdata.push({
-            time: latestData.time + updateVal,
-            price: latestData.price,
-            flucSkew: latestData.flucSkew + flucSkewCng, 
-            flucAmt: latestData.flucAmt + flucAmtCng
-        });
-        remIter--;
-    }
-    saveBitconnect();
-    return bitconnectdata.length - 1;
-};
-
 const reactionFilter = (author, reaction, user) => 
         ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
 
 const saveUsers = () => fs.writeFileSync("./userdata.json", 
                                     JSON.stringify(userdata, null, 4));
 
+const resetUsers = () => {
+    userdata = [{
+        
+    }];
+    saveUsers();
+};
+
 const getOrCreateUser = id => {
     if (!userdata[id]) userdata[id] = {
-        bitconnect: 0,
-        money: 0,
-        kidneys: 0,
-        credit_card: 0,
-        level: 100,
-        lastClaim: 0,
-        exp: 1,
-        disabled: false
+        clanDamage: 0,
+        dailyDamage: 0,
+        totalDamage: 0,
+        level: 0,
+        exp: 0,
+        rank: 0
     };
     return userdata[id];
 };
@@ -153,173 +89,12 @@ const help = message => message.author.send(`HEY HEY HENLO 👀 \n\n` +
                                             `TYPE **.price <size>** TO LOOK AT BITCONNECT PRICES \n` + 
                                             `TYPE **.buy/.sell <amt> <size>** TO PURCHASE OR SELL BITCONNECT`);
 
-const daily = message => {
-    let currentTime = Date.now();
-
-    let profile = getOrCreateUser(message.author.id);
-
-    if (currentTime - profile.lastClaim < 7200000) {
-        let timeLeft = (((7200000 - currentTime + profile.lastClaim) / 1000) / 60);
-        message.channel.send(`${timeLeft.toFixed(2)} minutes before next claim`);
-    } else {
-        profile.bitconnect++;
-        profile.exp++;
-        profile.lastClaim = currentTime;
-        message.channel.send(`Success, You Have ${profile.bitconnect} Bitconnect`);
-
-        let curLevel = 100 - Math.floor(Math.sqrt(profile.exp));
-        console.log(`Current Level of ${message.author.username}: ${curLevel}`);
-        if (curLevel < profile.level) {
-            // Level up!
-            profile.level = curLevel;
-            message.reply(`You've leveled down to level **${curLevel}**!`);
-        }
-        saveUsers();
-    }
-};
-
-const drawTable = (displaySize, index) => {
-
-    const tableHeight = 20;
-    let size = Math.min(bitconnectdata.length, displaySize);
-    let trimData = bitconnectdata.slice(index - size, index + 1)
-                                 .map(data => data.price);
-                                 
-    let priceMin = Math.min(...trimData);
-    let priceMax = Math.max(...trimData);
-    
-    // Transpose Matrix, stolen from stack
-    const T = m => m[0].map((_, i) => m.map(r => r[i]));
-
-    let table = trimData.map(price => {
-        let column = Array.from({ length: tableHeight }, () => " ");
-        let scaledPos = Math.floor((price - priceMin) / (priceMax - priceMin) * 20);
-        column[20 - scaledPos] = "x";
-        return column;
-    });
-    
-    let width = trimData.length;
-    let preText = width > 30 ? `${width * 6} Seconds Ago` : `-${width * 6}`;               
-    let postText = `Current Time`;
-    let textDif = width - (preText.length + postText.length);
-    
-    return "```\n" + 
-        // Rows
-        T(table).map((row, y) => row.join("") +
-            `│ ${Math.ceil(priceMax - y * (priceMax - priceMin) / 20)}`).join("\n") +
-        // Bottom
-        "\n" + `━`.repeat(width) + 
-        // Corner
-        "┙\n" +
-        // Footer
-        preText + "\x20".repeat(Math.abs(textDif)) + postText + "\n```";
-};
-
 const parseFirstArgAsInt = (args, defaultValue) => {
     if (!Array.isArray(args)) return defaultValue;
     if (args.length) {
         let parseAmt = parseInt(args.shift().toLowerCase(), 10);
         if (!isNaN(parseAmt) && parseAmt > 0) return parseAmt;
     } else return defaultValue;
-};
-
-/** @param {import("discord.js").Message} message */
-const price = async (message, args) => {
-    let displaySize = parseFirstArgAsInt(args, 50);
-    if (!displaySize || displaySize < 10 || displaySize > 60) {
-        await message.channel.send("Please enter a number value for <size> " + 
-                "between 10 and 60 (inclusive), default value has been selected");
-        return;
-    }
-    
-    let index = updateBitconnect();
-    await message.channel.send(drawTable(displaySize, index));
-    await message.channel.send(`The Current Price For A Bitconnect Is: **\$${bitconnectdata[index].price}**`);
-    return index;
-};
-
-/** @param {import("discord.js").Message} message */
-const buy = async (message, args) => {
-    // If crash rip
-    if (await checkCrash(message)) return;
-
-    let transactAmt = parseFirstArgAsInt(args, 1);
-    if (!transactAmt) return message.channel.send("Please enter a proper value for <amt>");
-    let profile = getOrCreateUser(message.author.id);
-
-    let index = await price(message);
-    let currentPrice = bitconnectdata[index].price;
-
-    let collected = await awaitEmoji(message, 
-        `Buying **${transactAmt}** Bitconnect Will Cost` + 
-        ` **${transactAmt * currentPrice}**, React To Confirm`,
-        BITCONNECT_EMOJI, { max: 1, time: 20000, errors: ['time'] }, 
-        'The order has been cancelled.');
-
-    if (!collected) return;
-    let reaction = collected.first();
-
-    if (reaction.emoji.name === "bitconnect") {
-        if (profile.money < (transactAmt * currentPrice)) {
-            message.channel.send("You do not have enough money");
-        } else {
-            profile.money -= (transactAmt * currentPrice);
-            profile.bitconnect += transactAmt;
-            bitconnectdata.slice(-1)[0].flucSkew += Math.log(transactAmt / 3) * 0.3;
-            bitconnectdata.slice(-1)[0].flucAmt += Math.log(transactAmt);
-
-            saveBitconnect();
-            saveUsers();
-            
-            await message.channel.send(`You have bought **${transactAmt}** bitconnect.\n` + 
-                                       `You have \$**${profile.money}** left.`);
-        }
-    }
-};
-
-/** @param {import("discord.js").Message} message */
-const sell = async (message, args) => {
-    // If crash rip
-    if (await checkCrash(message)) return;
-
-    let transactAmt = parseFirstArgAsInt(args, 1);
-    if (!transactAmt) return message.channel.send("Please enter a proper value for <amt>");
-    let profile = getOrCreateUser(message.author.id);
-
-    let index = await price(message);
-    let currentPrice = bitconnectdata[index].price;
-    
-    let collected = await awaitEmoji(message, 
-        `Selling **${transactAmt}** Bitconnect For ` + 
-        `**${transactAmt * currentPrice}**, React To Confirm`,
-        BITCONNECT_EMOJI, { max: 1, time: 20000, errors: ['time'] }, 
-        'The order has been cancelled.');
-
-    if (!collected) return;
-    const reaction = collected.first();
-
-    if (reaction.emoji.name === "bitconnect") {
-        if (profile.bitconnect < transactAmt) {
-            await message.channel.send("You do not have enough bitconnect");
-        }
-        else {
-            profile.money += (transactAmt * currentPrice);
-            profile.bitconnect -= transactAmt;
-            latestData.flucSkew -= Math.log(transactAmt / 3) * 0.3;
-            latestData.flucAmt += Math.log(transactAmt);
-            saveBitconnect();
-            saveUsers();
-        
-            await message.channel.send(`You have sold **${transactAmt}** bitconnect.\n` + 
-                                       `You have **${profile.bitconnect}** bitconnect left.`);
-        }
-    }
-};
-
-/** @param {import("discord.js").Message} message */
-const reset =  async message => {
-    resetBitconnect();
-    await message.reply("Bitconnect Data Has Been Reset.");
 };
 
 /** @param {import("discord.js").Message} message */
@@ -336,57 +111,11 @@ const profile = async message => {
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription("Displaying Profile.")
         .addField("Level", profileData.level)
-        .addField("Bitconnect", profileData.bitconnect)
-        .addField("Money", profileData.money)
-        .addField("Kidneys", profileData.kidneys)
-        .addField("Credit-Card Number", profileData.credit_card)
-        .addField("Disabled", profileData.disabled)
-        .setFooter("© Potor10's Autistic Industries 2019", client.user.avatarURL)
+        .addField("Damage Dealt This Clan War", profileData.clanDamage)
+        .addField("Damage Dealt Today", profileData.dailyDamage)
+        .addField("Total Damage Dealt", profileData.totalDamage)
+        .setFooter("© Potor10's Autistic Industries 2021", client.user.avatarURL)
         .setTimestamp());
-};
-
-/** @param {import("discord.js").Message} message */
-const spin = async message => {
-    let profile = getOrCreateUser(message.author.id);
-
-    if (profile.disabled) {
-        return await message.reply("You are disabled so you are excluded from using this command");
-    }
-
-    let collected = await awaitEmoji(message, 
-                "This Will Consume 1 Bitconnect, React To Confirm", BITCONNECT_EMOJI,
-                { max: 1, time: 20000, errors: ['time'] }, 'The order has been cancelled.');
-
-    if (!collected) return;
-    const reaction = collected.first();
-
-    if (reaction.emoji.name === "bitconnect") {
-        if (profile.bitconnect < 1) {
-            return await message.channel.send("You do not have enough bitconnect");
-        }
-        /** @type {import("discord.js").GuildMember} */
-        let randMem;
-        while (!randMem || !userdata[randMem.id]) randMem = message.guild.members.random();
-                
-        profile.bitconnect--;
-        
-        let scenario = Math.floor(Math.random() * 3);
-        if (scenario === 0) {
-            message.channel.send(`**${randMem.user.username}** has developed autism and lost brain cells resulting in a gain of 10 bitconnect`);
-            userdata[randMem.id].bitconnect += 10;
-        } else if (scenario === 1) {
-            message.channel.send(`**${randMem.user.username}** had a literal stroke of genius and has lost all bitconnect`);
-            userdata[randMem.id].bitconnect = 0;
-        } else if (scenario === 2) {
-            message.channel.send(`**Hype in the BITCONNECT MARKET!** expect prices to **RISE**!`);
-            marketUpdateSkew = 15;
-            marketUpdateAmt = 100;
-            timeUpdate = Date.now();
-            console.log("marketUpdateAmt", marketUpdateAmt);
-            console.log("marketUpdateSkew", marketUpdateSkew);
-            console.log("timeUpdate", timeUpdate);
-        }
-    }
 };
 
 /** @param {import("discord.js").Message} message */
