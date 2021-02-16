@@ -215,10 +215,18 @@ const awaitEmoji = async (message, text, emoji, option, cancelText) => {
 
 const COMMANDS = { help, ping, resetusers, say, profile };
 
-const attachIsImage = msgAttach => {
-    var url = msgAttach.url;
-    //True if this url is a png image.
-    return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
+const getOcrImage = msgAttach => {
+    let url = msgAttach.url;
+
+    let isPng = url.indexOf("png", url.length - "png".length);
+    let isJpg = url.indexOf("jpg", url.length - "jpg".length);
+
+    isImage = false;
+    if ((isPng !== -1) || (isJpg !== -1)) {
+        isImage = true;
+    }
+
+    return isImage;
 }
 
 const { createWorker } = require('tesseract.js');
@@ -228,12 +236,9 @@ const worker = createWorker({
 });
 
 const returnOCR = async message => {
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-    const { data: { text } } = await worker.recognize(message.attachments.url);
+    const { data: { text } } = await worker.recognize(message.attachments.first().url);
     console.log(text);
-    await worker.terminate();
+
     await message.reply(`The text in the image is: ${text}`);
 }
 
@@ -243,6 +248,11 @@ client
         // Bot Ready
         console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
         client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
+
+        // Loading OCR Worker
+        worker.load();
+        worker.loadLanguage('eng');
+        worker.initialize('eng');
     })
     .on("guildCreate", guild => {
         console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
@@ -259,12 +269,9 @@ client
         addXp(message);
 
         if (message.attachments.size > 0) {
-            if (message.attachments.every(attachIsImage)){
+            if (message.attachments.every(getOcrImage)){
                 message.channel.send("Detected Image");
-                console.log(message.attachments);
-                console.log(`${message.attachments.url}`);
                 message.react("409910974607392770");
-                returnOCR(message);
             }
         }
 
@@ -279,7 +286,7 @@ client
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
-process.on("SIGINT", () => (saveBitconnect(), saveUsers(), process.exit(0)));
+process.on("SIGINT", () => (worker.terminate(), saveUsers(), process.exit(0)));
 
 // Log In
 console.log("Logging In To Princonne Bot");
