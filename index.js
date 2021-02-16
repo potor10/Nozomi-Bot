@@ -229,9 +229,10 @@ const retrieveCBID = async () => {
 const reactionFilter = (author, reaction, user) => 
         ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
 
-const reset = message => {
+/** @param {import("discord.js").Message} message */
+const reset = async message => {
     if (message.author.id = 154775062178824192) {
-        initDB();
+        await initDB();
         console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
     } else {
         console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
@@ -243,10 +244,8 @@ const addXp = async message => {
     let currentTime = Date.now();
     let profile = await retrieveStats(message.author.id);
 
-    console.log(`Test From here: ${profile}`);
-    console.log(`Last message: ${profile.lastmessage}`);
     if (currentTime - profile.lastmessage > 3000) { //missing 00
-        let newXP = profile.exp + Math.floor(Math.random() * 5);
+        let newXP = profile.exp + Math.floor(Math.random() * 5) + 1;
         console.log(`LOG: ${newXP - profile.exp} XP has been granted to ${message.author.username} (${message.author.id})`);
 
         let curLevel = 1 + Math.floor(Math.sqrt(newXP));
