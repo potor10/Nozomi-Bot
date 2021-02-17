@@ -263,7 +263,7 @@ const addXp = async message => {
             // Level up!
             profile.level = curLevel;
 
-            let earnedJewels = curLevel * (Math.floor(Math.random() * 500) + 1);
+            let earnedJewels = curLevel * 10 * (Math.floor(Math.random() * 50) + 1);
             curJewel = earnedJewels + curJewel;
             message.reply(`You've leveled up to level **${curLevel}**! \n\n` +
                 `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`);
@@ -477,7 +477,7 @@ const returnOCR = async message => {
                 console.log(`Not Clan War but instead:${text}`);
                 break;
             } else if (i==0) {
-                await message.react('744614727539359907');
+                await message.react('✅');
             }
             values.push(text);
         }
