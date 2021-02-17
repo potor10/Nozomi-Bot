@@ -13,7 +13,7 @@ const got = require('got');
 const cheerio = require('cheerio');
 
 // Load Config Json with Prefix and Token 
-let { prefix } = require("./config.json");
+let { prefix, oneStarRate, twoStarRate, threeStarRate } = require("./config.json");
 prefix = prefix || ".";
 
 // Initialize Discord Client
@@ -34,13 +34,13 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const dataTableID = '#DataTables_Table_0';
+    const dataTableID = '#DataTables_Table_0>tbody>tr>td>a';
     
     got(url1star).then(response => {
         const $ = cheerio.load(response.body);
         let table = $(dataTableID);
 
-        console.log(table.html());
+        console.log(table.text());
 
 
     }).catch(err => {

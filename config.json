@@ -1,3 +1,6 @@
 { 
-  "prefix" : "."
+  "prefix" : ".",
+  "oneStarRate" : 795,
+  "twoStarRate" : 180,
+  "threeStarRate" : 25
 }
