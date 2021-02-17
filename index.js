@@ -431,6 +431,8 @@ const checkCollection = async (id, charName) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
+    console.log(charName);
+
     const query = `
         SELECT charName FROM COLLECTION
             WHERE uid = '${id}' and charName = '${charName}';
