@@ -42,8 +42,8 @@ const initGachaDB = async () => {
     }
     */
 
-    for (let chara in charArray2star) {
-        await updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
+    for (let i = 0; i < charArray2star.length; i++) {
+        await updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
     }
 
     /*
@@ -671,8 +671,8 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const roll = message => {
-
+const rollgacha = message => {
+    
 }
 
 const getOcrImage = msgAttach => {
@@ -816,7 +816,7 @@ const returnOCR = async message => {
 }
 
 // Bot Commands
-const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, roll };
+const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
 
 // Chaining Events
 client
