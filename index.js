@@ -665,7 +665,7 @@ const say = async (message, args) => {
 
 const getCanvasFromURL = async (url) => {
     let returnImage;
-    console.log(response.body);
+    console.log(url);
 
     try {
         const response = await got(url);
@@ -825,6 +825,10 @@ const rollgacha = async (message) => {
             rollResults.edit(embedRoll);
             
         }, 2000); 
+    } else {
+        let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
+            `You Are Missing ${1500-profile.jewels} <:jewel:811495998194450454> `);
+        setTimeout(() => { reminder.delete();}, 5000);
     }
 }
 
