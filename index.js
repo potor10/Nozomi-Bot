@@ -40,13 +40,9 @@ const initGachaArray = async () => {
         const $ = cheerio.load(response.body);
         let dataTable = $(dataTableID).html();
 
-        console.log(dataTable.html());
+        let title = $('title');
 
-        let dtBody = $('tbody').html();
-
-        $('tr').each((i, link) => {
-            console
-        })
+        console.log(title.text());
 
 
     }).catch(err => {
