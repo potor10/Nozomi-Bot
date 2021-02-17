@@ -771,6 +771,8 @@ const rollgacha = async (message) => {
                             }
                             console.log(data)
                         })
+
+                        message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
                 );
             } else if (timesRun < 10) {            
