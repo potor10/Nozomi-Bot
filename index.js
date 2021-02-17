@@ -370,8 +370,17 @@ const addXp = async message => {
 
             let earnedJewels = curLevel * 10 * (Math.floor(Math.random() * 50) + 1);
             curJewel = earnedJewels + curJewel;
-            message.reply(`You've leveled up to level **${curLevel}**! \n\n` +
-                `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`);
+            await message.channel.send(new MessageEmbed()
+                .setURL("https://twitter.com/priconne_en")
+                .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                .setAuthor(client.user.username, client.user.avatarURL())
+                .setTitle(`${message.author.displayName||message.author.username}'s Level Up!`)
+                .setDescription(`You've leveled up to level **${curLevel}**! \n\n` +
+                    `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setTimestamp());
+            }
+
             console.log(`LOG: ${message.author.username} (${message.author.id}) has leveled up to ${curLevel}`);
         }
         updateStatsDB(message.author.id, curLevel, newXP, currentTime, curJewel, profile.tears);
