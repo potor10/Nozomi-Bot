@@ -767,7 +767,7 @@ const rollgacha = async (message) => {
             
             let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
             if (rarityRolled < threeStarRate) {
-                let randomUnit = Math.floor(Math.random() * char3star.length);
+                let randomUnit = await Math.floor(Math.random() * char3star.length);
                 rollString += '<:poggerona:811498063578529792>';
                 
                 if (checkCollection(message.author.id, char3star[randomUnit].name)) {
@@ -785,7 +785,7 @@ const rollgacha = async (message) => {
 
                 console.log(char3star[randomUnit]);
             } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                let randomUnit = Math.floor(Math.random() * char2star.length);
+                let randomUnit = await Math.floor(Math.random() * char2star.length);
                 rollString += '<:bitconnect:811498063641837578>';
 
                 if (checkCollection(message.author.id, char2star[randomUnit].name)) {
@@ -797,7 +797,6 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                console.log(char2star[randomUnit]);
                 let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailURL);
                 obtainedImages.push(obtainedImage);
 
@@ -805,7 +804,7 @@ const rollgacha = async (message) => {
             } else {
                 silverCount++;
 
-                let randomUnit = Math.floor(Math.random() * char1star.length);
+                let randomUnit = await Math.floor(Math.random() * char1star.length);
                 rollString += '<:garbage:811498063427928086>';
 
                 if (checkCollection(message.author.id, char1star[randomUnit].name)) {
@@ -817,7 +816,6 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                console.log(char1star[randomUnit].thumbnailURL);
                 let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailURL);
                 obtainedImages.push(obtainedImage);
 
