@@ -333,9 +333,9 @@ const profile = async message => {
         .setDescription(statusStrings[randomStatus])
         .addField("Level <:starico:811495998479532032>", profileData.level)
         .addFields(
-            { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: false },
-            { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: false },
-            { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: false },
+            { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
+            { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
+            { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
             { name: "Jewels <:jewel:811495998194450454> ", value: profileData.jewels, inline: true },
             { name: "Tears <:tears:811495998450565140>", value: profileData.tears, inline: true },
         )
