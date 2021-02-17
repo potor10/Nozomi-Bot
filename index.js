@@ -478,7 +478,7 @@ const returnOCR = async message => {
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setTitle(`${message.author.displayName||message.author.username}'s attack`)
-                .setDescription(`on ${newdate.toLocaleString('default', { month: 'long', date: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
+                .setDescription(`on ${new Date(date).toLocaleString('default', { month: 'long', date: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
                 .addFields(
                     { name: "Attempt 1", value: intAttack1, inline: true },
                     { name: "Attempt 2", value: intAttack2, inline: true },
