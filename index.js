@@ -667,6 +667,8 @@ const say = async (message, args) => {
 const getCanvasFromURL = async (url) => {
     let returnImage;
 
+    console.log(url);
+
     try {
         const response = await got(url);
         console.log(response.body);
@@ -683,9 +685,9 @@ const getCanvasFromURL = async (url) => {
 const rollgacha = async (message) => {
 
     let profile = await retrieveStats(message.author.id);
-    let jewelCost = 1500;
+    let jewelCost = 0;
 
-    if (profile.jewels >= 1500) {
+    if (profile.jewels >= jewelCost) {
 
         let char3star = await retrieveGacha(3);
         let char2star = await retrieveGacha(2);
@@ -767,7 +769,7 @@ const rollgacha = async (message) => {
             
             let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
             if (rarityRolled < threeStarRate) {
-                let randomUnit = await Math.floor(Math.random() * char3star.length);
+                let randomUnit = Math.floor(Math.random() * char3star.length);
                 rollString += '<:poggerona:811498063578529792>';
                 
                 if (checkCollection(message.author.id, char3star[randomUnit].name)) {
@@ -779,13 +781,12 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                console.log(char3star[randomUnit]);
-                let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailURL);
+                let obtainedImage = await getCanvasFromURL(char3star[randomUnit]);
                 obtainedImages.push(obtainedImage);
 
                 console.log(char3star[randomUnit]);
             } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                let randomUnit = await Math.floor(Math.random() * char2star.length);
+                let randomUnit = Math.floor(Math.random() * char2star.length);
                 rollString += '<:bitconnect:811498063641837578>';
 
                 if (checkCollection(message.author.id, char2star[randomUnit].name)) {
@@ -797,14 +798,14 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailURL);
+                let obtainedImage = await getCanvasFromURL(char2star[randomUnit]);
                 obtainedImages.push(obtainedImage);
 
                 console.log(char2star[randomUnit]);
             } else {
                 silverCount++;
 
-                let randomUnit = await Math.floor(Math.random() * char1star.length);
+                let randomUnit = Math.floor(Math.random() * char1star.length);
                 rollString += '<:garbage:811498063427928086>';
 
                 if (checkCollection(message.author.id, char1star[randomUnit].name)) {
@@ -816,7 +817,7 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailURL);
+                let obtainedImage = await getCanvasFromURL(char1star[randomUnit]);
                 obtainedImages.push(obtainedImage);
 
                 console.log(char1star[randomUnit]);
