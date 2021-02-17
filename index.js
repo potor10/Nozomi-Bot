@@ -475,7 +475,7 @@ const returnOCR = async message => {
             let let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             let idxDate = -1;
             for (i = 0; i < let3Month.length; i++) {
-                if (values[1].indexOf(let3Month) != -1) {
+                if (values[1].indexOf(let3Month[i]) != -1) {
                     idxDate = values[1].indexOf(let3Month[i]);
                     break;
                 }
