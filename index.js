@@ -93,10 +93,10 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
 
     const query = `
         UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
-            WHERE uid = '${id}' AND date = ${date};
+            WHERE uid = '${id}' AND attackDate = ${date};
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
             SELECT '${id}', ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
-            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND date = ${date});
+            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = ${date});
     `;
 
     try {
@@ -308,7 +308,7 @@ const profile = async message => {
         .addField("Damage Dealt This Clan War", profileDamage[0])
         .addField("Damage Dealt Today", profileDamage[1])
         .addField("Total Damage Dealt", profileDamage[2])
-        .setFooter("© Potor10's Autistic Industries 2021", client.user.avatarURL)
+        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear}`, client.user.avatarURL)
         .setTimestamp());
 };
 
@@ -448,12 +448,11 @@ const returnOCR = async message => {
         }
 
         if (isClan) {
-            await message.channel.send(`On: ${values[1]}, ${message.author.username} hit for:\n${values[2]}${values[3]}${values[4]}`);
             console.log(values);
 
-            let intAttack1 = await parseFirstArgAsInt(values[2].split('\n', 1)[0], 0);
+            let intAttack1 = await parseFirstArgAsInt(values[4].split('\n', 1)[0], 0);
             let intAttack2 = await parseFirstArgAsInt(values[3].split('\n', 1)[0], 0);
-            let intAttack3 = await parseFirstArgAsInt(values[4].split('\n', 1)[0], 0);
+            let intAttack3 = await parseFirstArgAsInt(values[2].split('\n', 1)[0], 0);
             
             const pad = (num) => { 
                 return ('00'+num).slice(-2) 
@@ -465,14 +464,26 @@ const returnOCR = async message => {
                 if(!isNaN(date)){
                     console.log(`LOG: Date Parsed, Found ${date}`);
                     break;
-                 }
+                }
             }
 
             if (!isNaN(date)) {
-                date = new Date(date);
-                date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
+                let newdate = new Date(date);
+                newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
+                await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
 
-                await updateAttackDB(message.author.id, date, intAttack1, intAttack2, intAttack3);
+                await message.channel.send(new RichEmbed()
+                .setURL("https://twitter.com/priconne_en")
+                .setColor("#0099ff")
+                .setAuthor(client.user.username, client.user.avatarURL)
+                .setTitle(`${message.author.displayName||message.author.username}'s attack`)
+                .setDescription(`on ${date}`)
+                .addField("Attempt 1", intAttack1)
+                .addField("Attempt 2", intAttack2)
+                .addField("Attempt 3", intAttack3)
+                .addField("Total Damage Dealt For This Day", intAttack1 + intAttack2 + intAttack3)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear}`, client.user.avatarURL)
+                .setTimestamp());
             }
         }
         await worker.terminate();
