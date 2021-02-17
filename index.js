@@ -37,9 +37,16 @@ const initGachaArray = async () => {
     const dataTableID = '#DataTables_Table_0';
     
     got(url1star).then(response => {
-        const page = cheerio.load(response.body);
-        let dataTable = page(dataTableID);
-        console.log(dataTable.text());
+        const $ = cheerio.load(response.body);
+        let dataTable = $(dataTableID).html();
+
+        console.log(dataTable.html());
+
+        let dtBody = $('tbody').html();
+
+        $('tr').each((i, link) => {
+            console
+        })
 
 
     }).catch(err => {
@@ -578,7 +585,7 @@ const returnOCR = async message => {
         isClan = true;
         for (let i = 0; i < rectangles.length; i++) {
             const { data: { text } } = await worker.recognize(newURL, {rectangle: rectangles[i]} );
-            if (i==0 && text.indexOf("Trial Run") != -1) {
+            if (i==0 && text.indexOf("Trial Run") == -1) {
                 isClan = false;
                 console.log(`LOG: Image was not detected as clan war image`);
                 break;
