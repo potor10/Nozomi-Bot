@@ -73,7 +73,7 @@ const updateCBID = async (cbid) => {
     pgdb.connect();
 
     const query = `
-        UPDATE CB
+        UPDATE CB 
             SET cbid = ${cbid};
     `;
 
@@ -293,6 +293,7 @@ const parseFirstArgAsInt = (args, defaultValue) => {
 
 const setclanbattle = (message) => {
     let currentCBID = retrieveCBID();
+    console.log(currentCBID);
     let newCBID = parseFirstArgAsInt(message, currentCBID);
     updateCBID(newCBID);
     message.reply(`Current Clan Battle Identification Number Set To: ${newCBID}`)
