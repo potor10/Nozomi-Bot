@@ -36,6 +36,7 @@ const initGachaArray = async () => {
     const charArray3star = [];
 
     const findTable = '.ie5 > .table > tbody > tr > td > a';
+    const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
     request({
         method: 'GET',
@@ -51,9 +52,26 @@ const initGachaArray = async () => {
             let imgTitle = $('img', element).attr('title');
             let thumnailUrl = $('img', element).attr('src');
 
-            console.log(imgTitle);
-            console.log(thumnailUrl);
-            console.log(href);
+            let idxName = imgTitle.indexOf('★');
+
+            if (idxName != -1) {
+                let charName = imgTitle.substr(idxName);
+                
+                request({
+                    method: 'GET',
+                    url: href
+                }, (err2, res2, body2) => { 
+                    if (err) return console.error(err);
+                    let innerPage = cheerio.load(body2);
+
+                    let fullCharImage = innerPage(findImg).first().attr('src');
+                    console.log("Cull char image " + fullCharImage);
+                });
+
+                console.log(imgTitle);
+                console.log(thumnailUrl);
+                console.log(href);
+            }
         });
     });
 
