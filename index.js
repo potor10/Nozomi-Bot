@@ -4,7 +4,7 @@
  * @summary An Autistic Discord Bot For Princess Connect
  */
 
-const { Client } = require("discord.js");
+const Discord = require("discord.js");
 
 const { createWorker } = require('tesseract.js');
 
@@ -17,7 +17,7 @@ let { token, prefix } = require("./config.json");
 prefix = prefix || ".";
 
 // Initialize Discord Client
-const client = new Client();
+const client = new Discord.Client();
 
 // Initialize PG SQL DB Client
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
@@ -297,7 +297,7 @@ const profile = async message => {
     console.log(sqlDate);
     let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
 
-    await message.channel.send(new Client.MessageEmbed()
+    await message.channel.send(new Discord.MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL)
@@ -473,7 +473,7 @@ const returnOCR = async message => {
                 newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
                 await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
 
-                await message.channel.send(new Client.MessageEmbed()
+                await message.channel.send(new Discord.MessageEmbed()
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL)
