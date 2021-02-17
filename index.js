@@ -395,7 +395,7 @@ const returnOCR = async message => {
         let height = attachment.height;
         let width = attachment.width;
         if (height > 1000 || width > 1000) {
-            let maxWidth = 500;
+            let maxWidth = 800;
             let maxHeight = 500;
 
             let ratio = Math.min(maxWidth / width, maxHeight / height);
