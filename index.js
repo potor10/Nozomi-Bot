@@ -42,9 +42,8 @@ const initGachaDB = async () => {
     }
     */
 
-    for (let chara in charArray2star) {
-        console.log(chara);
-        //updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
+    for (let i = 0; i < charArray2star.length; i++) {
+        updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
     }
 
     /*
@@ -71,6 +70,8 @@ const webScrape = async (url, findTable, findImg) => {
         console.log(`LOG: Finding Data From Units From: ${url}`);
 
         let rows = $(findTable);
+        console.log(rows.length);
+        console.log(rows);
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.lastIndexOf('★');
