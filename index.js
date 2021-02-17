@@ -749,10 +749,22 @@ const rollgacha = async (message) => {
                     }
                 }
 
-                const out = fs.createWriteStream('./test.png')
-                const stream = canvas.createPNGStream()
-                stream.pipe(out)
-                out.on('finish', () =>  console.log('The PNG file was created.'))
+                const out = fs.createWriteStream('./test.png');
+                const stream = canvas.createPNGStream();
+                stream.pipe(out);
+                out.on('finish', () =>  console.log('The PNG file was created.'));
+
+                // First I want to read the file
+                fs.readFile('./test.png', function read(err, data) {
+                    if (err) {
+                        throw err;
+                    }
+                    const content = data;
+
+                    // Invoke the next step here however you like
+                    console.log(content);   // Put all of the code here (not the best solution)
+                });
+
 
                 let combinedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
