@@ -737,6 +737,8 @@ const rollgacha = async (message) => {
 
                 x = 0;
                 y = 0;
+                ctx.globalAlpha = 0.4;
+                
                 for (let i = 0; i < isDupe.length; i++) {
                     if (isDupe[i]) {
                         ctx.drawImage(tearSRC, x, y, 51, 51);
@@ -760,17 +762,10 @@ const rollgacha = async (message) => {
                             .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                             .setDescription(`You have earned ${tearsObtained} <:tears:811495998450565140>`)
                             .attachFiles(['./test.png'])
+                            .setImage('attachment://test.png')
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
                         rollResults.edit(combinedRoll);
-
-                        fs.readFile('./test.png', 'utf8' , (err, data) => {
-                            if (err) {
-                              console.error(err)
-                              return
-                            }
-                            console.log(data)
-                        })
 
                         message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
