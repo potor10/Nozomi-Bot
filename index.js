@@ -79,16 +79,20 @@ const webScrape = async (url, findTable, findImg) => {
                     let innerPage = cheerio.load(response2.body);
 
                     let fullImageURL = innerPage(findImg).first().attr('src');
+                    console.log("LOLLLL4");
 
                     let characterName = innerPage(findImg).first().attr('title');
+                    console.log("LOLLLL5");
                     let lastSlash = characterName.lastIndexOf('/') + 1;
                     characterName = characterName.substr(lastSlash);
+                    console.log("LOLLLL6");
 
                     let characterInfo = {
                         name: characterName,
                         thumbnailURL: thumnailUrl,
                         fullImageURL: fullImageURL
                     } 
+                    console.log("LOLLLL7");
 
                     returnArray.push(characterInfo);
                 } catch (err) {
