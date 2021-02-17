@@ -799,12 +799,14 @@ const rollgacha = async (message) => {
                     
                     console.log(randomUnit);
                     console.log(char3star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, char3star[randomUnit].charname)) {
+                    if (checkCollection(message.author.id, char3star[randomUnit].charname)) {
+                        console.log(char3star[randomUnit].charname);
                         tearsObtained += 50;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, char3star[randomUnit].charname);
+                        addCollection(message.author.id, char3star[randomUnit].charname);
+                        console.log(char3star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
@@ -817,12 +819,14 @@ const rollgacha = async (message) => {
 
                     console.log(randomUnit);
                     console.log(char2star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
+                    if (checkCollection(message.author.id, char2star[randomUnit].charname)) {
+                        console.log(char2star[randomUnit].charname);
                         tearsObtained += 10;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, char2star[randomUnit].charname);
+                        addCollection(message.author.id, char2star[randomUnit].charname);
+                        console.log(char2star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
@@ -837,12 +841,14 @@ const rollgacha = async (message) => {
 
                     console.log(randomUnit);
                     console.log(char1star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, char1star[randomUnit].charName)) {
+                    if (checkCollection(message.author.id, char1star[randomUnit].charName)) {
+                        console.log(char1star[randomUnit].charname);
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, char1star[randomUnit].charName);
+                        addCollection(message.author.id, char1star[randomUnit].charName);
+                        console.log(char1star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
