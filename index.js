@@ -10,7 +10,7 @@ const PGdb = require('pg').Client;
 const parseDbUrl = require("parse-database-url");
 
 const cheerio = require('cheerio');
-const request = require('request');
+const got = require("got");
 
 // Load Config Json with Prefix and Token 
 let { prefix, oneStarRate, twoStarRate, threeStarRate } = require("./config.json");
@@ -51,16 +51,11 @@ const initGachaArray = async () => {
     console.log(charArray3star.length);
 }
 
-const webScrape = (url, findTable, findImg) => {
+const webScrape = async (url, findTable, findImg) => {
     let returnArray = []
 
-    request({
-        method: 'GET',
-        url: url
-    }, (err, res, body) => { 
-        if (err) return console.error(err);
-        
-        let $ = cheerio.load(body);
+    await got(url).then(response => {        
+        let $ = cheerio.load(response.body);
 
         $(findTable).each((idx, element) => {
             const href = element.attribs.href;
@@ -72,30 +67,28 @@ const webScrape = (url, findTable, findImg) => {
             // Get Thumbnail url
             let thumnailUrl = $('img', element).attr('src');
 
-            if (idxName != -1) {
-                request({
-                    method: 'GET',
-                    url: href
-                }, (err2, res2, body2) => { 
-                    if (err2) return console.error(err2);
-                    let innerPage = cheerio.load(body2);
+            await got(url).then(response2 => {  
+                let innerPage = cheerio.load(response2.body);
 
-                    let fullImageURL = innerPage(findImg).first().attr('src');
+                let fullImageURL = innerPage(findImg).first().attr('src');
 
-                    let characterName = innerPage(findImg).first().attr('title');
-                    let lastSlash = characterName.lastIndexOf('/') + 1;
-                    characterName = characterName.substr(lastSlash);
+                let characterName = innerPage(findImg).first().attr('title');
+                let lastSlash = characterName.lastIndexOf('/') + 1;
+                characterName = characterName.substr(lastSlash);
 
-                    let characterInfo = {
-                        name: characterName,
-                        thumbnailURL: thumnailUrl,
-                        fullImageURL: fullImageURL
-                    } 
+                let characterInfo = {
+                    name: characterName,
+                    thumbnailURL: thumnailUrl,
+                    fullImageURL: fullImageURL
+                } 
 
-                    returnArray.push(characterInfo);
-                });
-            }
+                returnArray.push(characterInfo);
+            }).catch(err2 => {
+                console.log(err2);
+            });
         });
+    }).catch(err => {
+        console.log(err);
     });
 
     return returnArray;
