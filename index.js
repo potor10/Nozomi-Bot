@@ -23,14 +23,10 @@ const client = new Client();
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
-let charArray1star = [];
-let charArray2star = [];
-let charArray3star = [];
+let gacha = [];
 
 const initGachaArray = async () => {
-    charArray1star = [];
-    charArray2star = [];
-    charArray3star = [];
+    gacha = [];
 
     const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
@@ -39,9 +35,13 @@ const initGachaArray = async () => {
     const findTable = '.ie5 > .table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    charArray1star = await webScrape(url1star, findTable, findImg);
-    charArray2star = await webScrape(url2star, findTable, findImg);
-    charArray3star = await webScrape(url3star, findTable, findImg);
+    const charArray1star = await webScrape(url1star, findTable, findImg);
+    const charArray2star = await webScrape(url2star, findTable, findImg);
+    const charArray3star = await webScrape(url3star, findTable, findImg);
+
+    gacha.push(charArray1star);
+    gacha.push(charArray2star);
+    gacha.push(charArray3star);
 
     console.log(charArray1star);
     console.log(charArray2star);
@@ -49,48 +49,55 @@ const initGachaArray = async () => {
     console.log(charArray1star.length);
     console.log(charArray2star.length);
     console.log(charArray3star.length);
+
+    console.log(gacha);
 }
 
 const webScrape = async (url, findTable, findImg) => {
     let returnArray = []
 
-    await got(url).then(response => {        
+    try {
+        const response = await got(url);
         let $ = cheerio.load(response.body);
 
         $(findTable).each((idx, element) => {
             const href = element.attribs.href;
 
             // Make sure the image is not blank table box
-            let imgTitle = $('img', element).attr('title');
-            let idxName = imgTitle.indexOf('★');
+            let imgTitle = await $('img', element).attr('title');
+            let idxName = await imgTitle.indexOf('★');
 
             // Get Thumbnail url
-            let thumnailUrl = $('img', element).attr('src');
+            let thumnailUrl = await $('img', element).attr('src');
 
-            await got(url).then(response2 => {  
-                let innerPage = cheerio.load(response2.body);
+            if (idxName != -1) {
+                try {
+                    const response2 = await got(href); 
+                    let innerPage = cheerio.load(response2.body);
 
-                let fullImageURL = innerPage(findImg).first().attr('src');
+                    let fullImageURL = await innerPage(findImg).first().attr('src');
 
-                let characterName = innerPage(findImg).first().attr('title');
-                let lastSlash = characterName.lastIndexOf('/') + 1;
-                characterName = characterName.substr(lastSlash);
+                    let characterName = await innerPage(findImg).first().attr('title');
+                    let lastSlash = await characterName.lastIndexOf('/') + 1;
+                    characterName = await characterName.substr(lastSlash);
 
-                let characterInfo = {
-                    name: characterName,
-                    thumbnailURL: thumnailUrl,
-                    fullImageURL: fullImageURL
-                } 
+                    let characterInfo = {
+                        name: characterName,
+                        thumbnailURL: thumnailUrl,
+                        fullImageURL: fullImageURL
+                    } 
 
-                returnArray.push(characterInfo);
-            }).catch(err2 => {
-                console.log(err2);
-            });
+                    returnArray.push(characterInfo);
+                } catch (err) {
+                    console.log(err.response.body);
+                }
+            }
         });
-    }).catch(err => {
-        console.log(err);
-    });
-
+    } catch (error) {
+        console.log(error.response.body);
+        //=> 'Internal server error ...'
+    }
+    
     return returnArray;
 }
 
