@@ -733,7 +733,7 @@ const rollgacha = async (message) => {
                 console.log(obtainedImages);
                 
                 for (let i = 0; i < obtainedImages.length; i++) {
-                    obtainedImages[i] ctx.drawImage(obtainedImages[i], x, y, 51, 51);
+                    ctx.drawImage(obtainedImages[i], x, y, 51, 51);
 
                     x+= 51;
                     if (i == 4) {
