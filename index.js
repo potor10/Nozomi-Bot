@@ -665,10 +665,11 @@ const say = async (message, args) => {
 
 const getCanvasFromURL = async (url) => {
     let returnImage;
+    console.log(response.body);
 
     try {
         const response = await got(url);
-        console.log(response.body)
+        console.log(response.body);
         returnImage = new Image();
         returnImage.src = response;
 
@@ -679,7 +680,7 @@ const getCanvasFromURL = async (url) => {
     }
 }
 
-const rollgacha = async (message, args) => {
+const rollgacha = async (message) => {
 
     let profile = await retrieveStats(message.author.id);
     let jewelCost = 1500;
