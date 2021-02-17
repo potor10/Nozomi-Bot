@@ -793,7 +793,8 @@ const rollgacha = async (message) => {
                         message.channel.send(combinedRoll);
                     }
                 );
-            } else if (timesRun < 10) {            
+            } else if (timesRun < 10) {    
+                console.log(`ran ${timesRun} times`);        
                 const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
                 if (rarityRolled < threeStarRate) {
                     const randomUnit = Math.floor(Math.random() * char3star.length);
