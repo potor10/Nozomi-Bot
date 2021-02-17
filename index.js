@@ -43,7 +43,8 @@ const initGachaDB = async () => {
     */
 
     for (let chara in charArray2star) {
-        updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
+        console.log(chara);
+        //updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
     }
 
     /*
@@ -52,12 +53,12 @@ const initGachaDB = async () => {
     }
     */
 
-    console.log(charArray1star);
+    //console.log(charArray1star);
     console.log(charArray2star);
-    console.log(charArray3star);
-    console.log(charArray1star.length);
+    //console.log(charArray3star);
+    //console.log(charArray1star.length);
     console.log(charArray2star.length);
-    console.log(charArray3star.length);
+    //console.log(charArray3star.length);
 
 }
 
