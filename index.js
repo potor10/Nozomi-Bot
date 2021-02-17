@@ -376,9 +376,10 @@ const getOcrImage = msgAttach => {
 
     let isPng = url.indexOf("png", url.length - "png".length);
     let isJpg = url.indexOf("jpg", url.length - "jpg".length);
+    let isJpeg = url.indexOf("jpeg", url.length - "jpeg".length);
 
     isImage = false;
-    if ((isPng !== -1) || (isJpg !== -1)) {
+    if ((isPng !== -1) || (isJpg !== -1) || (isJpeg !== -1)) {
         isImage = true;
     }
 
@@ -469,7 +470,7 @@ const returnOCR = async message => {
 
             if (!isNaN(date)) {
                 let newdate = new Date(date);
-                newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
+                newdate = newdate.getUTCFullYear() + '-' + pad(m + 1)  + '-' + pad(newdate.getUTCDate());
                 await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
 
                 await message.channel.send(new RichEmbed()
@@ -477,7 +478,7 @@ const returnOCR = async message => {
                 .setColor("#0099ff")
                 .setAuthor(client.user.username, client.user.avatarURL)
                 .setTitle(`${message.author.displayName||message.author.username}'s attack`)
-                .setDescription(`on ${date}`)
+                .setDescription(`on ${newdate.toLocaleString('default', { month: 'long', date: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
                 .addField("Attempt 1", intAttack1)
                 .addField("Attempt 2", intAttack2)
                 .addField("Attempt 3", intAttack3)
