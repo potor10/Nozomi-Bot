@@ -368,12 +368,23 @@ const addXp = async message => {
             // Level up!
             profile.level = curLevel;
 
+            let randomNozomi = [
+                'https://static.wikia.nocookie.net/princess-connect/images/4/45/Cute-human-longsword-sakurai_nozomi_rare_gacha001-0-normal.png',
+                'https://static.wikia.nocookie.net/princess-connect/images/1/1c/Nozomi-idolastrum-sprite-normal.png',
+                'https://static.wikia.nocookie.net/princess-connect/images/6/63/Nozomi-christmas-sprite-normal.png',
+                'https://static.wikia.nocookie.net/princess-connect/images/8/89/Cute-human-longsword-sakurai_nozomi_rare_gacha001-1-normal.png',
+                'https://static.wikia.nocookie.net/princess-connect/images/8/83/Cute-human-longsword-sakurai_nozomi_normal_start-1-normal.png'
+            ]
+
+            let nozomiIdx = Math.floor(Math.random() * 5);
+
             let earnedJewels = curLevel * 10 * (Math.floor(Math.random() * 50) + 1);
             curJewel = earnedJewels + curJewel;
             await message.channel.send(new MessageEmbed()
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
+                .setThumbnail(randomNozomi[nozomiIdx])
                 .setTitle(`${message.author.displayName||message.author.username}'s Level Up!`)
                 .setDescription(`You've leveled up to level **${curLevel}**! \n\n` +
                     `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`)
