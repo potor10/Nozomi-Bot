@@ -264,7 +264,7 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
             WHERE charName = '${charName}';
         INSERT INTO CHARDB (charName, thumbnailURL, fullImageURL, starLevel)
             SELECT '${charName}', '${thumbnailURL}', '${fullImageURL}', ${starLevel}
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE charName = '${charName}');
+            WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charName = '${charName}');
     `;
 
     console.log(query);
@@ -672,7 +672,14 @@ const say = async (message, args) => {
 };
 
 const rollgacha = message => {
-    
+    var timesRun = 0;
+    var interval = setInterval(function(){
+        timesRun += 1;
+        if(timesRun === 60){
+            clearInterval(interval);
+        }
+        //do whatever here..
+    }, 2000); 
 }
 
 const getOcrImage = msgAttach => {
