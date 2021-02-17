@@ -43,7 +43,7 @@ const initGachaDB = async () => {
     */
 
     for (let i = 0; i < charArray2star.length; i++) {
-        updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
+        await updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
     }
 
     /*
