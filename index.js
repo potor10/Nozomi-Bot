@@ -535,6 +535,6 @@ process.on("SIGINT", () => (process.exit(0)));
 
 // Log In
 console.log("Logging In To Princonne Bot");
-client.login(BOT_TOKEN);
+client.login(process.env["BOT_TOKEN"]);
 
 initDB();
