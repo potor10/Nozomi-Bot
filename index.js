@@ -12,7 +12,6 @@ const parseDbUrl = require("parse-database-url");
 const cheerio = require('cheerio');
 const got = require("got");
 
-const mergeImages = require('merge-images');
 const { Canvas, Image } = require('canvas');
 
 // Load Config Json with Prefix and Token 
@@ -260,7 +259,6 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: CHARDB table is successfully updated with ${starLevel} star unit`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -665,130 +663,167 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
+const getCanvasFromURL = async (url) => {
+    let returnImage;
+
+    try {
+        const response = await got(url);
+        returnImage = new Image();
+        returnImage.src = response;
+
+        return returnImage;
+    } catch (error) {
+        console.log(error.response.body);
+        //=> 'Internal server error ...'
+    }
+}
+
 const rollgacha = async (message, args) => {
 
-    let char3star = await retrieveGacha(3);
-    let char2star = await retrieveGacha(2);
-    let char1star = await retrieveGacha(1);
+    let profile = await retrieveStats(message.author.id);
+    let jewelCost = 1500;
 
-    console.log(char2star);
+    if (profile.jewels >= 1500) {
 
-    let rollString = '';
+        let char3star = await retrieveGacha(3);
+        let char2star = await retrieveGacha(2);
+        let char1star = await retrieveGacha(1);
 
-    let embedRoll = new MessageEmbed()
-        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-        .setAuthor(client.user.username, client.user.avatarURL())
-        .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
-        .setDescription(`${rollString}`)
-        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
-        .setTimestamp()
+        let rollString = '';
 
-    let rollResults = await message.channel.send(embedRoll);
-    
-    let timesRun = 0;
-    let silverCount = 0;
-    let tearsObtained = 0;
-    let obtainedImages = [];
-    let isDupe = [];
+        let embedRoll = new MessageEmbed()
+            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+            .setAuthor(client.user.username, client.user.avatarURL())
+            .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+            .setDescription(`${rollString}`)
+            .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+            .setTimestamp();
 
-    let interval = setInterval(function(){
-        timesRun += 1;
-        if(timesRun === 10){
-            clearInterval(interval);
-
-            let tearSRC = 'https://media.discordapp.net/emojis/811495998450565140.png?width=51&height=51';
-            let imageArray = [];
-            
-            let x = 0;
-            let y = 0;
-            for (let i = 0; i < obtainedImages.length; i++) {
-                let inputImage = { src: obtainedImages[0], x: x, y: y };
-                imageArray.push(inputImage);
-
-                x+= 51;
-                if (i == 4) {
-                    x = 0;
-                    y -= 51;
-                }
-            }
-
-            x = 0;
-            y = 0;
-            for (let i = 0; i < isDupe.length; i++) {
-                let inputImage = { src: tearSRC, x: x, y: y, opacity: isDupe[i] * 0.6 };
-                imageArray.push(inputImage);
-
-                x+= 51;
-                if (i == 4) {
-                    x = 0;
-                    y -= 51;
-                }
-            }
-
-            mergeImages(imageArray, {
-                Canvas: Canvas,
-                Image: Image
-              }) .then(b64 => document.querySelector('img').src = b64);
-              // data:image/png;base64,iVBORw0KGgoAA...
-        }
+        let rollResults = await message.channel.send(embedRoll);
         
-        let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
-        if (rarityRolled < threeStarRate) {
-            let randomUnit = Math.floor(Math.random() * char3star.length);
-            rollString += '<:poggerona:811498063578529792>';
+        let timesRun = 0;
+        let silverCount = 0;
+        let tearsObtained = 0;
+
+        let obtainedImages = [];
+        let isDupe = [];
+
+        let interval = setInterval(function(){
+            timesRun += 1;
+            if(timesRun === 10){
+                clearInterval(interval);
+
+                await updateStatsDB(message.author.id, profile.level, profile.xp, profile.currentTime, 
+                    profile.jewels - jewelCost, profile.tears + tearsObtained);
+                
+
+                let tearSRC = await getCanvasFromURL(
+                    'https://media.discordapp.net/emojis/811495998450565140.png?width=51&height=51');
+                
+                var canvas = new Canvas(255, 102);
+                var ctx = canvas.getContext('2d');
+                
+                let x = 0;
+                let y = 0;
+                for (let i = 0; i < obtainedImages.length; i++) {
+                    ctx.drawImage(obtainedImages[i], x, y, 51, 51);
+
+                    x+= 51;
+                    if (i == 4) {
+                        x = 0;
+                        y += 51;
+                    }
+                }
+
+                x = 0;
+                y = 0;
+                for (let i = 0; i < isDupe.length; i++) {
+                    if (isDupe[i]) {
+                        ctx.drawImage(tearSRC, x, y, 51, 51);
+                    }
+
+                    x+= 51;
+                    if (i == 4) {
+                        x = 0;
+                        y += 51;
+                    }
+                }
+
+                await canvas.createPNGStream().pipe(fs.createWriteStream('combined-roll.png'));
+
+                let combinedRoll = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                    .setDescription(`You have earned ${tearsObtained} <:tears:811495998450565140>`)
+                    .setImage('./combined-roll.png')
+                    .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                    .setTimestamp();
+
+                rollResults.edit(embedRoll);
+            }
             
-            if (checkCollection(message.author.id, char3star[randomUnit].name)) {
-                tearsObtained += 50;
-                isDupe[timesRun] = 1;
+            let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+            if (rarityRolled < threeStarRate) {
+                let randomUnit = Math.floor(Math.random() * char3star.length);
+                rollString += '<:poggerona:811498063578529792>';
+                
+                if (checkCollection(message.author.id, char3star[randomUnit].name)) {
+                    tearsObtained += 50;
+                    isDupe[timesRun] = 1;
 
+                } else {
+                    addCollection(message.author.id, char3star[randomUnit].name);
+                    isDupe[timesRun] = 0;
+                }
+
+                let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailURL);
+                obtainedImages.push(obtainedImage);
+
+                console.log(char3star[randomUnit]);
+            } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
+                let randomUnit = Math.floor(Math.random() * char2star.length);
+                rollString += '<:bitconnect:811498063641837578>';
+
+                if (checkCollection(message.author.id, char2star[randomUnit].name)) {
+                    tearsObtained += 10;
+                    isDupe[timesRun] = 1;
+
+                } else {
+                    addCollection(message.author.id, char2star[randomUnit].name);
+                    isDupe[timesRun] = 0;
+                }
+
+                let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailURL);
+                obtainedImages.push(obtainedImage);
+
+                console.log(char2star[randomUnit]);
             } else {
-                addCollection(message.author.id, char3star[randomUnit].name);
-                isDupe[timesRun] = 0;
+                silverCount++;
+
+                let randomUnit = Math.floor(Math.random() * char1star.length);
+                rollString += '<:garbage:811498063427928086>';
+
+                if (checkCollection(message.author.id, char1star[randomUnit].name)) {
+                    tearsObtained += 1;
+                    isDupe[timesRun] = 1;
+
+                } else {
+                    addCollection(message.author.id, char1star[randomUnit].name);
+                    isDupe[timesRun] = 0;
+                }
+
+                let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailURL);
+                obtainedImages.push(obtainedImage);
+
+                console.log(char1star[randomUnit]);
             }
 
-            obtainedImages.push(char3star[randomUnit].thumbnailURL);
-
-            console.log(char3star[randomUnit]);
-        } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-            let randomUnit = Math.floor(Math.random() * char2star.length);
-            rollString += '<:bitconnect:811498063641837578>';
-
-            if (checkCollection(message.author.id, char2star[randomUnit].name)) {
-                tearsObtained += 10;
-                isDupe[timesRun] = 1;
-
-            } else {
-                addCollection(message.author.id, char2star[randomUnit].name);
-                isDupe[timesRun] = 0;
-            }
-
-            obtainedImages.push(char2star[randomUnit].thumbnailURL);
-
-            console.log(char2star[randomUnit]);
-        } else {
-            silverCount++;
-
-            let randomUnit = Math.floor(Math.random() * char1star.length);
-            rollString += '<:garbage:811498063427928086>';
-
-            if (checkCollection(message.author.id, char1star[randomUnit].name)) {
-                tearsObtained += 1;
-                isDupe[timesRun] = 1;
-
-            } else {
-                addCollection(message.author.id, char1star[randomUnit].name);
-                isDupe[timesRun] = 0;
-            }
-
-            obtainedImages.push(char1star[randomUnit].thumbnailURL);
-
-            console.log(char1star[randomUnit]);
-        }
-
-        embedRoll.setDescription(`${rollString}`);
-        rollResults.edit(embedRoll);
-        
-    }, 2000); 
+            embedRoll.setDescription(`${rollString}`);
+            rollResults.edit(embedRoll);
+            
+        }, 2000); 
+    }
 }
 
 const getOcrImage = msgAttach => {
