@@ -673,7 +673,6 @@ const getCanvasFromURL = async (url) => {
         returnImage.onerror = () => reject(new Error('Failed to load image'));
 
         got(url).then(response => {
-            const response = await got(url);
             returnImage.src = response.body;
         }).catch(err => {
             console.log(err);
