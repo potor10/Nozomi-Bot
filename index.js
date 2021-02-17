@@ -667,7 +667,7 @@ const say = async (message, args) => {
 
 function loadImage (url) {
     return new Promise((resolve, reject) => {
-        const img = new Canvas.Image()
+        const img = new Image()
   
         img.onload = () => resolve(img)
         img.onerror = () => reject(new Error('Failed to load image'))
