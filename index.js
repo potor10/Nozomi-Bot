@@ -769,11 +769,9 @@ const rollgacha = async (message) => {
                             .setImage('attachment://test.png')
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
-                        rollResults.edit(combinedRoll);
                         
+                        rollResults.delete();
                         message.channel.send(combinedRoll);
-
-                        message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
                 );
             } else if (timesRun < 10) {            
