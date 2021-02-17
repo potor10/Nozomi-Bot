@@ -666,19 +666,18 @@ const say = async (message, args) => {
 
 const getCanvasFromURL = async (url) => {
     let returnImage;
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         returnImage = new Image();
 
         returnImage.onload = () => resolve(returnImage);
         returnImage.onerror = () => reject(new Error('Failed to load image'));
 
-        try {
+        got(url).then(response => {
             const response = await got(url);
             returnImage.src = response.body;
-        } catch (error) {
-            console.log(error.response.body);
-            return reject(err);
-        }
+        }).catch(err => {
+            console.log(err);
+        });
     });
 }
 
