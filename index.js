@@ -64,22 +64,22 @@ const webScrape = async (url, findTable, findImg) => {
             const href = element.attribs.href;
 
             // Make sure the image is not blank table box
-            let imgTitle = await $('img', element).attr('title');
-            let idxName = await imgTitle.indexOf('★');
+            let imgTitle = $('img', element).attr('title');
+            let idxName = imgTitle.indexOf('★');
 
             // Get Thumbnail url
-            let thumnailUrl = await $('img', element).attr('src');
+            let thumnailUrl = $('img', element).attr('src');
 
             if (idxName != -1) {
                 try {
                     const response2 = await got(href); 
                     let innerPage = cheerio.load(response2.body);
 
-                    let fullImageURL = await innerPage(findImg).first().attr('src');
+                    let fullImageURL = innerPage(findImg).first().attr('src');
 
-                    let characterName = await innerPage(findImg).first().attr('title');
-                    let lastSlash = await characterName.lastIndexOf('/') + 1;
-                    characterName = await characterName.substr(lastSlash);
+                    let characterName = innerPage(findImg).first().attr('title');
+                    let lastSlash = characterName.lastIndexOf('/') + 1;
+                    characterName = characterName.substr(lastSlash);
 
                     let characterInfo = {
                         name: characterName,
