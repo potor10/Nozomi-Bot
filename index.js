@@ -25,7 +25,7 @@ dbConfig.ssl = { rejectUnauthorized: false };
 
 let gacha = [];
 
-const initGachaArray = async () => {
+const initGachaArray = () => {
     gacha = [];
 
     //const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
@@ -36,14 +36,14 @@ const initGachaArray = async () => {
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
     //const charArray1star = await webScrape(url1star, findTable, findImg);
-    const charArray2star = await webScrape(url2star, findTable, findImg);
-    const charArray3star = await webScrape(url3star, findTable, findImg);
+    const charArray2star = webScrape(url2star, findTable, findImg);
+    const charArray3star = webScrape(url3star, findTable, findImg);
 
     //gacha.push(charArray1star);
     gacha.push(charArray2star);
     gacha.push(charArray3star);
 
-    console.log(charArray1star);
+    //console.log(charArray1star);
     console.log(charArray2star);
     console.log(charArray3star);
     console.log(charArray1star.length);
@@ -53,11 +53,10 @@ const initGachaArray = async () => {
     console.log(gacha);
 }
 
-const webScrape = async (url, findTable, findImg) => {
+const webScrape = (url, findTable, findImg) => {
     let returnArray = []
 
-    try {
-        const response = await got(url);
+    got(url).then(response => {
         let $ = cheerio.load(response.body);
 
         $(findTable).each((idx, element) => {
@@ -93,10 +92,9 @@ const webScrape = async (url, findTable, findImg) => {
                 });
             }
         });
-    } catch (error) {
-        console.log(error.response.body);
-        //=> 'Internal server error ...'
-    }
+    }).catch(error => {
+        console.log(error);
+    });
     
     return returnArray;
 }
