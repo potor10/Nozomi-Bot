@@ -285,8 +285,8 @@ const help = message => message.author.send(`I'll be counting on you, so let's w
 
 const setclanbattle = async (message) => {
     let currentCBID = await retrieveCBID();
-    let newCBID = await parseInt(message, 10);
-
+    let newCBID = await parseInt(message.content, 10);
+    console.log(message.content);
     console.log(newCBID);
     if (!isNaN(newCBID)) {
         await updateCBID(newCBID);
