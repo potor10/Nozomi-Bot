@@ -26,6 +26,9 @@ dbConfig.ssl = { rejectUnauthorized: false };
 const gachaArray = [];
 
 const initGachaArray = async () => {
+    // Reset array
+    gachaArray = [];
+
     const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
     const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
@@ -34,8 +37,7 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const findTable = '#DataTables_Table_0';
-    const scrapeString = 'a';
+    const findTable = '.ie5 > .table > tbody > tr > td > a';
 
     request({
         method: 'GET',
@@ -45,8 +47,8 @@ const initGachaArray = async () => {
         
         let $ = cheerio.load(body);
         console.log($.root().html());
-        
-        $('a', '#DataTables_Table_0').each((idx, element) => {
+
+        $(findTable).each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
         });
