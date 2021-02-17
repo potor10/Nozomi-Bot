@@ -322,11 +322,11 @@ const profile = async message => {
         .setThumbnail(profileUser.avatarURL())
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription(statusStrings[randomStatus])
-        .addField("Level", profileData.level)
+        .addField("Level <:starico:811495998479532032>", profileData.level)
         .addFields(
-            { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
-            { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
-            { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
+            { name: "<:bluesword:811495998479925268> Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
+            { name: "<:greensword:811495998374805514> Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
+            { name: "<:patk:811495998156439563> Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
         )
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
@@ -466,7 +466,7 @@ const returnOCR = async message => {
                 console.log(`Not Clan War but instead:${text}`);
                 break;
             } else if (i==0) {
-                await message.react('✅');
+                await message.react('744614727539359907');
             }
             values.push(text);
         }
