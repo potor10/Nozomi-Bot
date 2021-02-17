@@ -34,16 +34,18 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const findTable = '##DataTables_Table_0';
+    const findTable = '#DataTables_Table_0';
     const scrapeString = 'a';
     
+    console.log($.root().html());
+
     request({
         method: 'GET',
         url: url1star
     }, (err, res, body) => { 
         if (err) return console.error(err);
         let $ = cheerio.load(body);
-        $('a').each((idx, element) => {
+        $('a', '#DataTables_Table_0').each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
         });
