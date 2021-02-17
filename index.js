@@ -435,7 +435,7 @@ const checkCollection = async (id, charName) => {
     let output = true;
     try {
         const res = await pgdb.query(query);
-        if (res.rows.size == 0) {
+        if (res.rows[0] == charName) {
             output = false;
         }
     } catch (err) {
@@ -754,7 +754,10 @@ const rollgacha = async (message) => {
                     }
                 }
 
-                await canvas.createPNGStream().pipe(fs.createWriteStream('combined-roll.png'));
+                const out = fs.createWriteStream('./test.png')
+                const stream = canvas.createPNGStream()
+                stream.pipe(out)
+                out.on('finish', () =>  console.log('The PNG file was created.'))
 
                 let combinedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
