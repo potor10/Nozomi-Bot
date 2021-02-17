@@ -65,11 +65,10 @@ const webScrape = async (url, findTable, findImg) => {
         let $ = cheerio.load(response.body);
 
         let rows = $(findTable);
-
-        console.log(rows);
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.lastIndexOf('★');
+            console.log("Run");
 
             if (idxName != -1) {
                 let thumnailUrl = $('img', rows[i]).attr('src');
@@ -462,7 +461,7 @@ const resetchardb = message => {
 }
 
 /** @param {import("discord.js").Message} message */
-const initgacha = message => {
+const updategacha = message => {
     if (message.author.id == 154775062178824192) {
         initGachaDB();
         console.log(`LOG: CharDB have been initialized by ${message.author.username} (${message.author.id})`);
