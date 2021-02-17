@@ -11,7 +11,7 @@ const parseDbUrl = require("parse-database-url");
 
 const cheerio = require('cheerio');
 const got = require("got");
-const http = require('http');
+const request = require('request');
 
 const { Canvas, Image } = require('canvas');
 const fs = require('fs');
@@ -665,22 +665,20 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const loadImage = (url) => {
+function loadImage (url) {
     return new Promise((resolve, reject) => {
-      const img = new Image()
+        const img = new Canvas.Image()
   
-      img.onload = () => resolve(img)
-      img.onerror = () => reject(new Error('Failed to load image'))
+        img.onload = () => resolve(img)
+        img.onerror = () => reject(new Error('Failed to load image'))
   
-      http.get(url, (res) => {
-        let chunks = []
-  
-        res.on('error', (err) => { reject(err) })
-        res.on('data', (chunk) => { chunks.push(chunk) })
-        res.on('end', () => { img.src = Buffer.concat(chunks) })
-      })
+        request.get(url, (err, res) => {
+            if (err) return reject(err)
+    
+            img.src = res.body
+        })
     })
-  }
+}
 
 const rollgacha = async (message) => {
 
