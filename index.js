@@ -33,23 +33,25 @@ const initDB = async () => {
         DROP TABLE IF EXISTS CB;
 
         CREATE TABLE ATTACKS (
-            uid varchar,
-            attackDate date,
-            attempt1damage int,
-            attempt2damage int,
-            attempt3damage int,
-            cbid int
+            uid varchar NOT NULL,
+            attackDate date NOT NULL,
+            attempt1damage int DEFAULT 0,
+            attempt2damage int DEFAULT 0,
+            attempt3damage int DEFAULT 0,
+            cbid int NOT NULL
         );
 
         CREATE TABLE STATS (
-            uid varchar,
-            level int,
-            exp int,
-            lastMessage bigint
+            uid varchar NOT NULL,
+            level int DEFAULT 1,
+            exp int DEFAULT 0,
+            lastMessage bigint DEFAULT 0,
+            jewels int DEFAULT 0,
+            tears int DEFAULT 0
         );
 
         CREATE TABLE CB (
-            cbid int
+            cbid int DEFAULT 0
         );
 
         INSERT INTO CB (cbid)
@@ -109,20 +111,21 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
     }
 }
 
-const updateStatsDB = async (id, level, xp, lastMessage) => {    
+const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {    
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
-        UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage} WHERE uid = '${id}';
-        INSERT INTO STATS (uid, level, exp, lastMessage)
-            SELECT '${id}', ${level}, ${xp}, ${lastMessage}
+        UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}, jewels = ${jewels}, tears = ${tears}
+            WHERE uid = '${id}';
+        INSERT INTO STATS (uid, level, exp, lastMessage, jewels, tears)
+            SELECT '${id}', ${level}, ${xp}, ${lastMessage}, ${jewels}, ${tears}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}`);
+        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}, ${jewels}, ${tears}`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -171,8 +174,8 @@ const retrieveStats = async (id) => {
     pgdb.connect();
 
     const query = `
-        INSERT INTO STATS (uid, level, exp, lastMessage) 
-            SELECT '${id}', 1, 0, 0
+        INSERT INTO STATS (uid, level, exp, lastMessage, jewels, tears) 
+            SELECT '${id}', 1, 0, 0, 0, 0
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
 
@@ -253,14 +256,20 @@ const addXp = async message => {
         let newXP = profile.exp + Math.floor(Math.random() * 5) + 1;
         console.log(`LOG: ${newXP - profile.exp} XP has been granted to ${message.author.username} (${message.author.id})`);
 
+        let curJewel = profile.jewels;
+
         let curLevel = 1 + Math.floor(Math.sqrt(newXP));
         if (curLevel > profile.level) {
             // Level up!
             profile.level = curLevel;
-            message.reply(`You've leveled up to level **${curLevel}**!`);
+
+            let earnedJewels = curLevel * (Math.floor(Math.random() * 500) + 1);
+            curJewel = earnedJewels + curJewel;
+            message.reply(`You've leveled up to level **${curLevel}**! \n\n` +
+                `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`);
             console.log(`LOG: ${message.author.username} (${message.author.id}) has leveled up to ${curLevel}`);
         }
-        updateStatsDB(message.author.id, curLevel, newXP, currentTime)
+        updateStatsDB(message.author.id, curLevel, newXP, currentTime, curJewel, profile.tears);
     }
 };
 
@@ -324,9 +333,11 @@ const profile = async message => {
         .setDescription(statusStrings[randomStatus])
         .addField("Level <:starico:811495998479532032>", profileData.level)
         .addFields(
-            { name: "<:bluesword:811495998479925268> Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
-            { name: "<:greensword:811495998374805514> Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
-            { name: "<:patk:811495998156439563> Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
+            { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: false },
+            { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: false },
+            { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: false },
+            { name: "Jewels <:jewel:811495998194450454> ", value: profileData.jewels, inline: true },
+            { name: "Tears <:tears:811495998450565140>", value: profileData.tears, inline: true },
         )
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
