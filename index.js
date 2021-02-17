@@ -667,8 +667,6 @@ const say = async (message, args) => {
 const getCanvasFromURL = async (url) => {
     let returnImage;
 
-    console.log(url);
-
     try {
         const response = await got(url);
         console.log(response.body);
@@ -781,7 +779,7 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                let obtainedImage = await getCanvasFromURL(char3star[randomUnit]);
+                let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailurl);
                 obtainedImages.push(obtainedImage);
 
                 console.log(char3star[randomUnit]);
@@ -798,7 +796,7 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                let obtainedImage = await getCanvasFromURL(char2star[randomUnit]);
+                let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailurl);
                 obtainedImages.push(obtainedImage);
 
                 console.log(char2star[randomUnit]);
@@ -817,7 +815,7 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                let obtainedImage = await getCanvasFromURL(char1star[randomUnit]);
+                let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailurl);
                 obtainedImages.push(obtainedImage);
 
                 console.log(char1star[randomUnit]);
