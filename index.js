@@ -73,17 +73,16 @@ const webScrape = async (url, findTable, findImg) => {
         $ = cheerio.load(firstClass);
 
         let rows = $(findTable);
-        console.log(rows.length);
-        //console.log(rows);
+
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.lastIndexOf('★');
 
             if (idxName != -1) {
-                let thumnailUrl = $('img', rows[i]).attr('src');
+                let thumbnailURL = $('img', rows[i]).attr('src');
                 let characterName = imgTitle.substr(idxName + 1);
 
-                let characterInfo = await getGachaData(rows[i].attribs.href, thumnailUrl, findImg, characterName);
+                let characterInfo = await getGachaData(rows[i].attribs.href, thumbnailURL, findImg, characterName);
                 returnArray.push(characterInfo);
             }
         }
@@ -260,11 +259,15 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
+    console.log(charName);
+    console.log(thumbnailURL);
+    console.log(fullImageURL);
+
     const query = `
         UPDATE STATS CHARDB thumbnailURL = ${thumbnailURL}, fullImageURL = ${fullImageURL}, starLevel = ${starLevel}
             WHERE charName = ${charName};
         INSERT INTO CHARDB (charName, thumbnailURL, fullImageURL, starLevel)
-            SELECT '${charName}', ${thumbnailURL}, ${fullImageURL}, ${starLevel}
+            SELECT ${charName}, ${thumbnailURL}, ${fullImageURL}, ${starLevel}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE charName = ${charName});
     `;
 
