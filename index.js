@@ -434,7 +434,7 @@ const checkCollection = async (id, charName) => {
     let output = true;
     try {
         const res = await pgdb.query(query);
-        console.log(rows);
+        console.log(res.rows);
         if (res.rows.length == 0) {
             output = false;
         }
@@ -444,7 +444,6 @@ const checkCollection = async (id, charName) => {
         pgdb.end();
     }
 
-    console.log(output);
     return output;
 }
 
@@ -759,7 +758,7 @@ const rollgacha = async (message) => {
                 const stream = canvas.createPNGStream();
                 stream.pipe(out);
                 out.on('finish', () =>  {
-                        console.log('The PNG file was created.');
+                        console.log('LOG: The PNG agregate file was created.');
 
                         let tearsStr = `You have earned ${tearsObtained} <:tears:811495998450565140>`;
 
