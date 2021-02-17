@@ -34,7 +34,7 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const findTable = 'DataTables_Table_0';
+    const findTable = '#DataTables_Table_0';
     const scrapeString = 'a';
     
     got(url1star).then(response => {
