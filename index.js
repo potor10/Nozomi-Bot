@@ -811,7 +811,7 @@ const rollgacha = async (message) => {
                     rollString += '<:bitconnect:811498063641837578>';
 
                     console.log(randomUnit);
-                    console.log(char3star[randomUnit].charname);
+                    console.log(char2star[randomUnit].charname);
                     if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
                         tearsObtained += 10;
                         isDupe[timesRun] = 1;
@@ -831,7 +831,7 @@ const rollgacha = async (message) => {
                     rollString += '<:garbage:811498063427928086>';
 
                     console.log(randomUnit);
-                    console.log(char3star[randomUnit].charname);
+                    console.log(char1star[randomUnit].charname);
                     if (await checkCollection(message.author.id, char1star[randomUnit].charName)) {
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
