@@ -679,7 +679,7 @@ const getCanvasFromURL = async (url) => {
             console.log(error.response.body);
             return reject(err);
         }
-    }
+    });
 }
 
 const rollgacha = async (message) => {
