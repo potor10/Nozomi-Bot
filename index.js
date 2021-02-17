@@ -25,28 +25,32 @@ dbConfig.ssl = { rejectUnauthorized: false };
 
 const initGachaDB = async () => {
 
-    const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
+    //const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
-    const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
+    //const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
 
     const findTable = '.ie5 > .table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    const charArray1star = await webScrape(url1star, findTable, findImg);
+    //const charArray1star = await webScrape(url1star, findTable, findImg);
     const charArray2star = await webScrape(url2star, findTable, findImg);
-    const charArray3star = await webScrape(url3star, findTable, findImg);
+    //const charArray3star = await webScrape(url3star, findTable, findImg);
 
+    /*
     for (let chara in charArray1star) {
         updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 1);
     }
+    */
 
     for (let chara in charArray2star) {
         updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
     }
 
+    /*
     for (let chara in charArray3star) {
         updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 3);
     }
+    */
 
     console.log(charArray1star);
     console.log(charArray2star);
@@ -63,12 +67,12 @@ const webScrape = async (url, findTable, findImg) => {
     try {
 		const response = await got(url);
         let $ = cheerio.load(response.body);
+        console.log(`LOG: Finding Data From Units From: ${url}`);
 
         let rows = $(findTable);
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.lastIndexOf('★');
-            console.log("Run");
 
             if (idxName != -1) {
                 let thumnailUrl = $('img', rows[i]).attr('src');
@@ -343,6 +347,27 @@ const retrieveStats = async (id) => {
     } catch (err) {
         console.log(err.stack);
     } 
+
+    let output;
+    try {
+        const res = await pgdb.query(selectQuery);
+        output = res.rows[0];
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+
+    return output;
+}
+
+const retrieveGacha = async (starLevel) => {
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const selectQuery = `
+        SELECT * FROM CHARDB WHERE starLevel = '${starLevel}';
+    `;
 
     let output;
     try {
@@ -640,7 +665,9 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle };
+const roll = message => {
+
+}
 
 const getOcrImage = msgAttach => {
     let url = msgAttach.url;
@@ -781,6 +808,9 @@ const returnOCR = async message => {
         await worker.terminate();
     });
 }
+
+// Bot Commands
+const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, roll };
 
 // Chaining Events
 client
