@@ -379,7 +379,6 @@ const addXp = async message => {
                     `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp());
-            }
 
             console.log(`LOG: ${message.author.username} (${message.author.id}) has leveled up to ${curLevel}`);
         }
