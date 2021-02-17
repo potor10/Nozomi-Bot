@@ -696,13 +696,15 @@ const rollgacha = async (message, args) => {
         
         let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
         if (rarityRolled < threeStarRate) {
-            let randomUnit = Math.floor(Math.random() * char3star.length);
+            //let randomUnit = Math.floor(Math.random() * char3star.length);
             rollString += '<:poggerona:811498063578529792>';
         } else if (rarityRolled < (threeStarRate + twoStarRate)) {
             let randomUnit = Math.floor(Math.random() * char2star.length);
             rollString += '<:bitconnect:811498063641837578>';
+
+            console.log(char2star[randomUnit]);
         } else {
-            let randomUnit = Math.floor(Math.random() * char1star.length);
+            //let randomUnit = Math.floor(Math.random() * char1star.length);
             rollString += '<:garbage:811498063427928086>';
         }
 
