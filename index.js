@@ -273,17 +273,32 @@ const parseFirstArgAsInt = (args, defaultValue) => {
     } else return defaultValue;
 };
 
+const setclanbattle = (message) => {
+    let currentCBID = retrieveCBID();
+    let newCBID = parseFirstArgAsInt(message, currentCBID);
+    updateCBID(newCBID);
+    message.reply(`Current Clan Battle Identification Number Set To: ${newCBID}`)
+}
+
 /** @param {import("discord.js").Message} message */
 const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
     let profileData = await retrieveStats(profileUser.id);
     const sqlDate = (new Date()).toLocaleString("en-US");
+
+    const pad = (num) => { 
+        return ('00'+num).slice(-2) 
+    };
+    
+    let date = new Date();
+    date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
+
     console.log(sqlDate);
     let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
 
     await message.channel.send(new RichEmbed()
-        .setURL("https://youtu.be/_zlGR5i9u_Q")
+        .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL)
         .setThumbnail(profileUser.avatarURL)
@@ -354,7 +369,7 @@ const awaitEmoji = async (message, text, emoji, option, cancelText) => {
              .catch(() => { message.channel.send(cancelText); });
 };
 
-const COMMANDS = { help, ping, reset, say, profile };
+const COMMANDS = { help, ping, reset, say, profile, setclanbattle };
 
 const getOcrImage = msgAttach => {
     let url = msgAttach.url;
@@ -435,6 +450,28 @@ const returnOCR = async message => {
         if (isClan) {
             await message.channel.send(`On: ${values[1]}, ${message.author.username} hit for:\n${values[2]}${values[3]}${values[4]}`);
             console.log(values);
+
+            let intAttack1 = await parseFirstArgAsInt(values[2].split('\n', 1)[0], 0);
+            let intAttack2 = await parseFirstArgAsInt(values[3].split('\n', 1)[0], 0);
+            let intAttack3 = await parseFirstArgAsInt(values[4].split('\n', 1)[0], 0);
+            
+            const pad = (num) => { 
+                return ('00'+num).slice(-2) 
+            };
+            
+            let date;
+            for (i = 0; i < values[0].length - 6; i++) {
+                date = Date.parse(values[0].substr(i, 6));
+                if(!isNaN(date)){
+                    console.log(`LOG: Date Parsed, Found ${date}`);
+                    break;
+                 }
+            }
+            date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
+
+            if (!isNaN(date)) {
+                await updateAttackDB(message.author.id, date, intAttack1, intAttack2, intAttack3);
+            }
         }
         await worker.terminate();
     });
