@@ -310,13 +310,15 @@ const profile = async message => {
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL())
-        .setThumbnail(profileUser.avatarURL)
+        .setThumbnail(profileUser.avatarURL())
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription("Displaying Profile.")
         .addField("Level", profileData.level)
-        .addField("Damage Dealt This Clan War", profileDamage[0])
-        .addField("Damage Dealt Today", profileDamage[1])
-        .addField("Total Damage Dealt", profileDamage[2])
+        .addFields(
+            { name: "Dealt This Clan War", value: profileDamage[0], inline: true },
+            { name: "Dealt Today", value: profileDamage[1], inline: true },
+            { name: "Total Dealt", value: profileDamage[2], inline: true },
+        )
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
 };
@@ -483,7 +485,7 @@ const returnOCR = async message => {
 
             if (idxDate != -1) {
                 date = Date.parse(`${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
-                console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(i, 6)} ${new Date().getUTCFullYear()}`);
+                console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
                 
                 let newdate = new Date(date);
                 newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
@@ -496,9 +498,9 @@ const returnOCR = async message => {
                 .setTitle(`${message.author.displayName||message.author.username}'s attack`)
                 .setDescription(`on ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
                 .addFields(
-                    { name: "Attempt 1", value: intAttack1, inline: true },
-                    { name: "Attempt 2", value: intAttack2, inline: true },
-                    { name: "Attempt 3", value: intAttack3, inline: true },
+                    { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
+                    { name: "Attempt 2 <:critdamage:811495998463148102>", value: intAttack2, inline: true },
+                    { name: "Attempt 3 <:patk:811495998156439563>", value: intAttack3, inline: true },
                 )
                 .addField("Total Damage Dealt For This Day", intAttack1 + intAttack2 + intAttack3)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
