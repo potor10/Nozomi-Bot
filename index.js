@@ -842,15 +842,17 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char1star.length);
                     rollString += '<:garbage:811498063427928086>';
 
+                    const nameRolle = char1star[randomUnit].charname
+
                     console.log(randomUnit);
                     console.log(char1star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, char1star[randomUnit].charName)) {
+                    if (await checkCollection(message.author.id, nameRolle)) {
                         console.log(char1star[randomUnit].charname);
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, char1star[randomUnit].charName);
+                        await addCollection(message.author.id, nameRolle);
                         console.log(char1star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
@@ -1059,12 +1061,6 @@ process.on("SIGINT", () => (process.exit(0)));
 
 // Start Stuff
 initDB();
-addCollection('2','duku');
-addCollection('2444','duku333');
-addCollection('2666','duku2123123');
-addCollection('244','duk122u');
-addCollection('244','d11uku');
-addCollection('244','d33uku');
 
 // Log In
 console.log("Logging In To Princonne Bot");
