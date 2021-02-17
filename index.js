@@ -26,8 +26,6 @@ dbConfig.ssl = { rejectUnauthorized: false };
 const gachaArray = [];
 
 const initGachaArray = async () => {
-    // Reset array
-    gachaArray = [];
 
     const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
@@ -46,11 +44,13 @@ const initGachaArray = async () => {
         if (err) return console.error(err);
         
         let $ = cheerio.load(body);
-        console.log($.root().html());
+        //console.log($.root().html());
 
         $(findTable).each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
+
+            //element.children().first()
         });
     });
 
