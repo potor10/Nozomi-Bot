@@ -9,6 +9,9 @@ const { createWorker } = require('tesseract.js');
 const PGdb = require('pg').Client;
 const parseDbUrl = require("parse-database-url");
 
+const got = require('got');
+const cheerio = require('cheerio');
+
 // Load Config Json with Prefix and Token 
 let { prefix } = require("./config.json");
 prefix = prefix || ".";
@@ -23,10 +26,26 @@ dbConfig.ssl = { rejectUnauthorized: false };
 const gachaArray = [];
 
 const initGachaArray = async () => {
-    const response = await fetch('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
-    const text = await response.text();
-    console.log(text);
-    console.log(text.match(/(?<=\<h1>).*(?=\<\/h1>)/));
+    const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
+    const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
+    const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
+
+    const charArray1star = [];
+    const charArray2star = [];
+    const charArray3star = [];
+
+    const dataTableID = '#DataTables_Table_0';
+    
+    got(url1star).then(response => {
+        const page = cheerio.load(response.body);
+        let dataTable = page(dataTableID);
+        console.log(dataTable.text());
+
+
+    }).catch(err => {
+        console.log(err);
+    });
+
 }
 
 const initDB = async () => {
@@ -63,7 +82,7 @@ const initDB = async () => {
 
         CREATE TABLE COLLECTION (
             uid varchar NOT NULL,
-            char varchar NOT NULL,
+            charName varchar NOT NULL
         );
 
         INSERT INTO CB (cbid)
@@ -145,19 +164,19 @@ const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {
     }
 }
 
-const addCollection = async (id, char) => {    
+const addCollection = async (id, charName) => {    
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
-        INSERT INTO COLLECTION (uid, char)
-            SELECT '${id}', ${char}
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}' AND char = ${char});
+        INSERT INTO COLLECTION (uid, charName)
+            SELECT '${id}', ${charName}
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}' AND charName = ${charName});
     `;
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: ${char} was successfully added to ${id}'s collection`);
+        console.log(`LOG: ${charName} was successfully added to ${id}'s collection`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -260,7 +279,7 @@ const retrieveCollection = async (id) => {
     pgdb.connect();
 
     const query = `
-        SELECT char FROM COLLECTION
+        SELECT charName FROM COLLECTION
             WHERE uid = ${id};
     `;
 
@@ -268,7 +287,7 @@ const retrieveCollection = async (id) => {
     try {
         const res = await pgdb.query(query);
         for (let row in res.rows) {
-            output.push(row.charid);
+            output.push(row.charName);
         }
     } catch (err) {
         console.log(err.stack);
@@ -279,13 +298,13 @@ const retrieveCollection = async (id) => {
     return output;
 }
 
-const checkCollection = async (id, char) => {    
+const checkCollection = async (id, charName) => {    
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
-        SELECT charid FROM COLLECTION
-            WHERE uid = ${id} and char = ${char};
+        SELECT charName FROM COLLECTION
+            WHERE uid = ${id} and charName = ${charName};
     `;
 
     let output = true;
