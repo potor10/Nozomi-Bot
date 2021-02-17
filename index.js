@@ -598,8 +598,8 @@ const profile = async message => {
 
     let profileDamage = await retrieveDamageDB(profileUser.id, date);
 
-    let randomStatus = Math.floor(Math.random() * 5);
-    let statusStrings = [
+    const randomStatus = Math.floor(Math.random() * 5);
+    const statusStrings = [
         "A Dapper Fellow <:coolnozomi:811498063527936031>",
         "Empty In Mana <:mana:811498063515353149>",
         "Drowning In Tears <:tears:811495998450565140>",
@@ -685,19 +685,18 @@ function loadImage (url) {
 }
 
 const rollgacha = async (message) => {
-
     let profile = await retrieveStats(message.author.id);
     console.log(profile);
-    let jewelCost = 0;
+    const jewelCost = 0;
 
     if (profile.jewels >= jewelCost) {
         // Deduct the jewels immediately
         await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
             profile.jewels - jewelCost, profile.tears);
 
-        let char3star = await retrieveGacha(3);
-        let char2star = await retrieveGacha(2);
-        let char1star = await retrieveGacha(1);
+        const char3star = await retrieveGacha(3);
+        const char2star = await retrieveGacha(2);
+        const char1star = await retrieveGacha(1);
 
         console.log(char2star);
 
@@ -721,7 +720,7 @@ const rollgacha = async (message) => {
         let obtainedImages = [];
         let isDupe = [];
 
-        let interval = setInterval(async () => {
+        const interval = setInterval(async () => {
             if(timesRun === 10){
                 clearInterval(interval);
 
@@ -795,70 +794,72 @@ const rollgacha = async (message) => {
                     }
                 );
             } else if (timesRun < 10) {            
-                let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+                const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
                 if (rarityRolled < threeStarRate) {
-                    let randomUnit = Math.floor(Math.random() * char3star.length);
+                    const randomUnit = Math.floor(Math.random() * char3star.length);
                     rollString += '<:poggerona:811498063578529792>';
                     
+                    const rolledName = char1star[randomUnit].charname;
+                    const rolledThumb = char2star[randomUnit].thumbnailurl;
+
                     console.log(randomUnit);
                     console.log(char3star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, char3star[randomUnit].charname)) {
-                        console.log(char3star[randomUnit].charname);
+                    if (await checkCollection(message.author.id, rolledName)) {
                         tearsObtained += 50;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, char3star[randomUnit].charname);
+                        await addCollection(message.author.id, rolledName);
                         console.log(char3star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
 
-                    let obtainedImage = await loadImage(char3star[randomUnit].thumbnailurl);
+                    const obtainedImage = await loadImage(rolledThumb);
                     obtainedImages.push(obtainedImage);
                 } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                    let randomUnit = Math.floor(Math.random() * char2star.length);
+                    const randomUnit = Math.floor(Math.random() * char2star.length);
                     rollString += '<:bitconnect:811498063641837578>';
+
+                    const rolledName = char1star[randomUnit].charname;
+                    const rolledThumb = char2star[randomUnit].thumbnailurl;
 
                     console.log(randomUnit);
                     console.log(char2star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
-                        console.log(char2star[randomUnit].charname);
+                    if (await checkCollection(message.author.id, rolledName)) {
                         tearsObtained += 10;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, char2star[randomUnit].charname);
-                        console.log(char2star[randomUnit].charname);
+                        await addCollection(message.author.id, rolledName);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
 
-                    let obtainedImage = await loadImage(char2star[randomUnit].thumbnailurl);
+                    const obtainedImage = await loadImage(rolledThumb);
                     obtainedImages.push(obtainedImage);
                 } else {
                     silverCount++;
 
-                    let randomUnit = Math.floor(Math.random() * char1star.length);
+                    const randomUnit = Math.floor(Math.random() * char1star.length);
                     rollString += '<:garbage:811498063427928086>';
 
-                    const nameRolle = char1star[randomUnit].charname
+                    const rolledName = char1star[randomUnit].charname;
+                    const rolledThumb = char1star[randomUnit].thumbnailurl;
 
                     console.log(randomUnit);
                     console.log(char1star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, nameRolle)) {
-                        console.log(char1star[randomUnit].charname);
+                    if (await checkCollection(message.author.id, rolledName)) {
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, nameRolle);
-                        console.log(char1star[randomUnit].charname);
+                        await addCollection(message.author.id, rolledName);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
 
-                    let obtainedImage = await loadImage(char1star[randomUnit].thumbnailurl);
+                    const obtainedImage = await loadImage(rolledThumb);
                     obtainedImages.push(obtainedImage);
                 }
 
@@ -877,11 +878,11 @@ const rollgacha = async (message) => {
 }
 
 const getOcrImage = msgAttach => {
-    let url = msgAttach.url;
+    const url = msgAttach.url;
 
-    let isPng = url.indexOf("png", url.length - "png".length);
-    let isJpg = url.indexOf("jpg", url.length - "jpg".length);
-    let isJpeg = url.indexOf("jpeg", url.length - "jpeg".length);
+    const isPng = url.indexOf("png", url.length - "png".length);
+    const isJpg = url.indexOf("jpg", url.length - "jpg".length);
+    const isJpeg = url.indexOf("jpeg", url.length - "jpeg".length);
 
     isImage = false;
     if ((isPng !== -1) || (isJpg !== -1) || (isJpeg !== -1)) {
@@ -901,10 +902,10 @@ const returnOCR = async message => {
         let height = attachment.height;
         let width = attachment.width;
         if (height > 1000 || width > 1000) {
-            let maxWidth = 800;
-            let maxHeight = 500;
+            const maxWidth = 800;
+            const maxHeight = 500;
 
-            let ratio = Math.min(maxWidth / width, maxHeight / height);
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
             
             width = Math.floor(width * ratio);
             height = Math.floor(height * ratio);
@@ -968,16 +969,16 @@ const returnOCR = async message => {
         }
 
         if (isClan) {
-            let intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
-            let intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
-            let intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
+            const intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
+            const intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
+            const intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
             
             const pad = (num) => { 
                 return ('00'+num).slice(-2) 
             };
             
             let date;
-            let let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             let idxDate = -1;
             for (i = 0; i < let3Month.length; i++) {
                 if (values[1].indexOf(let3Month[i]) != -1) {
