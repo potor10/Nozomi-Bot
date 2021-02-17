@@ -666,15 +666,19 @@ const say = async (message, args) => {
 
 const getCanvasFromURL = async (url) => {
     let returnImage;
-
-    try {
-        const response = await got(url);
+    return new Promise((resolve, reject) => {
         returnImage = new Image();
-        returnImage.src = response.body;
-        return returnImage;
-    } catch (error) {
-        console.log(error.response.body);
-        //=> 'Internal server error ...'
+
+        returnImage.onload = () => resolve(returnImage);
+        returnImage.onerror = () => reject(new Error('Failed to load image'));
+
+        try {
+            const response = await got(url);
+            returnImage.src = response.body;
+        } catch (error) {
+            console.log(error.response.body);
+            return reject(err);
+        }
     }
 }
 
@@ -709,10 +713,10 @@ const rollgacha = async (message) => {
         let isDupe = [];
 
         let interval = setInterval(async () => {
-            timesRun += 1;
-            if(timesRun === 11){
+            if(timesRun === 10){
                 clearInterval(interval);
 
+                console.log(profile);
                 //await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastMessage, 
                 //    profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
@@ -729,7 +733,7 @@ const rollgacha = async (message) => {
                 console.log(obtainedImages);
                 
                 for (let i = 0; i < obtainedImages.length; i++) {
-                    ctx.drawImage(obtainedImages[i], x, y, 51, 51);
+                    obtainedImages[i] ctx.drawImage(obtainedImages[i], x, y, 51, 51);
 
                     x+= 51;
                     if (i == 4) {
@@ -764,7 +768,7 @@ const rollgacha = async (message) => {
                     .setTimestamp();
 
                 rollResults.edit(combinedRoll);
-            } else {            
+            } else if (timesRun < 10) {            
                 let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
                 if (rarityRolled < threeStarRate) {
                     let randomUnit = Math.floor(Math.random() * char3star.length);
@@ -823,8 +827,10 @@ const rollgacha = async (message) => {
 
                 embedRoll.setDescription(`${rollString}`);
                 rollResults.edit(embedRoll);
+            } else {
+                clearInterval(interval);
             }
-            
+            timesRun += 1;
         }, 2000); 
     } else {
         let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
