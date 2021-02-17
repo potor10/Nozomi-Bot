@@ -112,8 +112,8 @@ const initDB = async () => {
     const query = `
         DROP TABLE IF EXISTS ATTACKS;
         DROP TABLE IF EXISTS STATS;
-        DROP TABLE IF EXISTS CB;
         DROP TABLE IF EXISTS COLLECTION;
+        DROP TABLE IF EXISTS CB;
 
         CREATE TABLE ATTACKS (
             uid varchar NOT NULL,
@@ -133,13 +133,13 @@ const initDB = async () => {
             tears int DEFAULT 0
         );
 
-        CREATE TABLE CB (
-            cbid int DEFAULT 0
-        );
-
         CREATE TABLE COLLECTION (
             uid varchar NOT NULL,
             charName varchar NOT NULL
+        );
+
+        CREATE TABLE CB (
+            cbid int DEFAULT 0
         );
 
         INSERT INTO CB (cbid)
@@ -274,6 +274,7 @@ const addCollection = async (id, charName) => {
     pgdb.connect();
 
     console.log(charName);
+
     const query = `
         INSERT INTO COLLECTION (uid, charName)
             SELECT '${id}', '${charName}'
@@ -843,13 +844,13 @@ const rollgacha = async (message) => {
 
                     console.log(randomUnit);
                     console.log(char1star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, `${char1star[randomUnit].charName}`)) {
+                    if (await checkCollection(message.author.id, char1star[randomUnit].charName)) {
                         console.log(char1star[randomUnit].charname);
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        await addCollection(message.author.id, `${char1star[randomUnit].charName}`);
+                        await addCollection(message.author.id, char1star[randomUnit].charName);
                         console.log(char1star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
@@ -1058,6 +1059,12 @@ process.on("SIGINT", () => (process.exit(0)));
 
 // Start Stuff
 initDB();
+addCollection('2','duku');
+addCollection('2444','duku333');
+addCollection('2666','duku2123123');
+addCollection('244','duk122u');
+addCollection('244','d11uku');
+addCollection('244','d33uku');
 
 // Log In
 console.log("Logging In To Princonne Bot");
