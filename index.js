@@ -295,6 +295,7 @@ const setclanbattle = (message) => {
     let currentCBID = retrieveCBID();
     console.log(currentCBID);
     let newCBID = parseFirstArgAsInt(message, currentCBID);
+    console.log(newCBID);
     updateCBID(newCBID);
     message.reply(`Current Clan Battle Identification Number Set To: ${newCBID}`)
 }
