@@ -48,9 +48,10 @@ const initGachaArray = async () => {
 
         $(findTable).each((idx, element) => {
             const href = element.attribs.href;
-            let childTitle = element.children().first().title;
-            let thumnailUrl = element.children().first().attr('src');
-            console.log(childTitle);
+            let imgTitle = $('img', element).title;
+            let thumnailUrl = $('img', element).attr('src');
+            
+            console.log(imgTitle);
             console.log(thumnailUrl);
             console.log(href);
         });
