@@ -450,14 +450,9 @@ const returnOCR = async message => {
         if (isClan) {
             console.log(values);
 
-            let intAttack1 = await parseFirstArgAsInt(values[4].split('\n', 1)[0], 0);
-            let intAttack2 = await parseFirstArgAsInt(values[3].split('\n', 1)[0], 0);
-            let intAttack3 = await parseFirstArgAsInt(values[2].split('\n', 1)[0], 0);
-
-            console.log(intAttack1);
-            console.log("lol: " + values[4].split('\n', 1)[0]);
-            console.log(intAttack2);
-            console.log(intAttack3);
+            let intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
+            let intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
+            let intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
             
             const pad = (num) => { 
                 return ('00'+num).slice(-2) 
