@@ -93,15 +93,15 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
 
     const query = `
         UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
-            WHERE uid = '${id}' AND attackDate = ${date};
+            WHERE uid = '${id}' AND attackDate = '${date}';
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-            SELECT '${id}', ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
-            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = ${date});
+            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
+            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = '${date}');
     `;
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', ${date}, ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
+        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -308,7 +308,7 @@ const profile = async message => {
         .addField("Damage Dealt This Clan War", profileDamage[0])
         .addField("Damage Dealt Today", profileDamage[1])
         .addField("Total Damage Dealt", profileDamage[2])
-        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear}`, client.user.avatarURL)
+        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL)
         .setTimestamp());
 };
 
@@ -482,7 +482,7 @@ const returnOCR = async message => {
                 .addField("Attempt 2", intAttack2)
                 .addField("Attempt 3", intAttack3)
                 .addField("Total Damage Dealt For This Day", intAttack1 + intAttack2 + intAttack3)
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear}`, client.user.avatarURL)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL)
                 .setTimestamp());
             }
         }
