@@ -11,7 +11,6 @@ const parseDbUrl = require("parse-database-url");
 
 const cheerio = require('cheerio');
 const got = require("got");
-const request = require('request');
 
 const { Canvas, Image } = require('canvas');
 const fs = require('fs');
@@ -671,12 +670,8 @@ function loadImage (url) {
   
         img.onload = () => resolve(img);
         img.onerror = () => reject(new Error('Failed to load image'));
-  
-        request.get(url, (err, res) => {
-            if (err) return reject(err);
-    
-            img.src = url;
-        })
+
+        img.src = url;
     })
 }
 
@@ -764,7 +759,7 @@ const rollgacha = async (message) => {
                     .setAuthor(client.user.username, client.user.avatarURL())
                     .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                     .setDescription(`You have earned ${tearsObtained} <:tears:811495998450565140>`)
-                    .attachFiles(['./combined-roll.png'])
+                    .attachFiles(['./test.png'])
                     .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                     .setTimestamp();
 
