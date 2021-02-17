@@ -36,15 +36,16 @@ const initGachaArray = async () => {
 
     const findTable = '#DataTables_Table_0';
     const scrapeString = 'a';
-    
-    console.log($.root().html());
 
     request({
         method: 'GET',
         url: url1star
     }, (err, res, body) => { 
         if (err) return console.error(err);
+        
         let $ = cheerio.load(body);
+        console.log($.root().html());
+        
         $('a', '#DataTables_Table_0').each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
