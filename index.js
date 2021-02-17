@@ -11,6 +11,7 @@ const parseDbUrl = require("parse-database-url");
 
 const cheerio = require('cheerio');
 const got = require("got");
+const http = require('http');
 
 const { Canvas, Image } = require('canvas');
 const fs = require('fs');
@@ -664,21 +665,22 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const getCanvasFromURL = async (url) => {
-    let returnImage;
+const loadImage = (url) => {
     return new Promise((resolve, reject) => {
-        returnImage = new Image();
-
-        returnImage.onload = () => resolve(returnImage);
-        returnImage.onerror = () => reject(new Error('Failed to load image'));
-
-        got(url).then(response => {
-            returnImage.src = response.body;
-        }).catch(err => {
-            console.log(err);
-        });
-    });
-}
+      const img = new Image()
+  
+      img.onload = () => resolve(img)
+      img.onerror = () => reject(new Error('Failed to load image'))
+  
+      http.get(url, (res) => {
+        let chunks = []
+  
+        res.on('error', (err) => { reject(err) })
+        res.on('data', (chunk) => { chunks.push(chunk) })
+        res.on('end', () => { img.src = Buffer.concat(chunks) })
+      })
+    })
+  }
 
 const rollgacha = async (message) => {
 
@@ -719,7 +721,7 @@ const rollgacha = async (message) => {
                 //    profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
 
-                let tearSRC = await getCanvasFromURL(
+                let tearSRC = await loadImage(
                     'https://media.discordapp.net/emojis/811495998450565140.png?width=51&height=51');
                 
                 var canvas = new Canvas(255, 102);
@@ -781,7 +783,7 @@ const rollgacha = async (message) => {
                         isDupe[timesRun] = 0;
                     }
 
-                    let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailurl);
+                    let obtainedImage = await loadImage(char3star[randomUnit].thumbnailurl);
                     obtainedImages.push(obtainedImage);
 
                     console.log(char3star[randomUnit]);
@@ -798,7 +800,7 @@ const rollgacha = async (message) => {
                         isDupe[timesRun] = 0;
                     }
 
-                    let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailurl);
+                    let obtainedImage = await loadImage(char2star[randomUnit].thumbnailurl);
                     obtainedImages.push(obtainedImage);
 
                     console.log(char2star[randomUnit]);
@@ -817,7 +819,7 @@ const rollgacha = async (message) => {
                         isDupe[timesRun] = 0;
                     }
 
-                    let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailurl);
+                    let obtainedImage = await loadImage(char1star[randomUnit].thumbnailurl);
                     obtainedImages.push(obtainedImage);
 
                     console.log(char1star[randomUnit]);
