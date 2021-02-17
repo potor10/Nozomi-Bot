@@ -761,7 +761,7 @@ const rollgacha = async (message) => {
                     .setAuthor(client.user.username, client.user.avatarURL())
                     .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                     .setDescription(`You have earned ${tearsObtained} <:tears:811495998450565140>`)
-                    .setImage('./combined-roll.png')
+                    .attachFiles(['./combined-roll.png'])
                     .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                     .setTimestamp();
 
