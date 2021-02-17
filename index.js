@@ -668,6 +668,7 @@ const getCanvasFromURL = async (url) => {
 
     try {
         const response = await got(url);
+        console.log(response.body)
         returnImage = new Image();
         returnImage.src = response;
 
@@ -749,7 +750,7 @@ const rollgacha = async (message, args) => {
                     }
                 }
 
-                canvas.createPNGStream().pipe(fs.createWriteStream('combined-roll.png'));
+                await canvas.createPNGStream().pipe(fs.createWriteStream('combined-roll.png'));
 
                 let combinedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
