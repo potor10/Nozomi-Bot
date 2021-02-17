@@ -267,11 +267,9 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
             WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charName = '${charName}');
     `;
 
-    console.log(query);
-
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}, ${jewels}, ${tears}`);
+        console.log(`LOG: CHARDB table is successfully updated with ${starLevel} units`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -372,7 +370,7 @@ const retrieveGacha = async (starLevel) => {
     pgdb.connect();
 
     const selectQuery = `
-        SELECT * FROM CHARDB WHERE starLevel = '${starLevel}';
+        SELECT * FROM CHARDB WHERE starLevel = ${starLevel};
     `;
 
     let output;
@@ -671,14 +669,28 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const rollgacha = message => {
-    var timesRun = 0;
-    var interval = setInterval(function(){
+const rollgacha = async (message, args) => {
+
+    let char3star = await retrieveGacha(3);
+    let char2star = await retrieveGacha(2);
+    let char1star = await retrieveGacha(1);
+
+    let timesRun = 0;
+    let interval = setInterval(function(){
         timesRun += 1;
-        if(timesRun === 60){
+        if(timesRun === 10){
             clearInterval(interval);
         }
-        //do whatever here..
+        
+        let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+        if (rarityRolled < threeStarRate) {
+
+        } else if (rarityRolled < (threeStarRate + twoStarRate)) {
+
+        } else {
+
+        }
+
     }, 2000); 
 }
 
