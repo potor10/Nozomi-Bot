@@ -453,6 +453,11 @@ const returnOCR = async message => {
             let intAttack1 = await parseFirstArgAsInt(values[4].split('\n', 1)[0], 0);
             let intAttack2 = await parseFirstArgAsInt(values[3].split('\n', 1)[0], 0);
             let intAttack3 = await parseFirstArgAsInt(values[2].split('\n', 1)[0], 0);
+
+            console.log(intAttack1);
+            console.log("lol: " + values[4].split('\n', 1)[0]);
+            console.log(intAttack2);
+            console.log(intAttack3);
             
             const pad = (num) => { 
                 return ('00'+num).slice(-2) 
