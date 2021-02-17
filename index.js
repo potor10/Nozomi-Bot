@@ -461,7 +461,7 @@ const returnOCR = async message => {
             
             let date;
             for (i = 0; i < values[1].length - 6; i++) {
-                date = Date.parse(values[1].substr(i, 6));
+                date = `${Date.parse(values[1].substr(i, 6))} ${new Date().getUTCFullYear()}`;
                 if(!isNaN(date)){
                     console.log(`LOG: Date Parsed, Found ${date}`);
                     break;
