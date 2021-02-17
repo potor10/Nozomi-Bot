@@ -283,16 +283,26 @@ const help = message => message.author.send(`I'll be counting on you, so let's w
                                             `TYPE **.price <size>** TO LOOK AT BITCONNECT PRICES \n` + 
                                             `TYPE **.buy/.sell <amt> <size>** TO PURCHASE OR SELL BITCONNECT`);
 
-const setclanbattle = async (message) => {
+const parseFirstArgAsInt = (args, defaultValue) => {
+    if (!Array.isArray(args)) return defaultValue;
+    if (args.length) {
+        let parseAmt = parseInt(args.shift().toLowerCase(), 10);
+        if (!isNaN(parseAmt) && parseAmt > 0) return parseAmt;
+    } else return defaultValue;
+};
+
+const clanbattle = async (message, args) => {
     let currentCBID = await retrieveCBID();
-    let newCBID = await parseInt(message.content, 10);
-    console.log(message.content);
-    console.log(newCBID);
+    let newCBID = parseFirstArgAsInt(args, currentCBID);
     if (!isNaN(newCBID)) {
-        await updateCBID(newCBID);
-        await message.channel.send(`Current Clan Battle Identification Number Set To: ${newCBID}`)
+        if (message.author.id == 154775062178824192) {
+            await updateCBID(newCBID);
+            await message.channel.send(`Current Clan Battle Identification Number Set To: ${newCBID}`);
+        } else {
+            message.channel.send(`You do not have the permission to use this`);
+        }
     } else {
-        await message.channel.send(`Current Clan Battle Identification Number Is: ${currentCBID}`)
+        await message.channel.send(`Current Clan Battle Identification Number Is: ${currentCBID}`);
     }
     
 }
@@ -389,7 +399,7 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const COMMANDS = { help, ping, reset, say, profile, setclanbattle };
+const COMMANDS = { help, ping, reset, say, profile, clanbattle };
 
 const getOcrImage = msgAttach => {
     let url = msgAttach.url;
