@@ -34,7 +34,7 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const scrapeString = '#DataTables_Table_0>tbody>tr>td>a';
+    const scrapeString = "#DataTables_Table_0>tbody>tr>td>a";
     
     got(url1star).then(response => {
         const $ = cheerio.load(response.body);
