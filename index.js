@@ -9,8 +9,8 @@ const { createWorker } = require('tesseract.js');
 const PGdb = require('pg').Client;
 const parseDbUrl = require("parse-database-url");
 
-const got = require('got');
 const cheerio = require('cheerio');
+const request = require('request');
 
 // Load Config Json with Prefix and Token 
 let { prefix, oneStarRate, twoStarRate, threeStarRate } = require("./config.json");
@@ -34,20 +34,19 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const findTable = '#DataTables_Table_0';
+    const findTable = '##DataTables_Table_0';
     const scrapeString = 'a';
     
-    got(url1star).then(response => {
-        const $ = cheerio.load(response.body);
-
-        $('a #DataTables_Table_0').each((idx, element) => {
+    request({
+        method: 'GET',
+        url: url1star
+    }, (err, res, body) => { 
+        if (err) return console.error(err);
+        let $ = cheerio.load(body);
+        $('a', '#DataTables_Table_0').each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
         });
-
-
-    }).catch(err => {
-        console.log(err);
     });
 
 }
