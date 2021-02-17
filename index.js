@@ -306,18 +306,27 @@ const profile = async message => {
     console.log(sqlDate);
     let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
 
+    let randomStatus = Math.floor(Math.random() * 5);
+    let statusStrings = [
+        "A Dapper Fellow <:coolnozomi:811498063527936031>",
+        "Empty In Mana <:mana:811498063515353149>",
+        "Drowning In Tears <:tears:811495998450565140>",
+        "Pulling Literal Garbage <:garbage:811498063427928086>",
+        "Out Of Shape <:stamina:811495998328930314>"
+    ]
+
     await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(profileUser.avatarURL())
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
-        .setDescription("Displaying Profile.")
+        .setDescription(statusStrings[randomStatus])
         .addField("Level", profileData.level)
         .addFields(
-            { name: "Dealt This Clan War", value: profileDamage[0], inline: true },
-            { name: "Dealt Today", value: profileDamage[1], inline: true },
-            { name: "Total Dealt", value: profileDamage[2], inline: true },
+            { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
+            { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
+            { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
         )
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
@@ -495,16 +504,16 @@ const returnOCR = async message => {
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
-                .setTitle(`${message.author.displayName||message.author.username}'s attack <:critrate:811495998383325244>`)
+                .setTitle(`${message.author.displayName||message.author.username}'s attack`)
                 .setDescription(`on ` + 
                     `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
                     `<:nozomiblush:811498063918137375>`)
                 .addFields(
-                    { name: "Attempt 1 <:critdamage:811495998463148102>", value: intAttack1, inline: true },
-                    { name: "Attempt 2 <:critdamage:811495998463148102>", value: intAttack2, inline: true },
-                    { name: "Attempt 3 <:critdamage:811495998463148102>", value: intAttack3, inline: true },
+                    { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
+                    { name: "Attempt 2 <:critrate:811495998383325244>", value: intAttack2, inline: true },
+                    { name: "Attempt 3 <:critrate:811495998383325244>", value: intAttack3, inline: true },
                 )
-                .addField(`Total Damage Dealt For This Day ${intAttack1 + intAttack2 + intAttack3} <:patk:811495998156439563>`)
+                .addField(`Total Damage Dealt For This Day <:critdamage:811495998463148102>`, intAttack1 + intAttack2 + intAttack3)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp());
             }
