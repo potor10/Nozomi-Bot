@@ -431,12 +431,12 @@ const checkCollection = async (id, charName) => {
             WHERE uid = '${id}' and charName = '${charName}';
     `;
 
-    let output = false;
+    let output = true;
     try {
         const res = await pgdb.query(query);
         console.log(res);
-        if (res.rows[0] == charName) {
-            output = true;
+        if (res.rows.length == 0) {
+            output = false;
         }
     } catch (err) {
         console.log(err.stack);
@@ -717,7 +717,7 @@ const rollgacha = async (message) => {
                 
 
                 let tearSRC = await loadImage(
-                    'https://media.discordapp.net/emojis/811495998450565140.png?width=51&height=51');
+                    'https://media.discordapp.net/emojis/811495998450565140.png');
                 
                 var canvas = new Canvas(255, 102);
                 var ctx = canvas.getContext('2d');
@@ -728,7 +728,7 @@ const rollgacha = async (message) => {
                 console.log(obtainedImages);
                 
                 for (let i = 0; i < obtainedImages.length; i++) {
-                    ctx.drawImage(obtainedImages[i], x, y, 51, 51);
+                    ctx.drawImage(obtainedImages[i], x, y, 121, 121);
 
                     x+= 51;
                     if (i == 4) {
@@ -743,7 +743,7 @@ const rollgacha = async (message) => {
 
                 for (let i = 0; i < isDupe.length; i++) {
                     if (isDupe[i]) {
-                        ctx.drawImage(tearSRC, x, y, 51, 51);
+                        ctx.drawImage(tearSRC, x, y, 121, 121);
                     }
 
                     x+= 51;
@@ -770,7 +770,7 @@ const rollgacha = async (message) => {
                             .setTimestamp();
                         rollResults.edit(combinedRoll);
 
-                        //message.channel.send("Testing message.", { files: ["./test.png"] });
+                        message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
                 );
             } else if (timesRun < 10) {            
