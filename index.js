@@ -4,7 +4,7 @@
  * @summary An Autistic Discord Bot For Princess Connect
  */
 
-const { Client, Attachment, Message, MessageEmbed } = require("discord.js");
+const { Client, Attachment, MessageEmbed } = require("discord.js");
 
 const { createWorker } = require('tesseract.js');
 
@@ -497,7 +497,7 @@ const returnOCR = async message => {
 client
     .on("ready", () => {
         // Bot Ready
-        console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
+        console.log(`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`); 
         client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
     })
     .on("guildCreate", guild => {
