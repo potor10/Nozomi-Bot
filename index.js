@@ -34,13 +34,15 @@ const initGachaArray = async () => {
     const charArray2star = [];
     const charArray3star = [];
 
-    const dataTableID = '#DataTables_Table_0>tbody>tr>td>a';
+    const scrapeString = '#DataTables_Table_0>tbody>tr>td>a';
     
     got(url1star).then(response => {
         const $ = cheerio.load(response.body);
-        let table = $(dataTableID);
 
-        console.log(table.text());
+        $(scrapeString).each((i, link) => {
+            const href = link.attribs.href;
+            console.log(href);
+        }
 
 
     }).catch(err => {
