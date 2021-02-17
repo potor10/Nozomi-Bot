@@ -72,7 +72,7 @@ const initDB = async () => {
 
     try {
         const res = await pgdb.query(query);
-        console.log('Table is successfully created');
+        console.log('LOG: Table is successfully reset');
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -186,10 +186,8 @@ const retrieveDamageDB = async (id, date) => {
     const values = [];
     try {
         const res = await pgdb.query(query);
-        console.log(res);
-        console.log(res[0].rows);
-        console.log(res[1].rows);
-        console.log(res[2].rows);
+        console.log(`LOG: Obtained Damage Values For ${id}`);
+        
         values.push(res[0].rows[0].total);
         values.push(res[1].rows[0].total);
         values.push(res[2].rows[0].total);
@@ -393,7 +391,6 @@ const profile = async message => {
     
     let profileUser = message.mentions.members.first() || message.author;
     let profileData = await retrieveStats(profileUser.id);
-    const sqlDate = (new Date()).toLocaleString("en-US");
 
     const pad = (num) => { 
         return ('00'+num).slice(-2) 
@@ -402,8 +399,7 @@ const profile = async message => {
     let date = new Date();
     date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
 
-    console.log(sqlDate);
-    let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
+    let profileDamage = await retrieveDamageDB(profileUser.id, date);
 
     let randomStatus = Math.floor(Math.random() * 5);
     let statusStrings = [
@@ -552,7 +548,8 @@ const returnOCR = async message => {
         let newURL = `${attachment.url}?width=${width}&height=${height}`;
         newURL = newURL.replace(`cdn`, `media`);
         newURL = newURL.replace(`com`, `net`);
-        console.log(newURL);
+
+        console.log(`LOG: Found image with URL ${newURL}`);
 
         await worker.load();
         await worker.loadLanguage('eng');
@@ -562,9 +559,9 @@ const returnOCR = async message => {
         isClan = true;
         for (let i = 0; i < rectangles.length; i++) {
             const { data: { text } } = await worker.recognize(newURL, {rectangle: rectangles[i]} );
-            if (i==0 && text.localeCompare("Trial Run\n") != 0) {
+            if (i==0 && text.indexOf("Trial Run") != -1) {
                 isClan = false;
-                console.log(`Not Clan War but instead:${text}`);
+                console.log(`LOG: Image was not detected as clan war image`);
                 break;
             } else if (i==0) {
                 await message.react('✅');
@@ -573,8 +570,6 @@ const returnOCR = async message => {
         }
 
         if (isClan) {
-            console.log(values);
-
             let intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
             let intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
             let intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
