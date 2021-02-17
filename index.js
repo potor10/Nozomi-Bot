@@ -39,7 +39,7 @@ const initGachaArray = async () => {
     got(url1star).then(response => {
         const $ = cheerio.load(response.body);
 
-        $(scrapeString).each((i, link) => {
+        $('a').each((i, link) => {
             const href = link.attribs.href;
             console.log(href);
         });
