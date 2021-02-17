@@ -283,21 +283,18 @@ const help = message => message.author.send(`I'll be counting on you, so let's w
                                             `TYPE **.price <size>** TO LOOK AT BITCONNECT PRICES \n` + 
                                             `TYPE **.buy/.sell <amt> <size>** TO PURCHASE OR SELL BITCONNECT`);
 
-const parseFirstArgAsInt = (args, defaultValue) => {
-    if (!Array.isArray(args)) return defaultValue;
-    if (args.length) {
-        let parseAmt = parseInt(args.shift().toLowerCase(), 10);
-        if (!isNaN(parseAmt) && parseAmt > 0) return parseAmt;
-    } else return defaultValue;
-};
-
 const setclanbattle = async (message) => {
     let currentCBID = await retrieveCBID();
-    console.log(currentCBID);
-    let newCBID = await parseFirstArgAsInt(message, currentCBID);
+    let newCBID = await parseInt(message, 10);
+
     console.log(newCBID);
-    await updateCBID(newCBID);
-    message.reply(`Current Clan Battle Identification Number Set To: ${newCBID}`)
+    if (!isNaN(newCBID)) {
+        await updateCBID(newCBID);
+        await message.channel.send(`Current Clan Battle Identification Number Set To: ${newCBID}`)
+    } else {
+        await message.channel.send(`Current Clan Battle Identification Number Is: ${currentCBID}`)
+    }
+    
 }
 
 /** @param {import("discord.js").Message} message */
