@@ -51,7 +51,7 @@ const initGachaArray = async () => {
     console.log(charArray3star.length);
 }
 
-const webScrape = async (url, findTable, findImg) => {
+const webScrape = (url, findTable, findImg) => {
     let returnArray = []
 
     request({
