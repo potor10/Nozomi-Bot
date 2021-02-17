@@ -763,6 +763,14 @@ const rollgacha = async (message) => {
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
                         rollResults.edit(combinedRoll);
+
+                        fs.readFile('./test.png', 'utf8' , (err, data) => {
+                            if (err) {
+                              console.error(err)
+                              return
+                            }
+                            console.log(data)
+                        })
                     }
                 );
             } else if (timesRun < 10) {            
@@ -771,7 +779,7 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char3star.length);
                     rollString += '<:poggerona:811498063578529792>';
                     
-                    if (checkCollection(message.author.id, char3star[randomUnit].name)) {
+                    if (await checkCollection(message.author.id, char3star[randomUnit].name)) {
                         tearsObtained += 50;
                         isDupe[timesRun] = 1;
 
@@ -788,7 +796,7 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char2star.length);
                     rollString += '<:bitconnect:811498063641837578>';
 
-                    if (checkCollection(message.author.id, char2star[randomUnit].name)) {
+                    if (await checkCollection(message.author.id, char2star[randomUnit].name)) {
                         tearsObtained += 10;
                         isDupe[timesRun] = 1;
 
@@ -807,7 +815,7 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char1star.length);
                     rollString += '<:garbage:811498063427928086>';
 
-                    if (checkCollection(message.author.id, char1star[randomUnit].name)) {
+                    if (await checkCollection(message.author.id, char1star[randomUnit].name)) {
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
 
