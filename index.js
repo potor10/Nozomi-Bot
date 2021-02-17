@@ -294,7 +294,7 @@ const parseFirstArgAsInt = (args, defaultValue) => {
 const clanbattle = async (message, args) => {
     let currentCBID = await retrieveCBID();
     let newCBID = parseFirstArgAsInt(args, currentCBID);
-    if (!isNaN(newCBID)) {
+    if (currentCBID != newCBID) {
         if (message.author.id == 154775062178824192) {
             await updateCBID(newCBID);
             await message.channel.send(`Current Clan Battle Identification Number Set To: ${newCBID}`);
