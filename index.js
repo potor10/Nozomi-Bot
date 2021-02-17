@@ -29,7 +29,7 @@ const initGachaDB = async () => {
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
     //const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
 
-    const findTable = '.ie5 > .table > tbody > tr > td > a';
+    const findTable = '.table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
     //const charArray1star = await webScrape(url1star, findTable, findImg);
@@ -65,13 +65,16 @@ const webScrape = async (url, findTable, findImg) => {
     let returnArray = [];
 
     try {
-		const response = await got(url);
+        const response = await got(url);
         let $ = cheerio.load(response.body);
         console.log(`LOG: Finding Data From Units From: ${url}`);
 
+        let firstClass = $('.ie5').first().html();
+        $ = cheerio.load(firstClass);
+
         let rows = $(findTable);
         console.log(rows.length);
-        console.log(rows);
+        //console.log(rows);
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.lastIndexOf('★');
