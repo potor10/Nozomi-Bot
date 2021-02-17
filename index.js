@@ -25,7 +25,7 @@ dbConfig.ssl = { rejectUnauthorized: false };
 
 let gacha = [];
 
-const initGachaArray = () => {
+const initGachaArray = async () => {
     gacha = [];
 
     const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
@@ -35,9 +35,9 @@ const initGachaArray = () => {
     const findTable = '.ie5 > .table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    const charArray1star = webScrape(url1star, findTable, findImg);
-    const charArray2star = webScrape(url2star, findTable, findImg);
-    const charArray3star = webScrape(url3star, findTable, findImg);
+    const charArray1star = await webScrape(url1star, findTable, findImg);
+    const charArray2star = await webScrape(url2star, findTable, findImg);
+    const charArray3star = await webScrape(url3star, findTable, findImg);
 
     gacha.push(charArray1star);
     gacha.push(charArray2star);
@@ -53,10 +53,11 @@ const initGachaArray = () => {
     console.log(gacha);
 }
 
-const webScrape = (url, findTable, findImg) => {
+const webScrape = async (url, findTable, findImg) => {
     let returnArray = [];
 
-    got(url).then(response => {
+    try {
+		const response = await got(url);
         let $ = cheerio.load(response.body);
 
         let rows = $(findTable);
@@ -67,20 +68,22 @@ const webScrape = (url, findTable, findImg) => {
 
             if (idxName != -1) {
                 let thumnailUrl = $('img', rows[i]).attr('src');
-                let characterInfo = getGachaData(rows[i].attribs.href, thumnailUrl)
+                let characterInfo = await getGachaData(rows[i].attribs.href, thumnailUrl);
                 returnArray.push(characterInfo);
             }
         }
 
         return returnArray;
-    }).catch(error => {
-        console.log(error);
-    });
+    } catch (error) {
+        console.log(error.response.body);
+        //=> 'Internal server error ...'
+    }
 }
 
-const getGachaData = (href, thumnailUrl) => {
-    got(href).then(response2 => {
-        let innerPage = cheerio.load(response2.body);
+const getGachaData = async (href, thumnailUrl) => {
+    try {
+		const response = await got(href);
+        let innerPage = cheerio.load(response.body);
 
         let fullImageURL = innerPage(findImg).first().attr('src');
 
@@ -96,9 +99,10 @@ const getGachaData = (href, thumnailUrl) => {
         } 
 
         return characterInfo;
-    }).catch(error => {
-        console.log(error);
-    });
+    } catch (error) {
+        console.log(error.response.body);
+        //=> 'Internal server error ...'
+    }
 }
 
 const initDB = async () => {
