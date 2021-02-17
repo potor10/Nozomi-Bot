@@ -675,6 +675,8 @@ const rollgacha = async (message, args) => {
     let char2star = await retrieveGacha(2);
     let char1star = await retrieveGacha(1);
 
+    console.log(char2star);
+
     let rollString = '';
 
     let embedRoll = new MessageEmbed()
