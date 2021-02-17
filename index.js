@@ -23,58 +23,77 @@ const client = new Client();
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
-const gachaArray = [];
+let charArray1star = [];
+let charArray2star = [];
+let charArray3star = [];
 
 const initGachaArray = async () => {
+    charArray1star = [];
+    charArray2star = [];
+    charArray3star = [];
 
     const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
     const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
 
-    const charArray1star = [];
-    const charArray2star = [];
-    const charArray3star = [];
-
     const findTable = '.ie5 > .table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
+    charArray1star = webScrape(url1star, findTable, findImg);
+    charArray2star = webScrape(url2star, findTable, findImg);
+    charArray3star = webScrape(url3star, findTable, findImg);
+
+    console.log(charArray1star);
+    console.log(charArray2star);
+    console.log(charArray3star);
+}
+
+const webScrape = async (url, findTable, findImg) => {
+    let returnArray = []
+
     request({
         method: 'GET',
-        url: url1star
+        url: url
     }, (err, res, body) => { 
         if (err) return console.error(err);
         
         let $ = cheerio.load(body);
-        //console.log($.root().html());
 
         $(findTable).each((idx, element) => {
             const href = element.attribs.href;
-            let imgTitle = $('img', element).attr('title');
-            let thumnailUrl = $('img', element).attr('src');
 
+            // Make sure the image is not blank table box
+            let imgTitle = $('img', element).attr('title');
             let idxName = imgTitle.indexOf('★');
 
+            // Get Thumbnail url
+            let thumnailUrl = $('img', element).attr('src');
+
             if (idxName != -1) {
-                let charName = imgTitle.substr(idxName);
-                
                 request({
                     method: 'GET',
                     url: href
                 }, (err2, res2, body2) => { 
-                    if (err) return console.error(err);
+                    if (err2) return console.error(err2);
                     let innerPage = cheerio.load(body2);
 
-                    let fullCharImage = innerPage(findImg).first().attr('src');
-                    console.log("Cull char image " + fullCharImage);
-                });
+                    let fullImageURL = innerPage(findImg).first().attr('src');
 
-                console.log(imgTitle);
-                console.log(thumnailUrl);
-                console.log(href);
+                    let characterName = innerPage(findImg).first().attr('title');
+                    let lastSlash = characterName.lastIndexOf('/') + 1;
+                    characterName = characterName.substr(lastSlash);
+
+                    let characterInfo = {
+                        name: characterName,
+                        thumbnailURL: thumnailUrl,
+                        fullImageURL: fullImageURL
+                    } 
+
+                    returnArray.push(characterInfo);
+                });
             }
         });
     });
-
 }
 
 const initDB = async () => {
