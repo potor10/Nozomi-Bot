@@ -495,14 +495,16 @@ const returnOCR = async message => {
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
-                .setTitle(`${message.author.displayName||message.author.username}'s attack`)
-                .setDescription(`on ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
+                .setTitle(`${message.author.displayName||message.author.username}'s attack <:critrate:811495998383325244>`)
+                .setDescription(`on ` + 
+                    `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
+                    `<:nozomiblush:811498063918137375>`)
                 .addFields(
-                    { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
+                    { name: "Attempt 1 <:critdamage:811495998463148102>", value: intAttack1, inline: true },
                     { name: "Attempt 2 <:critdamage:811495998463148102>", value: intAttack2, inline: true },
-                    { name: "Attempt 3 <:patk:811495998156439563>", value: intAttack3, inline: true },
+                    { name: "Attempt 3 <:critdamage:811495998463148102>", value: intAttack3, inline: true },
                 )
-                .addField("Total Damage Dealt For This Day", intAttack1 + intAttack2 + intAttack3)
+                .addField(`Total Damage Dealt For This Day ${intAttack1 + intAttack2 + intAttack3} <:patk:811495998156439563>`)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp());
             }
