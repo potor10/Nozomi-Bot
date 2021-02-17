@@ -688,6 +688,9 @@ const rollgacha = async (message) => {
     let jewelCost = 0;
 
     if (profile.jewels >= jewelCost) {
+        // Deduct the jewels immediately
+        await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
+            profile.jewels - jewelCost, profile.tears);
 
         let char3star = await retrieveGacha(3);
         let char2star = await retrieveGacha(2);
@@ -722,7 +725,7 @@ const rollgacha = async (message) => {
                 // Refresh profile stats before making changes
                 profile = await retrieveStats(message.author.id);
                 await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
-                    profile.jewels - jewelCost, profile.tears + tearsObtained);
+                    profile.jewels, profile.tears + tearsObtained);
                 
                 let sizX = 121;
                 let sizY = 121;
