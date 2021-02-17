@@ -472,15 +472,18 @@ const returnOCR = async message => {
             };
             
             let date;
-            for (i = 0; i < values[1].length - 6; i++) {
-                if(!isNaN(Date.parse(values[1].substr(i, 6)))){
-                    date = Date.parse(`${values[1].substr(i, 6)} ${new Date().getUTCFullYear()}`);
-                    console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(i, 6)} ${new Date().getUTCFullYear()}`);
-                    break;
+            let let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            let idxDate = -1;
+            for (i = 0; i < let3Month.length; i++) {
+                if (values[1].indexOf(let3Month) != -1) {
+                    idxDate = values[1].indexOf(let3Month);
                 }
             }
 
-            if (!isNaN(date)) {
+            if (idxDate != -1) {
+                date = Date.parse(`${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
+                console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(i, 6)} ${new Date().getUTCFullYear()}`);
+                
                 let newdate = new Date(date);
                 newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
                 await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
