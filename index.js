@@ -28,18 +28,18 @@ let gacha = [];
 const initGachaArray = async () => {
     gacha = [];
 
-    const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
+    //const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
     const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
 
     const findTable = '.ie5 > .table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    const charArray1star = await webScrape(url1star, findTable, findImg);
+    //const charArray1star = await webScrape(url1star, findTable, findImg);
     const charArray2star = await webScrape(url2star, findTable, findImg);
     const charArray3star = await webScrape(url3star, findTable, findImg);
 
-    gacha.push(charArray1star);
+    //gacha.push(charArray1star);
     gacha.push(charArray2star);
     gacha.push(charArray3star);
 
