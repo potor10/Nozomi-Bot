@@ -43,7 +43,7 @@ const initGachaArray = async () => {
     }, (err, res, body) => { 
         if (err) return console.error(err);
         let $ = cheerio.load(body);
-        $('a', '#DataTables_Table_0').each((idx, element) => {
+        $('a').each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
         });
