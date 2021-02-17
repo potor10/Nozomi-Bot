@@ -46,6 +46,9 @@ const initGachaArray = async () => {
     console.log(charArray1star);
     console.log(charArray2star);
     console.log(charArray3star);
+    console.log(charArray1star.length);
+    console.log(charArray2star.length);
+    console.log(charArray3star.length);
 }
 
 const webScrape = async (url, findTable, findImg) => {
@@ -89,7 +92,7 @@ const webScrape = async (url, findTable, findImg) => {
                         fullImageURL: fullImageURL
                     } 
 
-                    await returnArray.push(characterInfo);
+                    returnArray.push(characterInfo);
                 });
             }
         });
