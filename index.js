@@ -752,7 +752,7 @@ process.on("SIGINT", () => (process.exit(0)));
 
 // Start Stuff
 initDB();
-initGachaArray();
+await initGachaArray();
 
 // Log In
 console.log("Logging In To Princonne Bot");
