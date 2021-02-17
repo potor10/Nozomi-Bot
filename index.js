@@ -715,11 +715,13 @@ const rollgacha = async (message) => {
                 //await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastMessage, 
                 //    profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
+                let sizX = 121;
+                let sizY = 121;
 
                 let tearSRC = await loadImage(
-                    'https://media.discordapp.net/emojis/811495998450565140.png');
+                    `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizX}&height=${sizY}`);
                 
-                var canvas = new Canvas(255, 102);
+                var canvas = new Canvas(sizX * 5, sizY * 2);
                 var ctx = canvas.getContext('2d');
                 
                 let x = 0;
@@ -728,12 +730,12 @@ const rollgacha = async (message) => {
                 console.log(obtainedImages);
                 
                 for (let i = 0; i < obtainedImages.length; i++) {
-                    ctx.drawImage(obtainedImages[i], x, y, 121, 121);
+                    ctx.drawImage(obtainedImages[i], x, y, sizX, sizY);
 
-                    x+= 51;
+                    x+= sizX;
                     if (i == 4) {
                         x = 0;
-                        y += 51;
+                        y += sizY;
                     }
                 }
 
@@ -743,13 +745,13 @@ const rollgacha = async (message) => {
 
                 for (let i = 0; i < isDupe.length; i++) {
                     if (isDupe[i]) {
-                        ctx.drawImage(tearSRC, x, y, 121, 121);
+                        ctx.drawImage(tearSRC, x, y, sizX, sizY);
                     }
 
-                    x+= 51;
+                    x+= sizX;
                     if (i == 4) {
                         x = 0;
-                        y += 51;
+                        y += sizY;
                     }
                 }
 
@@ -758,6 +760,7 @@ const rollgacha = async (message) => {
                 stream.pipe(out);
                 out.on('finish', () =>  {
                         console.log('The PNG file was created.');
+
                         let combinedRoll = new MessageEmbed()
                             .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                             .setAuthor(client.user.username, client.user.avatarURL())
@@ -765,10 +768,9 @@ const rollgacha = async (message) => {
                             .setDescription(`You have earned ${tearsObtained} <:tears:811495998450565140>`)
                             .attachFiles(['./test.png'])
                             .setImage('attachment://test.png')
-                            .setImage('https://i.imgur.com/wSTFkRM.png')
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
-                        rollResults.edit(combinedRoll);
+                        rollResults.edit(combinedRoll, { files: ["./test.png"] });
 
                         message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
