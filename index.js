@@ -271,11 +271,14 @@ const addCollection = async (id, charName) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
+    console.log(charName);
     const query = `
         INSERT INTO COLLECTION (uid, charName)
             SELECT '${id}', '${charName}'
             WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charName = '${charName}');
     `;
+
+    console.log(query);
 
     try {
         const res = await pgdb.query(query);
@@ -714,6 +717,8 @@ const rollgacha = async (message) => {
             if(timesRun === 10){
                 clearInterval(interval);
 
+                // Refresh profile stats before making changes
+                profile = await retrieveStats(message.author.id);
                 await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
                     profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
