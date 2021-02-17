@@ -671,7 +671,7 @@ const getCanvasFromURL = async (url) => {
         const response = await got(url);
         returnImage = new Image();
         returnImage.src = response.body;
-        returnImage.onload = () => {return returnImage};
+        return returnImage;
     } catch (error) {
         console.log(error.response.body);
         //=> 'Internal server error ...'
@@ -710,7 +710,7 @@ const rollgacha = async (message) => {
 
         let interval = setInterval(async () => {
             timesRun += 1;
-            if(timesRun === 10){
+            if(timesRun === 11){
                 clearInterval(interval);
 
                 //await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastMessage, 
@@ -764,66 +764,66 @@ const rollgacha = async (message) => {
                     .setTimestamp();
 
                 rollResults.edit(combinedRoll);
+            } else {            
+                let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+                if (rarityRolled < threeStarRate) {
+                    let randomUnit = Math.floor(Math.random() * char3star.length);
+                    rollString += '<:poggerona:811498063578529792>';
+                    
+                    if (checkCollection(message.author.id, char3star[randomUnit].name)) {
+                        tearsObtained += 50;
+                        isDupe[timesRun] = 1;
+
+                    } else {
+                        addCollection(message.author.id, char3star[randomUnit].name);
+                        isDupe[timesRun] = 0;
+                    }
+
+                    let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailurl);
+                    obtainedImages.push(obtainedImage);
+
+                    console.log(char3star[randomUnit]);
+                } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
+                    let randomUnit = Math.floor(Math.random() * char2star.length);
+                    rollString += '<:bitconnect:811498063641837578>';
+
+                    if (checkCollection(message.author.id, char2star[randomUnit].name)) {
+                        tearsObtained += 10;
+                        isDupe[timesRun] = 1;
+
+                    } else {
+                        addCollection(message.author.id, char2star[randomUnit].name);
+                        isDupe[timesRun] = 0;
+                    }
+
+                    let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailurl);
+                    obtainedImages.push(obtainedImage);
+
+                    console.log(char2star[randomUnit]);
+                } else {
+                    silverCount++;
+
+                    let randomUnit = Math.floor(Math.random() * char1star.length);
+                    rollString += '<:garbage:811498063427928086>';
+
+                    if (checkCollection(message.author.id, char1star[randomUnit].name)) {
+                        tearsObtained += 1;
+                        isDupe[timesRun] = 1;
+
+                    } else {
+                        addCollection(message.author.id, char1star[randomUnit].name);
+                        isDupe[timesRun] = 0;
+                    }
+
+                    let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailurl);
+                    obtainedImages.push(obtainedImage);
+
+                    console.log(char1star[randomUnit]);
+                }
+
+                embedRoll.setDescription(`${rollString}`);
+                rollResults.edit(embedRoll);
             }
-            
-            let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
-            if (rarityRolled < threeStarRate) {
-                let randomUnit = Math.floor(Math.random() * char3star.length);
-                rollString += '<:poggerona:811498063578529792>';
-                
-                if (checkCollection(message.author.id, char3star[randomUnit].name)) {
-                    tearsObtained += 50;
-                    isDupe[timesRun] = 1;
-
-                } else {
-                    addCollection(message.author.id, char3star[randomUnit].name);
-                    isDupe[timesRun] = 0;
-                }
-
-                let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailurl);
-                obtainedImages.push(obtainedImage);
-
-                console.log(char3star[randomUnit]);
-            } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                let randomUnit = Math.floor(Math.random() * char2star.length);
-                rollString += '<:bitconnect:811498063641837578>';
-
-                if (checkCollection(message.author.id, char2star[randomUnit].name)) {
-                    tearsObtained += 10;
-                    isDupe[timesRun] = 1;
-
-                } else {
-                    addCollection(message.author.id, char2star[randomUnit].name);
-                    isDupe[timesRun] = 0;
-                }
-
-                let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailurl);
-                obtainedImages.push(obtainedImage);
-
-                console.log(char2star[randomUnit]);
-            } else {
-                silverCount++;
-
-                let randomUnit = Math.floor(Math.random() * char1star.length);
-                rollString += '<:garbage:811498063427928086>';
-
-                if (checkCollection(message.author.id, char1star[randomUnit].name)) {
-                    tearsObtained += 1;
-                    isDupe[timesRun] = 1;
-
-                } else {
-                    addCollection(message.author.id, char1star[randomUnit].name);
-                    isDupe[timesRun] = 0;
-                }
-
-                let obtainedImage = await getCanvasFromURL(char1star[randomUnit].thumbnailurl);
-                obtainedImages.push(obtainedImage);
-
-                console.log(char1star[randomUnit]);
-            }
-
-            embedRoll.setDescription(`${rollString}`);
-            rollResults.edit(embedRoll);
             
         }, 2000); 
     } else {
