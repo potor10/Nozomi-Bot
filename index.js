@@ -266,8 +266,7 @@ const addXp = async message => {
 
 
 // Commands
-const help = message => message.author.send(`HEY HEY HENLO 👀 \n\n` + 
-                                            `I SEE YOU NEED HELP YOU DUMB LOSER \n` + 
+const help = message => message.author.send(`I'll be counting on you, so let's work together until I can become a top idol, okay? Ahaha, from now on, I'll be in your care! \n\n` + 
                                             `TYPE **.ebola** TO BECOME DOWN SYNDROMED \n` + 
                                             `TYPE **.daily** TO OBTAIN YOUR DAILY REWARDS AND SETUP YOUR PROFILE \n` + 
                                             `TYPE **.spin** TO SPIN THE WHEEL OF BITCONNECT\n` + 
@@ -395,6 +394,15 @@ const returnOCR = async message => {
 
         let height = attachment.height;
         let width = attachment.width;
+        if (height > 1000 || width > 1000) {
+            let maxWidth = 500;
+            let maxHeight = 500;
+
+            let ratio = Math.min(maxWidth / height, maxHeight / height);
+            
+            width = width * ratio;
+            height = height * ratio;
+        }
 
         const rectangles = [
         {
@@ -429,7 +437,9 @@ const returnOCR = async message => {
         },
         ];
           
-        console.log(attachment.url);
+        let newURL = `${attachment.url}?width=${width}&height=${height}`;
+        console.log(newURL);
+
         await worker.load();
         await worker.loadLanguage('eng');
         await worker.initialize('eng');
@@ -437,7 +447,7 @@ const returnOCR = async message => {
         const values = [];
         isClan = true;
         for (let i = 0; i < rectangles.length; i++) {
-            const { data: { text } } = await worker.recognize(attachment.url, {rectangle: rectangles[i]} );
+            const { data: { text } } = await worker.recognize(newURL, {rectangle: rectangles[i]} );
             if (i==0 && text.localeCompare("Trial Run\n") != 0) {
                 isClan = false;
                 console.log(`Not Clan War but instead:${text}`);
