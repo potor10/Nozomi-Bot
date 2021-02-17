@@ -42,8 +42,8 @@ const initGachaDB = async () => {
     }
     */
 
-    for (let i = 0; i < charArray2star.length; i++) {
-        await updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
+    for (let chara in charArray2star) {
+        await updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
     }
 
     /*
@@ -244,6 +244,8 @@ const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {
             SELECT '${id}', ${level}, ${xp}, ${lastMessage}, ${jewels}, ${tears}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
+
+    console.log(query);
 
     try {
         const res = await pgdb.query(query);
