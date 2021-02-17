@@ -59,7 +59,7 @@ const webScrape = async (url, findTable, findImg) => {
     try {
         const response = await got(url);
         let $ = cheerio.load(response.body);
-        
+
         $(findTable).each(async (idx, element) => {
             const href = element.attribs.href;
 
@@ -87,7 +87,6 @@ const webScrape = async (url, findTable, findImg) => {
                         thumbnailURL: thumnailUrl,
                         fullImageURL: fullImageURL
                     } 
-                    console.log("LOLLLL7");
 
                     returnArray.push(characterInfo);
                 } catch (err) {
