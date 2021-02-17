@@ -28,40 +28,28 @@ dbConfig.ssl = { rejectUnauthorized: false };
 
 const initGachaDB = async () => {
 
-    //const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
+    const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
-    //const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
+    const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
 
     const findTable = '.table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    //const charArray1star = await webScrape(url1star, findTable, findImg);
+    const charArray1star = await webScrape(url1star, findTable, findImg);
     const charArray2star = await webScrape(url2star, findTable, findImg);
-    //const charArray3star = await webScrape(url3star, findTable, findImg);
+    const charArray3star = await webScrape(url3star, findTable, findImg);
 
-    /*
-    for (let chara in charArray1star) {
-        updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 1);
+    for (let i = 0; i < charArray1star.length; i++) {
+        await updateCharDB(charArray1star[i].name, charArray1star[i].thumbnailURL, charArray1star[i].fullImageURL, 1);
     }
-    */
 
     for (let i = 0; i < charArray2star.length; i++) {
         await updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
     }
 
-    /*
-    for (let chara in charArray3star) {
-        updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 3);
+    for (let i = 0; i < charArray3star.length; i++) {
+        await updateCharDB(charArray3star[i].name, charArray3star[i].thumbnailURL, charArray3star[i].fullImageURL, 3);
     }
-    */
-
-    //console.log(charArray1star);
-    //console.log(charArray2star);
-    //console.log(charArray3star);
-    //console.log(charArray1star.length);
-    //console.log(charArray2star.length);
-    //console.log(charArray3star.length);
-
 }
 
 const webScrape = async (url, findTable, findImg) => {
@@ -700,33 +688,101 @@ const rollgacha = async (message, args) => {
     let timesRun = 0;
     let silverCount = 0;
     let tearsObtained = 0;
+    let obtainedImages = [];
+    let isDupe = [];
 
     let interval = setInterval(function(){
         timesRun += 1;
         if(timesRun === 10){
             clearInterval(interval);
 
+            let tearSRC = 'https://media.discordapp.net/emojis/811495998450565140.png?width=51&height=51';
+            let imageArray = [];
+            
+            let x = 0;
+            let y = 0;
+            for (let i = 0; i < obtainedImages.length; i++) {
+                let inputImage = { src: obtainedImages[0], x: x, y: y };
+                imageArray.push(inputImage);
+
+                x+= 51;
+                if (i == 4) {
+                    x = 0;
+                    y -= 51;
+                }
+            }
+
+            x = 0;
+            y = 0;
+            for (let i = 0; i < isDupe.length; i++) {
+                let inputImage = { src: tearSRC, x: x, y: y, opacity: isDupe[i] * 0.6 };
+                imageArray.push(inputImage);
+
+                x+= 51;
+                if (i == 4) {
+                    x = 0;
+                    y -= 51;
+                }
+            }
+
+            mergeImages(imageArray, {
+                Canvas: Canvas,
+                Image: Image
+              }) .then(b64 => document.querySelector('img').src = b64);
+              // data:image/png;base64,iVBORw0KGgoAA...
         }
         
         let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
         if (rarityRolled < threeStarRate) {
-            //let randomUnit = Math.floor(Math.random() * char3star.length);
+            let randomUnit = Math.floor(Math.random() * char3star.length);
             rollString += '<:poggerona:811498063578529792>';
+            
+            if (checkCollection(message.author.id, char3star[randomUnit].name)) {
+                tearsObtained += 50;
+                isDupe[timesRun] = 1;
+
+            } else {
+                addCollection(message.author.id, char3star[randomUnit].name);
+                isDupe[timesRun] = 0;
+            }
+
+            obtainedImages.push(char3star[randomUnit].thumbnailURL);
+
+            console.log(char3star[randomUnit]);
         } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
             let randomUnit = Math.floor(Math.random() * char2star.length);
             rollString += '<:bitconnect:811498063641837578>';
 
-            if (checkCollection(message.author.char2star[randomUnit].name)) {
+            if (checkCollection(message.author.id, char2star[randomUnit].name)) {
+                tearsObtained += 10;
+                isDupe[timesRun] = 1;
 
             } else {
-
+                addCollection(message.author.id, char2star[randomUnit].name);
+                isDupe[timesRun] = 0;
             }
+
+            obtainedImages.push(char2star[randomUnit].thumbnailURL);
+
             console.log(char2star[randomUnit]);
         } else {
             silverCount++;
 
-            //let randomUnit = Math.floor(Math.random() * char1star.length);
+            let randomUnit = Math.floor(Math.random() * char1star.length);
             rollString += '<:garbage:811498063427928086>';
+
+            if (checkCollection(message.author.id, char1star[randomUnit].name)) {
+                tearsObtained += 1;
+                isDupe[timesRun] = 1;
+
+            } else {
+                addCollection(message.author.id, char1star[randomUnit].name);
+                isDupe[timesRun] = 0;
+            }
+
+            obtainedImages.push(char1star[randomUnit].thumbnailURL);
+
+            console.log(char1star[randomUnit]);
         }
 
         embedRoll.setDescription(`${rollString}`);
