@@ -313,7 +313,7 @@ const profile = async message => {
         "Drowning In Tears <:tears:811495998450565140>",
         "Pulling Literal Garbage <:garbage:811498063427928086>",
         "Out Of Shape <:stamina:811495998328930314>"
-    ]
+    ];
 
     await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
