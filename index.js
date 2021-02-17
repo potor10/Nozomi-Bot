@@ -713,7 +713,7 @@ const rollgacha = async (message) => {
             if(timesRun === 10){
                 clearInterval(interval);
 
-                await updateStatsDB(message.author.id, profile.level, profile.xp, profile.lastMessage, 
+                await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastMessage, 
                     profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
 
