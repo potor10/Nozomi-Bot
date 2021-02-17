@@ -269,7 +269,7 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: CHARDB table is successfully updated with ${starLevel} units`);
+        console.log(`LOG: CHARDB table is successfully updated with ${starLevel} star unit`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -607,7 +607,7 @@ const profile = async message => {
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL())
-        .setThumbnail(profileUser.avatarURL())
+        .setThumbnail(profileUser.user.avatarURL())
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription(statusStrings[randomStatus])
         .addField("Level <:starico:811495998479532032>", profileData.level)
@@ -675,6 +675,23 @@ const rollgacha = async (message, args) => {
     let char2star = await retrieveGacha(2);
     let char1star = await retrieveGacha(1);
 
+    await message.channel.send(new MessageEmbed()
+                .setURL("https://twitter.com/priconne_en")
+                .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                .setAuthor(client.user.username, client.user.avatarURL())
+                .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                .setDescription(`on ` + 
+                    `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
+                    `<:nozomiblush:811498063918137375>`)
+                .addFields(
+                    { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
+                    { name: "Attempt 2 <:critrate:811495998383325244>", value: intAttack2, inline: true },
+                    { name: "Attempt 3 <:critrate:811495998383325244>", value: intAttack3, inline: true },
+                )
+                .addField(`Total Damage Dealt For This Day <:critdamage:811495998463148102>`, intAttack1 + intAttack2 + intAttack3)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setTimestamp());
+
     let timesRun = 0;
     let interval = setInterval(function(){
         timesRun += 1;
@@ -684,6 +701,7 @@ const rollgacha = async (message, args) => {
         
         let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
         if (rarityRolled < threeStarRate) {
+            let randomUnit = Math.floor(Math.random() * char3star.length);
 
         } else if (rarityRolled < (threeStarRate + twoStarRate)) {
 
