@@ -39,9 +39,9 @@ const initGachaArray = async () => {
     const findTable = '.ie5 > .table > tbody > tr > td > a';
     const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    charArray1star = webScrape(url1star, findTable, findImg);
-    charArray2star = webScrape(url2star, findTable, findImg);
-    charArray3star = webScrape(url3star, findTable, findImg);
+    charArray1star = await webScrape(url1star, findTable, findImg);
+    charArray2star = await webScrape(url2star, findTable, findImg);
+    charArray3star = await webScrape(url3star, findTable, findImg);
 
     console.log(charArray1star);
     console.log(charArray2star);
@@ -54,7 +54,7 @@ const initGachaArray = async () => {
 const webScrape = async (url, findTable, findImg) => {
     let returnArray = []
 
-    request({
+    await request({
         method: 'GET',
         url: url
     }, (err, res, body) => { 
@@ -73,7 +73,7 @@ const webScrape = async (url, findTable, findImg) => {
             let thumnailUrl = $('img', element).attr('src');
 
             if (idxName != -1) {
-                request({
+                await request({
                     method: 'GET',
                     url: href
                 }, (err2, res2, body2) => { 
