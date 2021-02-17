@@ -470,7 +470,7 @@ const returnOCR = async message => {
 
             if (!isNaN(date)) {
                 let newdate = new Date(date);
-                newdate = newdate.getUTCFullYear() + '-' + pad(m + 1)  + '-' + pad(newdate.getUTCDate());
+                newdate = newdate.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
                 await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
 
                 await message.channel.send(new RichEmbed()
@@ -479,9 +479,11 @@ const returnOCR = async message => {
                 .setAuthor(client.user.username, client.user.avatarURL)
                 .setTitle(`${message.author.displayName||message.author.username}'s attack`)
                 .setDescription(`on ${newdate.toLocaleString('default', { month: 'long', date: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
-                .addField("Attempt 1", intAttack1)
-                .addField("Attempt 2", intAttack2)
-                .addField("Attempt 3", intAttack3)
+                .addFields(
+                    { name: "Attempt 1", value: intAttack1, inline: true },
+                    { name: "Attempt 2", value: intAttack2, inline: true },
+                    { name: "Attempt 3", value: intAttack3, inline: true },
+                )
                 .addField("Total Damage Dealt For This Day", intAttack1 + intAttack2 + intAttack3)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL)
                 .setTimestamp());
