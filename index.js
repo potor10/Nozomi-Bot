@@ -5,12 +5,9 @@
  */
 
 const { Client, Attachment, MessageEmbed } = require("discord.js");
-
 const { createWorker } = require('tesseract.js');
-
 const PGdb = require('pg').Client;
-
-var parseDbUrl = require("parse-database-url");
+const parseDbUrl = require("parse-database-url");
 
 // Load Config Json with Prefix and Token 
 let { prefix } = require("./config.json");
@@ -23,6 +20,15 @@ const client = new Client();
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
+const gachaArray = [];
+
+const initGachaArray = async () => {
+    const response = await fetch('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
+    const text = await response.text();
+    console.log(text);
+    console.log(text.match(/(?<=\<h1>).*(?=\<\/h1>)/));
+}
+
 const initDB = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
@@ -31,6 +37,7 @@ const initDB = async () => {
         DROP TABLE IF EXISTS ATTACKS;
         DROP TABLE IF EXISTS STATS;
         DROP TABLE IF EXISTS CB;
+        DROP TABLE IF EXISTS COLLECTION;
 
         CREATE TABLE ATTACKS (
             uid varchar NOT NULL,
@@ -52,6 +59,11 @@ const initDB = async () => {
 
         CREATE TABLE CB (
             cbid int DEFAULT 0
+        );
+
+        CREATE TABLE COLLECTION (
+            uid varchar NOT NULL,
+            char varchar NOT NULL,
         );
 
         INSERT INTO CB (cbid)
@@ -132,6 +144,27 @@ const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {
         pgdb.end();
     }
 }
+
+const addCollection = async (id, char) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        INSERT INTO COLLECTION (uid, char)
+            SELECT '${id}', ${char}
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}' AND char = ${char});
+    `;
+
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: ${char} was successfully added to ${id}'s collection`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
+
 
 const retrieveDamageDB = async (id, date) => {
     cbid = await retrieveCBID();
@@ -215,6 +248,54 @@ const retrieveCBID = async () => {
     try {
         const res = await pgdb.query(query);
         output = res.rows[0].cbid;
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+
+    return output;
+}
+
+const retrieveCollection = async (id) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        SELECT char FROM COLLECTION
+            WHERE uid = ${id};
+    `;
+
+    let output = [];
+    try {
+        const res = await pgdb.query(query);
+        for (let row in res.rows) {
+            output.push(row.charid);
+        }
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+
+    return output;
+}
+
+const checkCollection = async (id, char) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        SELECT charid FROM COLLECTION
+            WHERE uid = ${id} and char = ${char};
+    `;
+
+    let output = true;
+    try {
+        const res = await pgdb.query(query);
+        if (res.rows.size == 0) {
+            output = false;
+        }
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -582,8 +663,10 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 process.on("SIGINT", () => (process.exit(0)));
 
+// Start Stuff
+initDB();
+initGachaArray();
+
 // Log In
 console.log("Logging In To Princonne Bot");
 client.login(process.env["BOT_TOKEN"]);
-
-initDB();
