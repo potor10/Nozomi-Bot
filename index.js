@@ -274,7 +274,7 @@ const addCollection = async (id, charName) => {
     const query = `
         INSERT INTO COLLECTION (uid, charName)
             SELECT '${id}', '${charName}'
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}' AND charName = '${charName}');
+            WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charName = '${charName}');
     `;
 
     try {
