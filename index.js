@@ -460,11 +460,10 @@ const returnOCR = async message => {
             };
             
             let date;
-            for (i = 0; i < values[0].length - 6; i++) {
-                date = Date.parse(values[0].substr(i, 6));
-                console.log(`LOG: Date Parsed, Found ${date}`);
-                console.log(`acutal: ${values[0].substr(i, 6)}`);
+            for (i = 0; i < values[1].length - 6; i++) {
+                date = Date.parse(values[1].substr(i, 6));
                 if(!isNaN(date)){
+                    console.log(`LOG: Date Parsed, Found ${date}`);
                     break;
                  }
             }
@@ -472,6 +471,7 @@ const returnOCR = async message => {
             if (!isNaN(date)) {
                 date = new Date(date);
                 date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
+
                 await updateAttackDB(message.author.id, date, intAttack1, intAttack2, intAttack3);
             }
         }
