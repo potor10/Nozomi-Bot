@@ -15,10 +15,15 @@
     "discord.js": "^12.5.1",
     "file-system": "^2.2.2",
     "tesseract.js": "^2.1.4",
+
     "pg": "^8.5.1",
     "parse-database-url": "*",
+
     "cheerio": "^1.0.0-rc.5",
-    "got": "^11.7.0"
+    "got": "^11.7.0",
+
+    "merge-images": "^2.0.0",
+    "canvas": "^2.6.1"
   }
   
 }

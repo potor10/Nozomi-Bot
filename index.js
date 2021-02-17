@@ -12,6 +12,9 @@ const parseDbUrl = require("parse-database-url");
 const cheerio = require('cheerio');
 const got = require("got");
 
+const mergeImages = require('merge-images');
+const { Canvas, Image } = require('canvas');
+
 // Load Config Json with Prefix and Token 
 let { prefix, oneStarRate, twoStarRate, threeStarRate } = require("./config.json");
 prefix = prefix || ".";
@@ -376,7 +379,7 @@ const retrieveGacha = async (starLevel) => {
     let output;
     try {
         const res = await pgdb.query(selectQuery);
-        output = res.rows[0];
+        output = res.rows;
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -582,7 +585,12 @@ const clanbattle = async (message, args) => {
 /** @param {import("discord.js").Message} message */
 const profile = async message => {
     
-    let profileUser = message.mentions.members.first() || message.author;
+    let profileUser = message.author;
+    let avatarUser = profileUser.avatarURL();
+    if (message.mentions.members.first()) {
+        profileUser =  message.mentions.members.first();
+        avatarUser = profileUser.user.avatarURL();
+    }
     let profileData = await retrieveStats(profileUser.id);
 
     const pad = (num) => { 
@@ -607,7 +615,7 @@ const profile = async message => {
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL())
-        .setThumbnail(profileUser.user.avatarURL())
+        .setThumbnail(avatarUser)
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription(statusStrings[randomStatus])
         .addField("Level <:starico:811495998479532032>", profileData.level)
@@ -690,22 +698,33 @@ const rollgacha = async (message, args) => {
     let rollResults = await message.channel.send(embedRoll);
     
     let timesRun = 0;
+    let silverCount = 0;
+    let tearsObtained = 0;
+
     let interval = setInterval(function(){
         timesRun += 1;
         if(timesRun === 10){
             clearInterval(interval);
+
         }
         
         let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
         if (rarityRolled < threeStarRate) {
             //let randomUnit = Math.floor(Math.random() * char3star.length);
             rollString += '<:poggerona:811498063578529792>';
-        } else if (rarityRolled < (threeStarRate + twoStarRate)) {
+        } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
             let randomUnit = Math.floor(Math.random() * char2star.length);
             rollString += '<:bitconnect:811498063641837578>';
 
+            if (checkCollection(message.author.char2star[randomUnit].name)) {
+
+            } else {
+
+            }
             console.log(char2star[randomUnit]);
         } else {
+            silverCount++;
+
             //let randomUnit = Math.floor(Math.random() * char1star.length);
             rollString += '<:garbage:811498063427928086>';
         }
