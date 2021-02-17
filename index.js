@@ -260,11 +260,11 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
     pgdb.connect();
 
     const query = `
-        UPDATE CHARDB SET thumbnailURL = ${thumbnailURL}, fullImageURL = ${fullImageURL}, starLevel = ${starLevel}
-            WHERE charName = ${charName};
+        UPDATE CHARDB SET thumbnailURL = '${thumbnailURL}', fullImageURL = '${fullImageURL}', starLevel = ${starLevel}
+            WHERE charName = '${charName}';
         INSERT INTO CHARDB (charName, thumbnailURL, fullImageURL, starLevel)
-            SELECT ${charName}, ${thumbnailURL}, ${fullImageURL}, ${starLevel}
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE charName = ${charName});
+            SELECT '${charName}', '${thumbnailURL}', '${fullImageURL}', ${starLevel}
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE charName = '${charName}');
     `;
 
     console.log(query);
@@ -285,8 +285,8 @@ const addCollection = async (id, charName) => {
 
     const query = `
         INSERT INTO COLLECTION (uid, charName)
-            SELECT '${id}', ${charName}
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}' AND charName = ${charName});
+            SELECT '${id}', '${charName}'
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}' AND charName = '${charName}');
     `;
 
     try {
@@ -440,7 +440,7 @@ const checkCollection = async (id, charName) => {
 
     const query = `
         SELECT charName FROM COLLECTION
-            WHERE uid = ${id} and charName = ${charName};
+            WHERE uid = '${id}' and charName = '${charName}';
     `;
 
     let output = true;
