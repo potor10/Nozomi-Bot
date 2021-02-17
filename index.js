@@ -669,11 +669,10 @@ const getCanvasFromURL = async (url) => {
 
     try {
         const response = await got(url);
-        console.log(response.body);
         returnImage = new Image();
-        returnImage.src = response;
-
-        return returnImage;
+        returnImage.src = response.body;
+        returnImage.onload = () => {return returnImage};
+        
     } catch (error) {
         console.log(error.response.body);
         //=> 'Internal server error ...'
@@ -762,7 +761,7 @@ const rollgacha = async (message) => {
                     .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                     .setTimestamp();
 
-                rollResults.edit(embedRoll);
+                rollResults.edit(combinedRoll);
             }
             
             let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
