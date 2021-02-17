@@ -749,7 +749,7 @@ const rollgacha = async (message, args) => {
                     }
                 }
 
-                await canvas.createPNGStream().pipe(fs.createWriteStream('combined-roll.png'));
+                canvas.createPNGStream().pipe(fs.createWriteStream('combined-roll.png'));
 
                 let combinedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
