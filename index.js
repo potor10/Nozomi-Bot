@@ -61,14 +61,16 @@ const webScrape = async (url, findTable, findImg) => {
         let $ = cheerio.load(response.body);
 
         let rows = $(findTable);
+        console.log("EEE");
 
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.indexOf('★');
+            console.log("EEE2");
 
             if (idxName != -1) {
                 let thumnailUrl = $('img', rows[i]).attr('src');
-                let characterInfo = await getGachaData(rows[i].attribs.href, thumnailUrl);
+                let characterInfo = await getGachaData(rows[i].attribs.href, thumnailUrl, findImg);
                 returnArray.push(characterInfo);
             }
         }
@@ -80,7 +82,7 @@ const webScrape = async (url, findTable, findImg) => {
     }
 }
 
-const getGachaData = async (href, thumnailUrl) => {
+const getGachaData = async (href, thumnailUrl, findImg) => {
     try {
 		const response = await got(href);
         let innerPage = cheerio.load(response.body);
