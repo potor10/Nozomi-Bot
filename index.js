@@ -770,7 +770,8 @@ const rollgacha = async (message) => {
                             .setImage('attachment://test.png')
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
-                        rollResults.edit(combinedRoll, { files: ["./test.png"] });
+                        rollResults.edit(combinedRoll);
+                        await message.channel.send(combinedRoll);
 
                         message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
