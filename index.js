@@ -4,7 +4,7 @@
  * @summary An Autistic Discord Bot For Princess Connect
  */
 
-const Discord = require("discord.js");
+const { Client, Attachment, Message, MessageEmbed } = require("discord.js");
 
 const { createWorker } = require('tesseract.js');
 
@@ -17,7 +17,7 @@ let { token, prefix } = require("./config.json");
 prefix = prefix || ".";
 
 // Initialize Discord Client
-const client = new Discord.Client();
+const client = new Client();
 
 // Initialize PG SQL DB Client
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
@@ -225,6 +225,16 @@ const reactionFilter = (author, reaction, user) =>
         ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
 
 /** @param {import("discord.js").Message} message */
+const awaitEmoji = async (message, text, emoji, option, cancelText) => {
+    /** @type {import("discord.js").Message} */
+    let emojiText = await message.channel.send(text);
+    emojiText.react(emoji);
+    return await emojiText.awaitReactions((reaction, user) => 
+                        reactionFilter(message.author, reaction, user), option)
+             .catch(() => { message.channel.send(cancelText); });
+};
+
+/** @param {import("discord.js").Message} message */
 const reset = message => {
     if (message.author.id == 154775062178824192) {
         initDB();
@@ -297,7 +307,7 @@ const profile = async message => {
     console.log(sqlDate);
     let profileDamage = await retrieveDamageDB(profileUser.id, sqlDate);
 
-    await message.channel.send(new Discord.MessageEmbed()
+    await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
         .setAuthor(client.user.username, client.user.avatarURL)
@@ -357,16 +367,6 @@ const say = async (message, args) => {
     message.deletable ? message.delete() : console.log(`Looks like I can't delete ` + 
                                                        `message in ${message.channel.name}`);
     await message.channel.send(sayMessage);
-};
-
-/** @param {import("discord.js").Message} message */
-const awaitEmoji = async (message, text, emoji, option, cancelText) => {
-    /** @type {import("discord.js").Message} */
-    let emojiText = await message.channel.send(text);
-    emojiText.react(emoji);
-    return await emojiText.awaitReactions((reaction, user) => 
-                        reactionFilter(message.author, reaction, user), option)
-             .catch(() => { message.channel.send(cancelText); });
 };
 
 const COMMANDS = { help, ping, reset, say, profile, setclanbattle };
@@ -473,7 +473,7 @@ const returnOCR = async message => {
                 newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
                 await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
 
-                await message.channel.send(new Discord.MessageEmbed()
+                await message.channel.send(new MessageEmbed()
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL)
