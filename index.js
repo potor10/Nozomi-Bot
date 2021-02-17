@@ -708,7 +708,7 @@ const rollgacha = async (message, args) => {
         let obtainedImages = [];
         let isDupe = [];
 
-        let interval = setInterval(function(){
+        let interval = setInterval(async () => {
             timesRun += 1;
             if(timesRun === 10){
                 clearInterval(interval);
