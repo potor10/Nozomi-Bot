@@ -779,7 +779,7 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                console.log(char3star[randomUnit].thumbnailURL);
+                console.log(char3star[randomUnit]);
                 let obtainedImage = await getCanvasFromURL(char3star[randomUnit].thumbnailURL);
                 obtainedImages.push(obtainedImage);
 
@@ -797,7 +797,7 @@ const rollgacha = async (message) => {
                     isDupe[timesRun] = 0;
                 }
 
-                console.log(char2star[randomUnit].thumbnailURL);
+                console.log(char2star[randomUnit]);
                 let obtainedImage = await getCanvasFromURL(char2star[randomUnit].thumbnailURL);
                 obtainedImages.push(obtainedImage);
 
