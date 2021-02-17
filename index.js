@@ -13,6 +13,7 @@ const cheerio = require('cheerio');
 const got = require("got");
 
 const { Canvas, Image } = require('canvas');
+const fs = require('fs');
 
 // Load Config Json with Prefix and Token 
 let { prefix, oneStarRate, twoStarRate, threeStarRate } = require("./config.json");
