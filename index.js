@@ -434,7 +434,6 @@ const checkCollection = async (id, charName) => {
     let output = true;
     try {
         const res = await pgdb.query(query);
-        console.log(res);
         if (res.rows.length == 0) {
             output = false;
         }
@@ -771,7 +770,8 @@ const rollgacha = async (message) => {
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
                         rollResults.edit(combinedRoll);
-                        await message.channel.send(combinedRoll);
+                        
+                        message.channel.send(combinedRoll);
 
                         message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
