@@ -54,49 +54,51 @@ const initGachaArray = () => {
 }
 
 const webScrape = (url, findTable, findImg) => {
-    let returnArray = []
+    let returnArray = [];
 
     got(url).then(response => {
         let $ = cheerio.load(response.body);
 
-        $(findTable).each((idx, element) => {
-            const href = element.attribs.href;
+        let rows = $(findTable);
 
-            // Make sure the image is not blank table box
-            let imgTitle = $('img', element).attr('title');
+        for (let i = 0; i < rows.length; i++) {
+            let imgTitle = $('img', rows[i]).attr('title');
             let idxName = imgTitle.indexOf('★');
 
-            // Get Thumbnail url
-            let thumnailUrl = $('img', element).attr('src');
-
             if (idxName != -1) {
-                got(href).then(response2 => {
-                    let innerPage = cheerio.load(response2.body);
-
-                    let fullImageURL = innerPage(findImg).first().attr('src');
-
-                    let characterName = innerPage(findImg).first().attr('title');
-
-                    let lastSlash = characterName.lastIndexOf('/') + 1;
-                    characterName = characterName.substr(lastSlash);
-
-                    let characterInfo = {
-                        name: characterName,
-                        thumbnailURL: thumnailUrl,
-                        fullImageURL: fullImageURL
-                    } 
-
-                    returnArray.push(characterInfo);
-                }).catch(err => {
-                    console.log(err);
-                });
+                let thumnailUrl = $('img', rows[i]).attr('src');
+                let characterInfo = getGachaData(rows[i].attribs.href, thumnailUrl)
+                returnArray.push(characterInfo);
             }
-        });
+        }
+
+        return returnArray;
     }).catch(error => {
         console.log(error);
     });
-    
-    return returnArray;
+}
+
+const getGachaData = (href, thumnailUrl) => {
+    got(href).then(response2 => {
+        let innerPage = cheerio.load(response2.body);
+
+        let fullImageURL = innerPage(findImg).first().attr('src');
+
+        let characterName = innerPage(findImg).first().attr('title');
+
+        let lastSlash = characterName.lastIndexOf('/') + 1;
+        characterName = characterName.substr(lastSlash);
+
+        let characterInfo = {
+            name: characterName,
+            thumbnailURL: thumnailUrl,
+            fullImageURL: fullImageURL
+        } 
+
+        return characterInfo;
+    }).catch(error => {
+        console.log(error);
+    });
 }
 
 const initDB = async () => {
