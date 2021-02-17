@@ -434,6 +434,7 @@ const checkCollection = async (id, charName) => {
     let output = false;
     try {
         const res = await pgdb.query(query);
+        console.log(res);
         if (res.rows[0] == charName) {
             output = true;
         }
@@ -443,6 +444,7 @@ const checkCollection = async (id, charName) => {
         pgdb.end();
     }
 
+    console.log(output);
     return output;
 }
 
@@ -737,8 +739,8 @@ const rollgacha = async (message) => {
 
                 x = 0;
                 y = 0;
-                ctx.globalAlpha = 0.4;
-                
+                ctx.globalAlpha = 0.6;
+
                 for (let i = 0; i < isDupe.length; i++) {
                     if (isDupe[i]) {
                         ctx.drawImage(tearSRC, x, y, 51, 51);
@@ -763,11 +765,12 @@ const rollgacha = async (message) => {
                             .setDescription(`You have earned ${tearsObtained} <:tears:811495998450565140>`)
                             .attachFiles(['./test.png'])
                             .setImage('attachment://test.png')
+                            .setImage('https://i.imgur.com/wSTFkRM.png')
                             .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                             .setTimestamp();
                         rollResults.edit(combinedRoll);
 
-                        message.channel.send("Testing message.", { files: ["./test.png"] });
+                        //message.channel.send("Testing message.", { files: ["./test.png"] });
                     }
                 );
             } else if (timesRun < 10) {            
