@@ -54,7 +54,7 @@ const initGachaArray = async () => {
 const webScrape = async (url, findTable, findImg) => {
     let returnArray = []
 
-    await request({
+    request({
         method: 'GET',
         url: url
     }, (err, res, body) => { 
@@ -73,7 +73,7 @@ const webScrape = async (url, findTable, findImg) => {
             let thumnailUrl = $('img', element).attr('src');
 
             if (idxName != -1) {
-                await request({
+                request({
                     method: 'GET',
                     url: href
                 }, (err2, res2, body2) => { 
