@@ -42,7 +42,7 @@ const initGachaArray = async () => {
         $(scrapeString).each((i, link) => {
             const href = link.attribs.href;
             console.log(href);
-        }
+        });
 
 
     }).catch(err => {
