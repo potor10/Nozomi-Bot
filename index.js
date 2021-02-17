@@ -46,7 +46,7 @@ const initGachaArray = () => {
     //console.log(charArray1star);
     console.log(charArray2star);
     console.log(charArray3star);
-    console.log(charArray1star.length);
+    //console.log(charArray1star.length);
     console.log(charArray2star.length);
     console.log(charArray3star.length);
 
