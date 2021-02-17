@@ -431,11 +431,11 @@ const checkCollection = async (id, charName) => {
             WHERE uid = '${id}' and charName = '${charName}';
     `;
 
-    let output = true;
+    let output = false;
     try {
         const res = await pgdb.query(query);
         if (res.rows[0] == charName) {
-            output = false;
+            output = true;
         }
     } catch (err) {
         console.log(err.stack);
