@@ -40,7 +40,7 @@ const initGachaArray = async () => {
     got(url1star).then(response => {
         const $ = cheerio.load(response.body);
 
-        $(scrapeString, findTable).each((idx, element) => {
+        $('a #DataTables_Table_0').each((idx, element) => {
             const href = element.attribs.href;
             console.log(href);
         });
