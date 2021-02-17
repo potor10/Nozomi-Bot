@@ -714,7 +714,7 @@ const rollgacha = async (message) => {
             if(timesRun === 10){
                 clearInterval(interval);
 
-                await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastMessage, 
+                await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
                     profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
                 let sizX = 121;
@@ -787,6 +787,8 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char3star.length);
                     rollString += '<:poggerona:811498063578529792>';
                     
+                    console.log(randomUnit);
+                    console.log(char3star[randomUnit].charname);
                     if (await checkCollection(message.author.id, char3star[randomUnit].charname)) {
                         tearsObtained += 50;
                         isDupe[timesRun] = 1;
@@ -803,6 +805,8 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char2star.length);
                     rollString += '<:bitconnect:811498063641837578>';
 
+                    console.log(randomUnit);
+                    console.log(char3star[randomUnit].charname);
                     if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
                         tearsObtained += 10;
                         isDupe[timesRun] = 1;
@@ -821,6 +825,8 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char1star.length);
                     rollString += '<:garbage:811498063427928086>';
 
+                    console.log(randomUnit);
+                    console.log(char3star[randomUnit].charname);
                     if (await checkCollection(message.author.id, char1star[randomUnit].charName)) {
                         tearsObtained += 1;
                         isDupe[timesRun] = 1;
