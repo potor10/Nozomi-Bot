@@ -666,7 +666,7 @@ const say = async (message, args) => {
 
 const getCanvasFromURL = async (url) => {
     let returnImage;
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         returnImage = new Image();
 
         returnImage.onload = () => resolve(returnImage);
