@@ -259,12 +259,8 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    console.log(charName);
-    console.log(thumbnailURL);
-    console.log(fullImageURL);
-
     const query = `
-        UPDATE STATS CHARDB thumbnailURL = ${thumbnailURL}, fullImageURL = ${fullImageURL}, starLevel = ${starLevel}
+        UPDATE CHARDB SET thumbnailURL = ${thumbnailURL}, fullImageURL = ${fullImageURL}, starLevel = ${starLevel}
             WHERE charName = ${charName};
         INSERT INTO CHARDB (charName, thumbnailURL, fullImageURL, starLevel)
             SELECT ${charName}, ${thumbnailURL}, ${fullImageURL}, ${starLevel}
