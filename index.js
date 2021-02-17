@@ -786,12 +786,12 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char3star.length);
                     rollString += '<:poggerona:811498063578529792>';
                     
-                    if (await checkCollection(message.author.id, char3star[randomUnit].charName)) {
+                    if (await checkCollection(message.author.id, char3star[randomUnit].charname)) {
                         tearsObtained += 50;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        addCollection(message.author.id, char3star[randomUnit].charName);
+                        addCollection(message.author.id, char3star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
@@ -802,12 +802,12 @@ const rollgacha = async (message) => {
                     let randomUnit = Math.floor(Math.random() * char2star.length);
                     rollString += '<:bitconnect:811498063641837578>';
 
-                    if (await checkCollection(message.author.id, char2star[randomUnit].charName)) {
+                    if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
                         tearsObtained += 10;
                         isDupe[timesRun] = 1;
 
                     } else {
-                        addCollection(message.author.id, char2star[randomUnit].charName);
+                        addCollection(message.author.id, char2star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
