@@ -720,145 +720,152 @@ const rollgacha = async (message) => {
         let obtainedImages = [];
         let isDupe = [];
 
-        for (let i = 0; i < 10; i++) {           
-            let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
-            if (rarityRolled < threeStarRate) {
-                let randomUnit = Math.floor(Math.random() * char3star.length);
-                rollString += '<:poggerona:811498063578529792>';
+        let interval = setInterval(async () => {
+            if(timesRun === 10){
+                clearInterval(interval);
+
+                // Refresh profile stats before making changes
+                profile = await retrieveStats(message.author.id);
+                await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
+                    profile.jewels, profile.tears + tearsObtained);
                 
-                console.log(randomUnit);
-                console.log(char3star[randomUnit].charname);
-                if (await checkCollection(message.author.id, char3star[randomUnit].charname)) {
-                    console.log(char3star[randomUnit].charname);
-                    tearsObtained += 50;
-                    isDupe[timesRun] = 1;
+                let sizX = 121;
+                let sizY = 121;
 
-                } else {
-                    await addCollection(message.author.id, char3star[randomUnit].charname);
-                    console.log(char3star[randomUnit].charname);
-                    isDupe[timesRun] = 0;
-                    newUnits++;
+                let tearSRC = await loadImage(
+                    `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizX}&height=${sizY}`);
+                
+                var canvas = new Canvas(sizX * 5, sizY * 2);
+                var ctx = canvas.getContext('2d');
+                
+                let x = 0;
+                let y = 0;
+                
+                for (let i = 0; i < obtainedImages.length; i++) {
+                    ctx.drawImage(obtainedImages[i], x, y, sizX, sizY);
+
+                    x+= sizX;
+                    if (i == 4) {
+                        x = 0;
+                        y += sizY;
+                    }
                 }
 
-                let obtainedImage = await loadImage(char3star[randomUnit].thumbnailurl);
-                obtainedImages.push(obtainedImage);
-            } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                let randomUnit = Math.floor(Math.random() * char2star.length);
-                rollString += '<:bitconnect:811498063641837578>';
+                x = 0;
+                y = 0;
+                ctx.globalAlpha = 0.6;
 
-                console.log(randomUnit);
-                console.log(char2star[randomUnit].charname);
-                if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
-                    console.log(char2star[randomUnit].charname);
-                    tearsObtained += 10;
-                    isDupe[timesRun] = 1;
+                for (let i = 0; i < isDupe.length; i++) {
+                    if (isDupe[i]) {
+                        ctx.drawImage(tearSRC, x, y, sizX, sizY);
+                    }
 
-                } else {
-                    await addCollection(message.author.id, char2star[randomUnit].charname);
-                    console.log(char2star[randomUnit].charname);
-                    isDupe[timesRun] = 0;
-                    newUnits++;
+                    x+= sizX;
+                    if (i == 4) {
+                        x = 0;
+                        y += sizY;
+                    }
                 }
 
-                let obtainedImage = await loadImage(char2star[randomUnit].thumbnailurl);
-                obtainedImages.push(obtainedImage);
+                const out = fs.createWriteStream('./test.png');
+                const stream = canvas.createPNGStream();
+                stream.pipe(out);
+                out.on('finish', () =>  {
+                        console.log('LOG: The PNG agregate file was created.');
+
+                        let tearsStr = `You have earned ${tearsObtained} <:tears:811495998450565140>`;
+
+                        if (newUnits > 0) {
+                            tearsStr += ` and have obtained ${newUnits} new characters!`
+                        }
+
+                        let combinedRoll = new MessageEmbed()
+                            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                            .setAuthor(client.user.username, client.user.avatarURL())
+                            .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                            .setDescription(tearsStr)
+                            .attachFiles(['./test.png'])
+                            .setImage('attachment://test.png')
+                            .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                            .setTimestamp();
+                        
+                        rollResults.delete();
+                        message.channel.send(combinedRoll);
+                    }
+                );
+            } else if (timesRun < 10) {            
+                let rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+                if (rarityRolled < threeStarRate) {
+                    let randomUnit = Math.floor(Math.random() * char3star.length);
+                    rollString += '<:poggerona:811498063578529792>';
+                    
+                    console.log(randomUnit);
+                    console.log(char3star[randomUnit].charname);
+                    if (await checkCollection(message.author.id, char3star[randomUnit].charname)) {
+                        console.log(char3star[randomUnit].charname);
+                        tearsObtained += 50;
+                        isDupe[timesRun] = 1;
+
+                    } else {
+                        await addCollection(message.author.id, char3star[randomUnit].charname);
+                        console.log(char3star[randomUnit].charname);
+                        isDupe[timesRun] = 0;
+                        newUnits++;
+                    }
+
+                    let obtainedImage = await loadImage(char3star[randomUnit].thumbnailurl);
+                    obtainedImages.push(obtainedImage);
+                } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
+                    let randomUnit = Math.floor(Math.random() * char2star.length);
+                    rollString += '<:bitconnect:811498063641837578>';
+
+                    console.log(randomUnit);
+                    console.log(char2star[randomUnit].charname);
+                    if (await checkCollection(message.author.id, char2star[randomUnit].charname)) {
+                        console.log(char2star[randomUnit].charname);
+                        tearsObtained += 10;
+                        isDupe[timesRun] = 1;
+
+                    } else {
+                        await addCollection(message.author.id, char2star[randomUnit].charname);
+                        console.log(char2star[randomUnit].charname);
+                        isDupe[timesRun] = 0;
+                        newUnits++;
+                    }
+
+                    let obtainedImage = await loadImage(char2star[randomUnit].thumbnailurl);
+                    obtainedImages.push(obtainedImage);
+                } else {
+                    silverCount++;
+
+                    let randomUnit = Math.floor(Math.random() * char1star.length);
+                    rollString += '<:garbage:811498063427928086>';
+
+                    console.log(randomUnit);
+                    console.log(char1star[randomUnit].charname);
+                    if (await checkCollection(message.author.id, `${char1star[randomUnit].charName}`)) {
+                        console.log(char1star[randomUnit].charname);
+                        tearsObtained += 1;
+                        isDupe[timesRun] = 1;
+
+                    } else {
+                        await addCollection(message.author.id, `${char1star[randomUnit].charName}`);
+                        console.log(char1star[randomUnit].charname);
+                        isDupe[timesRun] = 0;
+                        newUnits++;
+                    }
+
+                    let obtainedImage = await loadImage(char1star[randomUnit].thumbnailurl);
+                    obtainedImages.push(obtainedImage);
+                }
+
+                embedRoll.setDescription(`${rollString}`);
+                rollResults.edit(embedRoll);
             } else {
-                silverCount++;
-
-                let randomUnit = Math.floor(Math.random() * char1star.length);
-                rollString += '<:garbage:811498063427928086>';
-
-                console.log(randomUnit);
-                console.log(char1star[randomUnit].charname);
-                if (await checkCollection(message.author.id, char1star[randomUnit].charName)) {
-                    console.log(char1star[randomUnit].charname);
-                    tearsObtained += 1;
-                    isDupe[timesRun] = 1;
-
-                } else {
-                    await addCollection(message.author.id, char1star[randomUnit].charName);
-                    console.log(char1star[randomUnit].charname);
-                    isDupe[timesRun] = 0;
-                    newUnits++;
-                }
-
-                let obtainedImage = await loadImage(char1star[randomUnit].thumbnailurl);
-                obtainedImages.push(obtainedImage);
+                clearInterval(interval);
             }
-
-            embedRoll.setDescription(`${rollString}`);
-            rollResults.edit(embedRoll);
-        } 
-
-        // Refresh profile stats before making changes
-        profile = await retrieveStats(message.author.id);
-        await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
-            profile.jewels, profile.tears + tearsObtained);
-        
-        let sizX = 121;
-        let sizY = 121;
-
-        let tearSRC = await loadImage(
-            `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizX}&height=${sizY}`);
-        
-        var canvas = new Canvas(sizX * 5, sizY * 2);
-        var ctx = canvas.getContext('2d');
-        
-        let x = 0;
-        let y = 0;
-        
-        for (let i = 0; i < obtainedImages.length; i++) {
-            ctx.drawImage(obtainedImages[i], x, y, sizX, sizY);
-
-            x+= sizX;
-            if (i == 4) {
-                x = 0;
-                y += sizY;
-            }
-        }
-
-        x = 0;
-        y = 0;
-        ctx.globalAlpha = 0.6;
-
-        for (let i = 0; i < isDupe.length; i++) {
-            if (isDupe[i]) {
-                ctx.drawImage(tearSRC, x, y, sizX, sizY);
-            }
-
-            x+= sizX;
-            if (i == 4) {
-                x = 0;
-                y += sizY;
-            }
-        }
-
-        const out = fs.createWriteStream('./test.png');
-        const stream = canvas.createPNGStream();
-        stream.pipe(out);
-        out.on('finish', () =>  {
-                console.log('LOG: The PNG agregate file was created.');
-
-                let tearsStr = `You have earned ${tearsObtained} <:tears:811495998450565140>`;
-
-                if (newUnits > 0) {
-                    tearsStr += ` and have obtained ${newUnits} new characters!`
-                }
-
-                let combinedRoll = new MessageEmbed()
-                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-                    .setAuthor(client.user.username, client.user.avatarURL())
-                    .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
-                    .setDescription(tearsStr)
-                    .attachFiles(['./test.png'])
-                    .setImage('attachment://test.png')
-                    .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
-                    .setTimestamp();
-                
-                rollResults.delete();
-                message.channel.send(combinedRoll);
-            }
-        );
+            timesRun += 1;
+        }, 2000); 
     } else {
         let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
             `You Are Missing ${1500-profile.jewels} <:jewel:811495998194450454> `);
