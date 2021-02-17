@@ -89,11 +89,13 @@ const webScrape = async (url, findTable, findImg) => {
                         fullImageURL: fullImageURL
                     } 
 
-                    returnArray.push(characterInfo);
+                    await returnArray.push(characterInfo);
                 });
             }
         });
     });
+
+    return returnArray;
 }
 
 const initDB = async () => {
