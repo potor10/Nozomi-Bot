@@ -400,8 +400,8 @@ const returnOCR = async message => {
 
             let ratio = Math.min(maxWidth / width, maxHeight / height);
             
-            width = width * ratio;
-            height = height * ratio;
+            width = Math.floor(width * ratio);
+            height = Math.floor(height * ratio);
         }
 
         const rectangles = [
@@ -438,7 +438,7 @@ const returnOCR = async message => {
         ];
           
         let newURL = `${attachment.url}?width=${width}&height=${height}`;
-        newURL.replace(`cdn`, `media`);
+        newURL = newURL.replace(`cdn`, `media`);
         console.log(newURL);
 
         await worker.load();
