@@ -475,7 +475,7 @@ const returnOCR = async message => {
 
                 await message.channel.send(new RichEmbed()
                 .setURL("https://twitter.com/priconne_en")
-                .setColor("#0099ff")
+                .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL)
                 .setTitle(`${message.author.displayName||message.author.username}'s attack`)
                 .setDescription(`on ${newdate.toLocaleString('default', { month: 'long', date: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
