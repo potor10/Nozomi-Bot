@@ -434,6 +434,7 @@ const checkCollection = async (id, charName) => {
     let output = true;
     try {
         const res = await pgdb.query(query);
+        console.log(rows);
         if (res.rows.length == 0) {
             output = false;
         }
@@ -686,6 +687,8 @@ const rollgacha = async (message) => {
         let char3star = await retrieveGacha(3);
         let char2star = await retrieveGacha(2);
         let char1star = await retrieveGacha(1);
+
+        console.log(char2star);
 
         let rollString = '';
 
