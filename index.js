@@ -291,12 +291,12 @@ const parseFirstArgAsInt = (args, defaultValue) => {
     } else return defaultValue;
 };
 
-const setclanbattle = (message) => {
-    let currentCBID = retrieveCBID();
+const setclanbattle = async (message) => {
+    let currentCBID = await retrieveCBID();
     console.log(currentCBID);
-    let newCBID = parseFirstArgAsInt(message, currentCBID);
+    let newCBID = await parseFirstArgAsInt(message, currentCBID);
     console.log(newCBID);
-    updateCBID(newCBID);
+    await updateCBID(newCBID);
     message.reply(`Current Clan Battle Identification Number Set To: ${newCBID}`)
 }
 
