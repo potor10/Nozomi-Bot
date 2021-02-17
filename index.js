@@ -439,6 +439,7 @@ const returnOCR = async message => {
           
         let newURL = `${attachment.url}?width=${width}&height=${height}`;
         newURL = newURL.replace(`cdn`, `media`);
+        newURL = newURL.replace(`com`, `net`);
         console.log(newURL);
 
         await worker.load();
