@@ -672,7 +672,6 @@ const getCanvasFromURL = async (url) => {
         returnImage = new Image();
         returnImage.src = response.body;
         returnImage.onload = () => {return returnImage};
-        
     } catch (error) {
         console.log(error.response.body);
         //=> 'Internal server error ...'
@@ -714,7 +713,7 @@ const rollgacha = async (message) => {
             if(timesRun === 10){
                 clearInterval(interval);
 
-                await updateStatsDB(message.author.id, profile.level, profile.xp, profile.currentTime, 
+                await updateStatsDB(message.author.id, profile.level, profile.xp, profile.lastMessage, 
                     profile.jewels - jewelCost, profile.tears + tearsObtained);
                 
 
