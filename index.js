@@ -59,11 +59,9 @@ const webScrape = async (url, findTable, findImg) => {
     try {
         const response = await got(url);
         let $ = cheerio.load(response.body);
-
-        console.log("LOLLLL");
+        
         $(findTable).each(async (idx, element) => {
             const href = element.attribs.href;
-            console.log("LOLLLL2");
 
             // Make sure the image is not blank table box
             let imgTitle = $('img', element).attr('title');
@@ -74,18 +72,15 @@ const webScrape = async (url, findTable, findImg) => {
 
             if (idxName != -1) {
                 try {
-                    console.log("LOLLLL3");
                     const response2 = await got(href); 
                     let innerPage = cheerio.load(response2.body);
 
                     let fullImageURL = innerPage(findImg).first().attr('src');
-                    console.log("LOLLLL4");
 
                     let characterName = innerPage(findImg).first().attr('title');
-                    console.log("LOLLLL5");
+
                     let lastSlash = characterName.lastIndexOf('/') + 1;
                     characterName = characterName.substr(lastSlash);
-                    console.log("LOLLLL6");
 
                     let characterInfo = {
                         name: characterName,
