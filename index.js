@@ -679,6 +679,7 @@ function loadImage (url) {
 const rollgacha = async (message) => {
 
     let profile = await retrieveStats(message.author.id);
+    console.log(profile);
     let jewelCost = 0;
 
     if (profile.jewels >= jewelCost) {
@@ -791,7 +792,7 @@ const rollgacha = async (message) => {
                         isDupe[timesRun] = 1;
 
                     } else {
-                        addCollection(message.author.id, char3star[randomUnit].charname);
+                        await addCollection(message.author.id, char3star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
@@ -807,7 +808,7 @@ const rollgacha = async (message) => {
                         isDupe[timesRun] = 1;
 
                     } else {
-                        addCollection(message.author.id, char2star[randomUnit].charname);
+                        await addCollection(message.author.id, char2star[randomUnit].charname);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
@@ -825,7 +826,7 @@ const rollgacha = async (message) => {
                         isDupe[timesRun] = 1;
 
                     } else {
-                        addCollection(message.author.id, char1star[randomUnit].charName);
+                        await addCollection(message.author.id, char1star[randomUnit].charName);
                         isDupe[timesRun] = 0;
                         newUnits++;
                     }
