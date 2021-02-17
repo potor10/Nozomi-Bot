@@ -13,7 +13,7 @@ const PGdb = require('pg').Client;
 var parseDbUrl = require("parse-database-url");
 
 // Load Config Json with Prefix and Token 
-let { token, prefix } = require("./config.json");
+let { prefix } = require("./config.json");
 prefix = prefix || ".";
 
 // Initialize Discord Client
@@ -310,7 +310,7 @@ const profile = async message => {
     await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
         .setColor(3447003)
-        .setAuthor(client.user.username, client.user.avatarURL)
+        .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(profileUser.avatarURL)
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription("Displaying Profile.")
@@ -318,7 +318,7 @@ const profile = async message => {
         .addField("Damage Dealt This Clan War", profileDamage[0])
         .addField("Damage Dealt Today", profileDamage[1])
         .addField("Total Damage Dealt", profileDamage[2])
-        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL)
+        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
 };
 
@@ -476,7 +476,7 @@ const returnOCR = async message => {
                 await message.channel.send(new MessageEmbed()
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-                .setAuthor(client.user.username, client.user.avatarURL)
+                .setAuthor(client.user.username, client.user.avatarURL())
                 .setTitle(`${message.author.displayName||message.author.username}'s attack`)
                 .setDescription(`on ${newdate.toLocaleString('default', { month: 'long', date: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
                 .addFields(
@@ -485,7 +485,7 @@ const returnOCR = async message => {
                     { name: "Attempt 3", value: intAttack3, inline: true },
                 )
                 .addField("Total Damage Dealt For This Day", intAttack1 + intAttack2 + intAttack3)
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp());
             }
         }
@@ -498,15 +498,15 @@ client
     .on("ready", () => {
         // Bot Ready
         console.log(`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`); 
-        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
+        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.cache.size} SERVERS`);
     })
     .on("guildCreate", guild => {
         console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
+        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.cache.size} SERVERS`);
     })
     .on("guildDelete", guild => {
         console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.size} SERVERS`);
+        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.cache.size} SERVERS`);
     })
     .on("message", async message => {
         // Ignore Bot
@@ -535,6 +535,6 @@ process.on("SIGINT", () => (process.exit(0)));
 
 // Log In
 console.log("Logging In To Princonne Bot");
-client.login(token);
+client.login(BOT_TOKEN);
 
 initDB();
