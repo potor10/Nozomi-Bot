@@ -72,7 +72,7 @@ const webScrape = async (url, findTable, findImg) => {
 
             if (idxName != -1) {
                 try {
-                    const response2 = await got(href); 
+                    const response2 = got(href); 
                     let innerPage = cheerio.load(response2.body);
 
                     let fullImageURL = innerPage(findImg).first().attr('src');
