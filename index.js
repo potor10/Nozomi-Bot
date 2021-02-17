@@ -470,7 +470,7 @@ const returnOCR = async message => {
 
             if (!isNaN(date)) {
                 let newdate = new Date(date);
-                newdate = newdate.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
+                newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
                 await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
 
                 await message.channel.send(new RichEmbed()
