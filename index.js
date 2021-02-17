@@ -245,8 +245,6 @@ const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
 
-    console.log(query);
-
     try {
         const res = await pgdb.query(query);
         console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}, ${jewels}, ${tears}`);
@@ -268,6 +266,8 @@ const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => 
             SELECT ${charName}, ${thumbnailURL}, ${fullImageURL}, ${starLevel}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE charName = ${charName});
     `;
+
+    console.log(query);
 
     try {
         const res = await pgdb.query(query);
