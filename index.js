@@ -23,10 +23,7 @@ const client = new Client();
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
-let gacha = [];
-
-const initGachaArray = async () => {
-    gacha = [];
+const initGachaDB = async () => {
 
     const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
     const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
@@ -39,9 +36,17 @@ const initGachaArray = async () => {
     const charArray2star = await webScrape(url2star, findTable, findImg);
     const charArray3star = await webScrape(url3star, findTable, findImg);
 
-    gacha.push(charArray1star);
-    gacha.push(charArray2star);
-    gacha.push(charArray3star);
+    for (let chara in charArray1star) {
+        updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 1);
+    }
+
+    for (let chara in charArray2star) {
+        updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 2);
+    }
+
+    for (let chara in charArray3star) {
+        updateCharDB(chara.name, chara.thumbnailURL, chara.fullImageURL, 3);
+    }
 
     console.log(charArray1star);
     console.log(charArray2star);
@@ -50,7 +55,6 @@ const initGachaArray = async () => {
     console.log(charArray2star.length);
     console.log(charArray3star.length);
 
-    console.log(gacha);
 }
 
 const webScrape = async (url, findTable, findImg) => {
@@ -61,16 +65,17 @@ const webScrape = async (url, findTable, findImg) => {
         let $ = cheerio.load(response.body);
 
         let rows = $(findTable);
-        console.log("EEE");
 
+        console.log(rows);
         for (let i = 0; i < rows.length; i++) {
             let imgTitle = $('img', rows[i]).attr('title');
-            let idxName = imgTitle.indexOf('★');
-            console.log("EEE2");
+            let idxName = imgTitle.lastIndexOf('★');
 
             if (idxName != -1) {
                 let thumnailUrl = $('img', rows[i]).attr('src');
-                let characterInfo = await getGachaData(rows[i].attribs.href, thumnailUrl, findImg);
+                let characterName = imgTitle.substr(idxName + 1);
+
+                let characterInfo = await getGachaData(rows[i].attribs.href, thumnailUrl, findImg, characterName);
                 returnArray.push(characterInfo);
             }
         }
@@ -82,21 +87,16 @@ const webScrape = async (url, findTable, findImg) => {
     }
 }
 
-const getGachaData = async (href, thumnailUrl, findImg) => {
+const getGachaData = async (href, thumbnailURL, findImg, characterName) => {
     try {
 		const response = await got(href);
         let innerPage = cheerio.load(response.body);
 
         let fullImageURL = innerPage(findImg).first().attr('src');
 
-        let characterName = innerPage(findImg).first().attr('title');
-
-        let lastSlash = characterName.lastIndexOf('/') + 1;
-        characterName = characterName.substr(lastSlash);
-
         let characterInfo = {
             name: characterName,
-            thumbnailURL: thumnailUrl,
+            thumbnailURL: thumbnailURL,
             fullImageURL: fullImageURL
         } 
 
@@ -158,6 +158,31 @@ const initDB = async () => {
     }
 }
 
+const initCharDB = async () => {
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+    
+    const query = `
+        DROP TABLE IF EXISTS CHARDB;
+    
+        CREATE TABLE CHARDB (
+            charName varchar NOT NULL,
+            thumbnailURL varchar NOT NULL,
+            fullImageURL varchar NOT NULL,
+            starLevel int NOT NULL
+        );
+    `
+
+    try {
+        const res = await pgdb.query(query);
+        console.log('LOG: Char DB is successfully reset');
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
+
 const updateCBID = async (cbid) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
@@ -211,6 +236,28 @@ const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {
         INSERT INTO STATS (uid, level, exp, lastMessage, jewels, tears)
             SELECT '${id}', ${level}, ${xp}, ${lastMessage}, ${jewels}, ${tears}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
+    `;
+
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}, ${jewels}, ${tears}`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
+
+const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        UPDATE STATS CHARDB thumbnailURL = ${thumbnailURL}, fullImageURL = ${fullImageURL}, starLevel = ${starLevel}
+            WHERE charName = ${charName};
+        INSERT INTO CHARDB (charName, thumbnailURL, fullImageURL, starLevel)
+            SELECT '${charName}', ${thumbnailURL}, ${fullImageURL}, ${starLevel}
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE charName = ${charName});
     `;
 
     try {
@@ -405,6 +452,27 @@ const reset = message => {
 };
 
 /** @param {import("discord.js").Message} message */
+const resetchardb = message => {
+    if (message.author.id == 154775062178824192) {
+        initCharDB();
+        console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
+    } else {
+        console.log(`LOG: Failed attempt to reset CharDB by ${message.author.username} (${message.author.id})`);
+    }
+}
+
+/** @param {import("discord.js").Message} message */
+const initgacha = message => {
+    if (message.author.id == 154775062178824192) {
+        initGachaDB();
+        console.log(`LOG: CharDB have been initialized by ${message.author.username} (${message.author.id})`);
+    } else {
+        console.log(`LOG: Failed attempt to initialize CharDB by ${message.author.username} (${message.author.id})`);
+    }
+}
+
+
+/** @param {import("discord.js").Message} message */
 const addXp = async message => {
     let currentTime = Date.now();
     let profile = await retrieveStats(message.author.id);
@@ -573,7 +641,7 @@ const say = async (message, args) => {
     await message.channel.send(sayMessage);
 };
 
-const COMMANDS = { help, ping, reset, say, profile, clanbattle };
+const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle };
 
 const getOcrImage = msgAttach => {
     let url = msgAttach.url;
@@ -757,7 +825,8 @@ process.on("SIGINT", () => (process.exit(0)));
 
 // Start Stuff
 initDB();
-initGachaArray();
+initCharDB();
+initGachaDB();
 
 // Log In
 console.log("Logging In To Princonne Bot");
