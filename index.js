@@ -89,7 +89,7 @@ const webScrape = async (url, findTable, findImg) => {
 
                     returnArray.push(characterInfo);
                 } catch (err) {
-                    console.log(err.response.body);
+                    console.log(err.response2.body);
                 }
             }
         });
