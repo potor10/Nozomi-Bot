@@ -153,6 +153,7 @@ const resetgacha = async message => {
 
         // Initialize
         gachaData = await initGachaDataObj();
+        console.log(gachaData);
 
         console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
     } else {
@@ -170,6 +171,14 @@ const initAll = async () => {
     userData = await initUserDataObj();
     collectionData = await initCollectionDataObj();
     currentClanBattleId = await initCbid();
+
+    console.log(userData);
+    console.log(collectionData);
+    console.log(currentClanBattleId);
+}
+
+const initGacha = async () => {
+    gachaData = await initGachaDataObj();
 }
 
 const initUserDataObj = async () => {
@@ -310,8 +319,6 @@ const retrieveDamageDB = async (id, date) => {
             FROM ATTACKS WHERE uid = '${id}';
     `;
 
-    console.log(query);
-
     const values = [];
     try {
         const res = await pgdb.query(query);
@@ -373,6 +380,8 @@ const updategacha = async (message) => {
         for (let i = 0; i < urls.length; i++) {
             charArray.push(await webScrape(urls[i], findTable, findImg));
         }
+
+        console.log(charArray);
 
         for (let i = 0; i < charArray.length; i++) {
             for (let j = 0; j < charArray[i].length; j++) {
@@ -1131,6 +1140,7 @@ initDB();
 
 // Initialize
 initAll();
+initGacha();
 
 // Log In
 console.log("Logging In To Princonne Bot");
