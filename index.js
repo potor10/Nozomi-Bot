@@ -723,9 +723,9 @@ const getattacks = async (message, args) => {
         
         let totalDamage = obtainedAttacks.attempt1damage + obtainedAttacks.attempt2damage + obtainedAttacks.attempt3damage;
         damageMessage.addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage);
-        damageMessage.addField(`Attempt 1 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage);
-        damageMessage.addField(`Attempt 2 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage);
-        damageMessage.addField(`Attempt 3 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage);
+        damageMessage.addField(`Attempt 1 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage, true);
+        damageMessage.addField(`Attempt 2 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage, true);
+        damageMessage.addField(`Attempt 3 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage, true);
 
         await message.channel.send(damageMessage);
     } 
@@ -1064,7 +1064,7 @@ const getOcrImage = msgAttach => {
 
 /* Returns the OCR result from input message */
 /** @param {import("discord.js").Message} message */
-const returnOCR = async (message, maxAttempts) => {
+const returnOCR = async (message, attempts, maxAttempts) => {
     message.attachments.forEach(async attachment => {
         const worker = createWorker({
             //logger: m => console.log(m), // Add logger here
@@ -1128,7 +1128,7 @@ const returnOCR = async (message, maxAttempts) => {
         const values = [];
         isClan = true;
 
-        for (let i = 0; i < rectangles.length + attemptsInImg - maxAttempts; i++) {
+        for (let i = 0; i < rectangles.length + attempts - maxAttempts; i++) {
             const { data: { text } } = await worker.recognize(newURL, {rectangle: rectangles[i]} );
             if (i==0 && text.indexOf("Trial Run") == -1) {
                 isClan = false;
@@ -1204,16 +1204,16 @@ const updateOCRValues = async (message, values) => {
 const scanimage = async (message, args) => {
     const maxAttempts = 3;
 
-    let attemptsInImg = parseFirstArgAsInt(args, maxAttempts);
-    if (attemptsInImg > maxAttempts || attemptsInImg < 1) {
-        attemptsInImg = maxAttempts;
+    let attempts = parseFirstArgAsInt(args, maxAttempts);
+    if (attempts > maxAttempts || attempts < 1) {
+        attempts = maxAttempts;
     }
     
-    console.log(`LOG: Running OCR With ${attemptsInImg} attempts`);
+    console.log(`LOG: Running OCR With ${attempts} attempts`);
 
     if (message.attachments.size > 0) {
         if (message.attachments.every(getOcrImage)){
-            await returnOCR(message, attemptsInImg);
+            await returnOCR(message, attempts, maxAttempts);
         }
     }
 }
@@ -1247,6 +1247,7 @@ const help = message => {
         `Ahaha, from now on, I'll be in your care!* \n\n\n` + 
         `**__Nozomi Bot Commands__**\n\n` +                        
         `**${prefix}profile** *[optional @user target]* to obtain your / @user profile information  \n` + 
+        `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to clan battle information on a certain date  \n` + 
         `**${prefix}daily** to obtain your daily gems\n` + 
         `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
         `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
