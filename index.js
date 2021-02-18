@@ -1168,7 +1168,7 @@ const updateOCRValues = async (message, values) => {
         
         let newdate = new Date(date);
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
-        await updateAttackDB(message.author.id, newdate, intAttacks[2], intAttacks[1], intAttacks[0]);
+        await updateAttackDB(message.author.id, newdate, intAttacks[0], intAttacks[1], intAttacks[2]);
 
         await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
@@ -1179,9 +1179,9 @@ const updateOCRValues = async (message, values) => {
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
             `${nozomiBlushEmoji}`)
         .addFields(
-            { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[2], inline: true },
+            { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
             { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
-            { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
+            { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttacks[2], inline: true },
         )
         .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttacks[0] + intAttacks[1] + intAttacks[2])
         .setFooter(footerText, client.user.avatarURL())
@@ -1217,12 +1217,13 @@ const help = message => {
         `*I'll be counting on you, so let's work together until I can become a top idol, okay?\n` + 
         `Ahaha, from now on, I'll be in your care!* \n\n\n` + 
         `**__Nozomi Bot Commands__**\n\n` +                        
-        `**${prefix}profile *[optional @user target]*** to obtain your / @user profile information  \n` + 
+        `**${prefix}profile** *[optional @user target]* to obtain your / @user profile information  \n` + 
         `**${prefix}daily** to obtain your daily gems\n` + 
         `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
-        `**${prefix}characters *[optional page number]*** to view the characters you've obtained from gacha \n` + 
-        `**${prefix}character *[mandatory character name(no stars)]*** to view full art of a character you've obtained from gacha \n\n\n` + 
+        `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
+        `**${prefix}character** *[mandatory character name(no stars)]* to view full art of a character you've obtained from gacha \n\n\n` + 
         `**__Nozomi Bot Clan Battle Tracker__**\n\n` +
+        `Upload a screenshot of the game as an attachment and *[optional single digit 1-3 (default 3)] comment* to specify how many attempts visible\n` 
         `Aside from minigames, Nozomi Bot can also serve as a clan battle damage tracker!\n` +
         `To use Nozomi Bot clan track functionality, you must upload an image of the damage attempts for the day to discord.\n` +
         `An example image is provide below, although the image you upload does not necessarily need to be identical, \n` +
