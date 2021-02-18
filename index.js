@@ -179,6 +179,7 @@ const initAll = async () => {
 
 const initGacha = async () => {
     gachaData = await initGachaDataObj();
+    console.log(gachaData);
 }
 
 const initUserDataObj = async () => {
