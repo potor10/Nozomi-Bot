@@ -213,7 +213,8 @@ const initUserDataObj = async () => {
                 exp : userArr[user].exp,
                 lastmessage : userArr[user].lastmessage,
                 jewels : userArr[user].jewels,
-                amulets : userArr[user].amulets
+                amulets : userArr[user].amulets,
+                inRoll : 0
             }
 
             output[objectKey] = userStats;
@@ -670,7 +671,8 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
             setTimeout(() => { 
                 rollResults.delete();
                 message.channel.send(combinedRoll);
-            }, 5000);
+                userData[message.author.id].inRoll == 0
+            }, 2000);
     });
 }
 
@@ -715,9 +717,10 @@ const rollgacha = async (message) => {
 
     const jewelCost = 0;
 
-    if (userData[id].jewels >= jewelCost) {
+    if (userData[id].jewels >= jewelCost && userData[id].inRoll == 0) {
         // Deduct the jewels immediately
         userData[id].jewels -= jewelCost;
+        userData[id].inRoll = 1;
 
         const pulledChars = [];
         let rollString = '';
@@ -792,8 +795,14 @@ const rollgacha = async (message) => {
 
         createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
     } else {
-        let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
-            `You Are Missing ${jewelCost-profile.jewels} <:jewel:811495998194450454> `);
+        let reminder;
+        if (userData[id].inRoll) {
+            reminder =await message.reply(`You Are Currently Already Doing An x10 Roll! \n` +
+                `Please Wait Until The Roll Is Finished Before Trying Again `);
+        } else {
+            reminder =await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
+                `You Are Missing ${jewelCost-profile.jewels} <:jewel:811495998194450454> `);
+        }
         setTimeout(() => { reminder.delete();}, 5000);
     }
 }
