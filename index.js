@@ -380,12 +380,17 @@ const retrieveAttack = async (id, date) => {
 
     const query = `SELECT * FROM ATTACKS WHERE attackdate = '${date}' AND uid = '${id}'`;
 
-    let output;
+    let output = {};
     try {
         const res = await pgdb.query(query);
         console.log(`LOG: Obtained Attacks For ${id}`);
-        
-        output = res.rows[0];
+        if (res.rows.length > 0) {
+            output = res.rows[0];
+        } else {
+            output.attempt1damage = 0;
+            output.attempt2damage = 0;
+            output.attempt3damage = 0;
+        }
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -703,6 +708,8 @@ const getattacks = async (message, args) => {
 
         console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`)
         let obtainedAttacks = await retrieveAttack(parseUser.id, newdate);
+
+        console.log(obtainedAttacks);
 
         let damageMessage = new MessageEmbed()
             .setURL("https://twitter.com/priconne_en")
@@ -1195,7 +1202,9 @@ const updateOCRValues = async (message, values) => {
 }
 
 const scanimage = async (message, args) => {
-    let attemptsInImg = parseFirstArgAsInt(args, 3);
+    const maxAttempts = 3;
+
+    let attemptsInImg = parseFirstArgAsInt(args, maxAttempts);
     if (attemptsInImg > maxAttempts || attemptsInImg < 1) {
         attemptsInImg = maxAttempts;
     }
@@ -1243,7 +1252,7 @@ const help = message => {
         `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
         `**${prefix}character** *[mandatory character name(no stars)]* to view full art of a character you've obtained from gacha \n\n\n` + 
         `**__Nozomi Bot Clan Battle Tracker__**\n\n` +
-        `Upload a screenshot of the game as an attachment and user optional **.setattempts** *[optional single digit 1-3 (default 3)]* as a comment.\n` +
+        `**${prefix}scanimage** *[optional single digit 1-3 (default 3)]* as a comment. Make sure to upload a screenshot of the game as an attachment. \n` +
         `This optional parameter will be used to specify how many attempts are visible (Top > Down) on the screenshot\n\n` +
         `Aside from minigames, Nozomi Bot can also serve as a clan battle damage tracker!\n` +
         `To use Nozomi Bot clan track functionality, you must upload an image of the damage attempts for the day to discord.\n` +
