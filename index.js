@@ -199,15 +199,15 @@ const initUserDataObj = async () => {
         pgdb.end();
     }
 
-    for (let row in userArr) {
-        let objectKey = row.uid;
+    for (let user in userArr) {
+        let objectKey = user.uid;
 
         let userStats = {
-            level : row.level,
-            exp : row.exp,
-            lastmessage : row.lastmessage,
-            jewels : row.jewels,
-            amulets : row.amulets
+            level : user.level,
+            exp : user.exp,
+            lastmessage : user.lastmessage,
+            jewels : user.jewels,
+            amulets : user.amulets
         }
 
         output[objectKey] = userStats;
