@@ -281,9 +281,8 @@ const initCollectionDataObj = async () => {
 
     for (let collect in collectedCharData) {
         if (collectedCharData.hasOwnProperty(collect)) {
-            collectionData[collectedCharData[collect].uid][collectedCharData[collect].charname] = {
-                starlevel : collectedCharData[collect].starlevel
-            }
+            collectionData[collectedCharData[collect].uid][collectedCharData[collect].charname] = 
+                collectedCharData[collect].starlevel
         }
     }
 
@@ -1077,7 +1076,8 @@ const updateAll = async () => {
         if (collectionData.hasOwnProperty(id)) {
             for(let charname in collectionData[id]) {
                 if (collectionData[id].hasOwnProperty(charname)) {
-                    await updateCollection(id, charname);
+                    let starlevel = collectionData[id][charname];
+                    await updateCollection(id, charname, starlevel);
                 }
             }
         }
@@ -1160,11 +1160,9 @@ const updateCharDB = async (charname, thumbnailurl, fullimageurl, starlevel) => 
     }
 }
 
-const updateCollection = async (id, charname) => {    
+const updateCollection = async (id, charname, starlevel) => {    
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
-
-    let starlevel = collectionData[id][charname].starlevel;
 
     const query = `
         INSERT INTO COLLECTION (uid, charname)
