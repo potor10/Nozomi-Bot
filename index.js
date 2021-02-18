@@ -730,7 +730,7 @@ const rollgacha = async (message) => {
                     profile.jewels, profile.tears + tearsObtained);
                 
                 let sizThumb = 121;
-                let sizOverlay = 30;
+                let sizOverlay = 40;
 
                 let tearSRC = await loadImage(
                     `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
@@ -752,7 +752,7 @@ const rollgacha = async (message) => {
                 }
 
                 x = sizThumb - sizOverlay;
-                y = 0;
+                y = sizThumb - sizOverlay;
                 ctx.globalAlpha = 0.8;
 
                 for (let i = 0; i < isDupe.length; i++) {
@@ -762,7 +762,7 @@ const rollgacha = async (message) => {
 
                     x+= sizThumb;
                     if (i == 4) {
-                        x = 0;
+                        x = sizThumb - sizOverlay;
                         y += sizThumb;
                     }
                 }
