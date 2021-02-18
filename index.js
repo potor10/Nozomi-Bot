@@ -679,6 +679,8 @@ const getRolledCharData = async (id, rarity) => {
         return gacha[keys[ keys.length * Math.random() << 0]];
     };
     const randomUnit = randomKey(gachaData[rarity-1]);
+
+    console.log(randomUnit);
     
     const rolledName = gachaData[rarity-1][randomUnit].charname;
     const rolledThumb = gachaData[rarity-1][randomUnit].thumbnailurl;
