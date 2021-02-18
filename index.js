@@ -387,8 +387,6 @@ const updateGacha = async () => {
         charArray.push(await webScrape(urls[i], findTable, findImg));
     }
 
-    console.log(charArray);
-
     for (let i = 0; i < charArray.length; i++) {
         for (let j = 0; j < charArray[i].length; j++) {
             gachaData[i+1][charArray[i][j].name] = { 
@@ -1060,7 +1058,7 @@ const updateCharDB = async (charname, thumbnailurl, fullimageurl, starlevel) => 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    console.log(charName);
+    console.log(`LOG: Adding ${charname} To The Database`);
 
     const query = `
         UPDATE CHARDB SET thumbnailurl = '${thumbnailurl}', fullimageurl = '${fullimageurl}', starlevel = ${starlevel}
