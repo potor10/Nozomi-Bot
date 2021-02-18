@@ -46,8 +46,9 @@ let isResetGacha = false;
 // Footer text
 let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
 
-// Jewel Emoji
+// Emoji IDs
 const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, jewelEmoji.length-1);
+const NOZOMI_BLUSH_EMOJI = nozomiBlushEmoji.slice(nozomiBlushEmoji.lastIndexOf(':')+1, nozomiBlushEmoji.length-1);
 
 
 /* 
@@ -829,10 +830,9 @@ const getattacks = async (message, args) => {
         let attackClanBattleId = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
         currentClanBattleId = await initCbid();
 
-        console.log(attackClanBattleId > currentClanBattleId);
         if ((attackClanBattleId > currentClanBattleId) || (attackClanBattleId < 0)) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                `is out of range of the Clan Battle period`);
+                ` is out of range of the Clan Battle period`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
@@ -1301,7 +1301,7 @@ const returnOCR = async (message, attempts, maxAttempts) => {
                 console.log(`LOG: Image was not detected as clan war image`);
                 break;
             } else if (i==0) {
-                message.react('✅');
+                message.react(client.emojis.get(NOZOMI_BLUSH_EMOJI));
             }
             values.push(text);
         }
@@ -1350,7 +1350,7 @@ const updateOCRValues = async (message, values, rectangles) => {
 
         if ((attackCBid > currentClanBattleId) || (attackCBid < 0)) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                `is out of range of the Clan Battle period`);
+                ` is out of range of the Clan Battle period`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
