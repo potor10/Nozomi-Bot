@@ -27,10 +27,10 @@ let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
 // Objects Used To Store Realtime Changes - Obtained Once On Startup
-let userData = initUserDataObj();
-let gachaData = initGachaDataObj();
-let collectionData = initCollectionDataObj();
-let currentClanBattleId = initCbid();
+let userData;
+let gachaData;
+let collectionData;
+let currentClanBattleId;
 
 // Bot Commands
 const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
@@ -139,6 +139,12 @@ const initCharDB = async () => {
 const reset = message => {
     if (message.author.id == 154775062178824192) {
         initDB();
+
+        // Initialize
+        userData = initUserDataObj();
+        collectionData = initCollectionDataObj();
+        currentClanBattleId = initCbid();
+
         console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
     } else {
         console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
@@ -150,6 +156,10 @@ const resetchardb = async message => {
     if (message.author.id == 154775062178824192) {
         await initCharDB();
         await initGachaDB();
+
+        // Initialize
+        gachaData = initGachaDataObj();
+
         console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
     } else {
         console.log(`LOG: Failed attempt to reset CharDB by ${message.author.username} (${message.author.id})`);
@@ -457,6 +467,8 @@ const addXp = async message => {
     if (currentTime - userData[id].lastmessage > 3000) { //missing 00
         let newXP = userData[id].exp + Math.floor(Math.random() * 5) + 1;
         console.log(`LOG: ${newXP - userData[id].exp} XP has been granted to ${message.author.username} (${id})`);
+
+        userData[id].lastmessage =currentTime;
 
         let curJewel = userData[id].jewels;
         let curLevel = 1 + Math.floor(Math.sqrt(newXP));
@@ -1108,6 +1120,12 @@ process.on("SIGINT", () => (updateAll(), process.exit(0)));
 
 // Start Stuff
 initDB();
+
+// Initialize
+userData = initUserDataObj();
+gachaData = initGachaDataObj();
+collectionData = initCollectionDataObj();
+currentClanBattleId = initCbid();
 
 // Log In
 console.log("Logging In To Princonne Bot");
