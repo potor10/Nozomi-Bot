@@ -199,7 +199,7 @@ const initUserDataObj = async () => {
         pgdb.end();
     }
 
-    print(userArr);
+    console.log(userArr);
 
     for (let user in userArr) {
         let objectKey = user.uid;
