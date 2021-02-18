@@ -671,15 +671,19 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits) =
 
 /* Obtains A Random Character */
 const getRolledCharData = async (id, rarity) => {
-    const randomUnit = Math.floor(Math.random() * charstarArr[`${rarity-1}`].length);
+    const randomKey = (gacha) => {
+        let keys = Object.keys(gacha);
+        return gacha[keys[ keys.length * Math.random() << 0]];
+    };
+    const randomUnit = randomKey(gachaData[rarity-1]);
     
-    const rolledName = charstarArr[`${rarity-1}`].charname;
-    const rolledThumb = charstarArr[`${rarity-1}`].thumbnailurl;
+    const rolledName = gachaData[rarity-1][randomUnit].charname;
+    const rolledThumb = gachaData[rarity-1][randomUnit].thumbnailurl;
     let isDupe = 0;
     let amulets = 0;
 
     console.log(randomUnit);
-    console.log(charstarArr[`${rarity-1}`].charname);
+    console.log(gachaData[rarity-1].charname);
     if (rolledName in collectionData[id]) {
         if (rarity == 3) {
             amulets = 50;
