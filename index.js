@@ -880,10 +880,10 @@ const characters = async (message, args) => {
 
     characters.sort(function(x, y) {
         if (collectionData[message.author.id][x] < collectionData[message.author.id][y]) {
-          return -1;
+          return 1;
         }
         if (collectionData[message.author.id][x] > collectionData[message.author.id][y]) {
-          return 1;
+          return -1;
         }
         return 0;
       });
@@ -903,7 +903,8 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = (startPage - 1) * displayPerPage; i < characters.length && i < startPage + displayPerPage - 1; i++) {
+    for (let i = (startPage - 1) * displayPerPage; 
+        i < characters.length && i < ((startPage - 1) * displayPerPage) + displayPerPage - 1; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
         let charstr = `\`\`\`${starlevel} ${characters[i]}\`\`\``;
 
