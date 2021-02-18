@@ -530,7 +530,7 @@ const addXp = async message => {
 
     createUserIfNotExist(id);
 
-    if (currentTime - userData[id].lastmessage > 3000) {
+    if (currentTime - userData[id].lastmessage > 30000) {
         let newXP = Math.floor(Math.random() * 5) + 1;
         userData[id].exp += newXP;
 
@@ -599,7 +599,7 @@ const profile = async message => {
     const statusStrings = [
         `A Dapper Fellow ${nozomiCoolEmoji}`,
         `Empty In Mana ${manaEmoji}`,
-        `Drowning In Amulets ${amuletEmoji}}`,
+        `Drowning In Amulets ${amuletEmoji}`,
         `Pulling Literal Garbage ${oneStarEmoji}`,
         `Out Of Shape ${staminaEmoji}`
     ];
@@ -674,7 +674,7 @@ const clanbattle = async (message, args) => {
     let newClanBattleId = parseFirstArgAsInt(args, currentClanBattleId);
     if (currentClanBattleId != newClanBattleId) {
         if (message.author.id == 154775062178824192) {
-            currentClanBattleId = newClanBattleId
+            currentClanBattleId = newClanBattleId;
             await message.channel.send(`Current Clan Battle Identification Number Set To: ${newClanBattleId}`);
         } else {
             message.channel.send(`You do not have the permission to use this`);
@@ -868,9 +868,15 @@ const rollgacha = async (message) => {
 
     const jewelCost = 1500;
 
-    let collected = await awaitEmoji(message, 
-        `Rolling x10 On This Gacha Will Cost` + 
-        ` **${jewelCost}** ${jewelEmoji}, React To Confirm`,
+    let pullGacha = new MessageEmbed()
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${jewelEmoji}`)
+        .setDescription(`React To Confirm`)
+        .setFooter(footerText, client.user.avatarURL())
+        .setTimestamp();
+
+    let collected = await awaitEmoji(message, pullGacha,
         JEWEL_EMOJI, { max: 1, time: 20000, errors: ['time'] }, 
         'The Roll Has Been Cancelled.');
 
