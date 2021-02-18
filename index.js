@@ -684,7 +684,11 @@ const getRolledCharData = async (id, rarity) => {
     let isDupe = 0;
     let amulets = 0;
 
-    if ((id in collectionData) && (rolledName in collectionData[id])) {
+    if (!(id in collectionData)) {
+        collectionData[id] = {};
+    }
+
+    if (rolledName in collectionData[id]) {
         if (rarity == 3) {
             amulets = 50;
         } else if (rarity == 2) {
@@ -694,7 +698,7 @@ const getRolledCharData = async (id, rarity) => {
         }
         isDupe = 1;
     } else {
-        collectionData[id].rolledName = 1;
+        collectionData[id][rolledName] = 1;
     }
 
     const obtainedImage = await loadImage(rolledThumb);
