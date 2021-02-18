@@ -708,7 +708,7 @@ const getclanbattle = async (message, args) => {
         date = Date.parse(parseDate);
         
         cbDate = new Date(date);
-        searchCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        searchCBid = (cbDate.getUTCMonth() - cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
     }
 
     console.log(`LOG: Searching clan battle ${searchCBid}`);
@@ -731,7 +731,7 @@ const getclanbattle = async (message, args) => {
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(avatarUser)
         .setTitle(`${parseUser.displayName||parseUser.username}'s damage on clan battle ${searchCBid}`)
-        .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
+        .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
         .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage)
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp();
@@ -782,7 +782,9 @@ const clanbattle = async (message, args) => {
     for (let i = (startPage - 1) * displayPerPage; 
         i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
         let clanBattleStr = `Clan Battle ${i}`;
-        if (i = currentClanBattleId) { clanBattleStr += ` (Current)`};
+        if (i == currentClanBattleId) { 
+            clanBattleStr += ` (Current)`
+        }
         messageDisplay.addField(clanBattleStr, 
             `Occured On ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
     }
