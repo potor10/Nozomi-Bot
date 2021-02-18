@@ -149,7 +149,7 @@ const reset = message => {
 };
 
 /** @param {import("discord.js").Message} message */
-const resetchardb = async message => {
+const resetgacha = async message => {
     if (message.author.id == 154775062178824192) {
         await initCharDB();
 
@@ -292,14 +292,13 @@ const initCbid = async () => {
     Plus, The Attacks isn't going to be accessed often (Once Per Day)
 */
 const retrieveDamageDB = async (id, date) => {
-    cbid = await retrieveCBID();
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
-            FROM ATTACKS WHERE cbid = ${cbid} AND uid = '${id}';
+            FROM ATTACKS WHERE cbid = ${currentClanBattleId} AND uid = '${id}';
 
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE attackDate = '${date}' AND uid = '${id}';
@@ -326,22 +325,21 @@ const retrieveDamageDB = async (id, date) => {
 }
 
 const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
-    cbid = await retrieveCBID();
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
-        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
+        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${currentClanBattleId}
             WHERE uid = '${id}' AND attackDate = '${date}';
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
+            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${currentClanBattleId}
             WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = '${date}');
     `;
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
+        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${currentClanBattleId}`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -355,28 +353,29 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
     Functions Designed To Update The Current Global Objects
 
 */
-const updategacha = async () => {
+const updategacha = async (message) => {
+    if (message.author.id == 154775062178824192) {
+        const urls = [];
+        urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
+        urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85');
+        urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85');
 
-    const urls = [];
-    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
-    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85');
-    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85');
+        const findTable = '.table > tbody > tr > td > a';
+        const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    const findTable = '.table > tbody > tr > td > a';
-    const findImg = '.ie5 > table > tbody > tr > .style_td img';
+        const charArray = [];
+        
+        for (let i = 0; i < urls.length; i++) {
+            charArray.push(await webScrape(urls[i], findTable, findImg));
+        }
 
-    const charArray = [];
-    
-    for (let i = 0; i < urls.length; i++) {
-        charArray.push(await webScrape(urls[i], findTable, findImg));
-    }
-
-    for (let i = 0; i < charArray.length; i++) {
-        for (let j = 0; j < charArray[i].length; j++) {
-            gachaData[`${i+1}`][charArray[i][j].name] = { 
-                thumbnailurl : charArray[i][j].thumbnailurl, 
-                fullimageurl : charArray[i][j].fullimageurl
-            };
+        for (let i = 0; i < charArray.length; i++) {
+            for (let j = 0; j < charArray[i].length; j++) {
+                gachaData[`${i+1}`][charArray[i][j].name] = { 
+                    thumbnailurl : charArray[i][j].thumbnailurl, 
+                    fullimageurl : charArray[i][j].fullimageurl
+                };
+            }
         }
     }
 }
@@ -1076,7 +1075,7 @@ const updateCollection = async (id, charname) => {
 
 
 // Bot Commands
-const COMMANDS = { help, ping, reset, resetchardb, say, profile, clanbattle, rollgacha };
+const COMMANDS = { help, ping, reset, resetgacha, updategacha, say, profile, clanbattle, rollgacha };
 
 // Chaining Events
 client
