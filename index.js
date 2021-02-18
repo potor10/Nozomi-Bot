@@ -836,7 +836,9 @@ const characters = async (message, args) => {
         .setTimestamp();
 
     for (let i = startPage - 1; i > characters.length || i < startPage + 15; i++) {
+        console.log(character[i])
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
+        console.log(starlevel);
         messageDisplay.addField(`${characters[i]}`, `${starlevel}`, false);
     }
 
