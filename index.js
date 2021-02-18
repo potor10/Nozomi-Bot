@@ -631,7 +631,9 @@ const daily = async message => {
     startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
     startofTomorrow.setUTCHours(0,0,0,0);
 
-    let timeBefore = Math.floor((startofTomorrow.getTime() - startofDay.getTime()) / 3600000);
+    let currentTime = new Date();
+
+    let timeBefore = Math.floor((startofTomorrow.getTime() - currentTime.getTime()) / 3600000);
 
     if (startofDay > userData[message.author.id].lastclaim) {
         console.log(`LOG: ${message.author.username} claimed on ${startofDay}`);
@@ -1166,7 +1168,7 @@ const updateOCRValues = async (message, values) => {
         
         let newdate = new Date(date);
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
-        await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
+        await updateAttackDB(message.author.id, newdate, intAttacks[2], intAttacks[1], intAttacks[0]);
 
         await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
@@ -1181,7 +1183,7 @@ const updateOCRValues = async (message, values) => {
             { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
             { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
         )
-        .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttack1 + intAttack2 + intAttack3)
+        .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttacks[0] + intAttacks[1] + intAttacks[2])
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp());
     }
