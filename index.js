@@ -701,9 +701,10 @@ const getclanbattle = async (message, args) => {
         searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
 
         let startDate = new Date(cbStart);
-        startDate.setUTCMonth(searchCBid)
+        startDate.setUTCMonth(searchCBid + startDate.getUTCMonth());
         month = startDate.getUTCMonth();
         year = startDate.getUTCFullYear();
+
     } else if (args.length >= 3) {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
@@ -757,12 +758,13 @@ const clanbattle = async (message, args) => {
     }
 
     let cbArray = [];
-    for (let i = 0; i < currentClanBattleId; i++) {
+    for (let i = 0; i <= currentClanBattleId; i++) {
         let curDate = new Date(cbStart);
-        curDate.setUTCMonth(i);
+        curDate.setUTCMonth(i + curDate.getUTCMonth());
         let cbDate = curDate;
         cbArray.push(cbDate);
     }
+    
 
     let startPage = await parseFirstArgAsInt(args, 1);
     let displayPerPage = 10;
@@ -785,7 +787,9 @@ const clanbattle = async (message, args) => {
 
     for (let i = (startPage - 1) * displayPerPage; 
         i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
-        messageDisplay.addField(`Clan Battle ${i}`, `Occured On ${cbArray[i].getUTCMonth()}, ${cbArray[i].getUTCFullYear()}`);
+        let clanBattleStr = `Clan Battle ${i}`;
+        if (i = currentClanBattleId) { clanBattleStr += ` (Current)`};
+        messageDisplay.addField(clanBattleStr, `Occured On ${cbArray[i].getUTCMonth()}, ${cbArray[i].getUTCFullYear()}`);
     }
 
     await message.channel.send(messageDisplay);
