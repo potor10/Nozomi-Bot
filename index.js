@@ -203,16 +203,14 @@ const initUserDataObj = async () => {
 
     for (let user in userArr) {
         if (userArr.hasOwnProperty(user)) {
-            console.log(user);
-            console.log(userArr[user]);
-            let objectKey = user.uid;
+            let objectKey = userArr[user].uid;
 
-            let userStats = {
-                level : user.level,
-                exp : user.exp,
-                lastmessage : user.lastmessage,
-                jewels : user.jewels,
-                amulets : user.amulets
+            const userStats = {
+                level : userArr[user].level,
+                exp : userArr[user].exp,
+                lastmessage : userArr[user].lastmessage,
+                jewels : userArr[user].jewels,
+                amulets : userArr[user].amulets
             }
 
             output[objectKey] = userStats;
@@ -246,14 +244,12 @@ const initGachaDataObj = async () => {
 
     for (let char in charData) {
         if (charData.hasOwnProperty(char)) {
-            let charNameKey = char.charname;
-
             let charInfo = {
-                thumbnailurl : char.thumbnailurl,
-                fullimageurl : char.fullimageurl
+                thumbnailurl : charData[char].thumbnailurl,
+                fullimageurl : charData[char].fullimageurl
             }
 
-            gachaDataObj[char.starlevel][charNameKey] = charInfo;
+            gachaDataObj[charData[char].starlevel][charData[char].charname] = charInfo;
         }
     }
 
@@ -280,7 +276,7 @@ const initCollectionDataObj = async () => {
 
     for (let collect in collectedCharData) {
         if (collectedCharData.hasOwnProperty(collect)) {
-            collectionData[collect.uid][collect.charname] = 1;
+            collectionData[collectedCharData[collect].uid][collectedCharData[collect].charname] = 1;
         }
     }
 
