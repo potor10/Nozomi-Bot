@@ -201,10 +201,6 @@ const initAll = async () => {
     userData = await initUserDataObj();
     collectionData = await initCollectionDataObj();
     currentClanBattleId = await initCbid();
-
-    console.log(userData);
-    console.log(collectionData);
-    console.log(currentClanBattleId);
 }
 
 const initGacha = async () => {
@@ -709,8 +705,6 @@ const getattacks = async (message, args) => {
         console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`)
         let obtainedAttacks = await retrieveAttack(parseUser.id, newdate);
 
-        console.log(obtainedAttacks);
-
         let damageMessage = new MessageEmbed()
             .setURL("https://twitter.com/priconne_en")
             .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -980,8 +974,6 @@ const characters = async (message, args) => {
         return 0;
       });
 
-      console.log(characters);
-
     let totalPages = Math.ceil(characters.length / displayPerPage);
     if (startPage < 1 || startPage > totalPages + 1 ) {
         startPage = 1;
@@ -1156,7 +1148,7 @@ const updateOCRValues = async (message, values, rectangles) => {
         if (i < values.length) {
             intAttacks.unshift(parseInt(values[i].split('\n', 1)[0].trim(), 10));
         } else {
-            intAttacks.unshift(0);
+            intAttacks.push(0);
         }
     }
     
@@ -1208,8 +1200,6 @@ const scanimage = async (message, args) => {
     if (attempts > maxAttempts || attempts < 1) {
         attempts = maxAttempts;
     }
-    
-    console.log(`LOG: Running OCR With ${attempts} attempts`);
 
     if (message.attachments.size > 0) {
         if (message.attachments.every(getOcrImage)){
@@ -1296,7 +1286,7 @@ const help = message => {
     let ex4 = new MessageEmbed()
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
-        .setTitle(`Setting Nozomi Bot To Only Search For 2 Attempts In Image`)
+        .setTitle(`Setting Nozomi Bot To Only Search For 2 Attempts`)
         .setDescription(`Example Screenshot For Clan Battle`)
         .attachFiles(['./img/ex4.png'])
         .setImage('attachment://ex4.png')
