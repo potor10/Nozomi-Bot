@@ -530,15 +530,15 @@ const addXp = async message => {
 
     createUserIfNotExist(id);
 
-    if (currentTime - userData[id].lastmessage > 3000) { //missing 00
+    if (currentTime - userData[id].lastmessage > 3000) {
         let newXP = Math.floor(Math.random() * 5) + 1;
         userData[id].exp += newXP;
 
-        console.log(`LOG: ${newXP} XP has been granted to ${message.author.username} (${id}) they have ${userData[id].exp} XP now`);
+        //console.log(`LOG: ${newXP} XP has been granted to ${message.author.username} (${id}) they have ${userData[id].exp} XP now`);
 
         userData[id].lastmessage = currentTime;
 
-        let curLevel = 1 + Math.floor(Math.sqrt(userData[id].exp));
+        let curLevel = 1 + Math.floor(Math.pow(userData[id].exp, 0.8) / 10);
 
         if (curLevel > userData[id].level) {
             // Level up!
