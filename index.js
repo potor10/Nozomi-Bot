@@ -820,6 +820,9 @@ const getattacks = async (message, args) => {
 
         let newdate = new Date(date);
         let attackClanBattleId = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        currentClanBattleId = await initCbid();
+        
+        console.log(currentClanBattleId);
         if (attackClanBattleId > currentClanBattleId || attackClanBattleId < 0) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
                 `is out of range of the Clan Battle period`);
@@ -1330,6 +1333,8 @@ const updateOCRValues = async (message, values, rectangles) => {
         
         let newdate = new Date(date);
         let attackCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        currentClanBattleId = await initCbid();
+
         if (attackCBid > currentClanBattleId || attackCBid < 0) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
                 `is out of range of the Clan Battle period`);
