@@ -41,7 +41,7 @@ let currentClanBattleId;
 let isResetGacha = false;
 
 // Jewel Emoji
-const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, jewelEmoji.length-2);
+const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, jewelEmoji.length-1);
 
 
 /* 
