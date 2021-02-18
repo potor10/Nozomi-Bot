@@ -317,8 +317,8 @@ const initCollectionDataObj = async () => {
 }
 
 const initCbid = async () => {
-    const currentDate = new Date();
-    return (currentDate.getUTCMonth() - cbStart.getUTCMonth()) + ((currentDate.getUTCYear() - cbStart.getUTCYear()) * 12);
+    let currentDate = new Date();
+    return (currentDate.getUTCMonth() - cbStart.getUTCMonth()) + ((currentDate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
 }
 
 
@@ -686,6 +686,7 @@ const daily = async message => {
     Function To Get The Total Damage From A Certain CB
 */
 const getclanbattle = async (message, args) => {
+    currentClanBattleId = await initCbid();
     let searchCBid = currentClanBattleId;
     
     if (!Array.isArray(args)) {
@@ -694,13 +695,13 @@ const getclanbattle = async (message, args) => {
     }
 
     let month = cbStart.getUTCMonth();
-    let year = cbStart.getUTCYear();
+    let year = cbStart.getUTCFullYear();
     
     if (args.length < 3) {
         searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
 
         month = cbStart.setUTCMonth(searchCBid).getUTCMonth();
-        year = cbStart.setUTCMonth(searchCBid).getUTCYear();
+        year = cbStart.setUTCMonth(searchCBid).getUTCFullYear();
     } else if (args.length >= 3) {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
@@ -708,9 +709,9 @@ const getclanbattle = async (message, args) => {
         let newdate = new Date(date);
 
         month = newdate.getUTCMonth();
-        year = newdate.getUTCYear();
+        year = newdate.getUTCFullYear();
 
-        searchCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCYear() - cbStart.getUTCYear()) * 12);
+        searchCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
     }
 
     console.log(`LOG: Searching clan battle ${searchCBid}`);
@@ -739,6 +740,49 @@ const getclanbattle = async (message, args) => {
         .setTimestamp();
 
     await message.channel.send(damageMessage);
+}
+
+
+/*
+    Function To Get Previous Clan Battles And Their Times
+*/
+const clanbattle = async (message, args) => {
+    currentClanBattleId = await initCbid();
+    
+    if (!Array.isArray(args)) {
+        message.channel.send("Error parsing arguments");
+        return;
+    }
+
+    let cbArray = [];
+    for (let i = 0; i < currentClanBattleId; i++) {
+        let cbDate = cbStart.setUTCMonth(i);
+        cbArray.push(cbDate);
+    }
+
+    let startPage = await parseFirstArgAsInt(args, 1);
+    let displayPerPage = 10;
+
+    let totalPages = Math.ceil(cbArray.length / displayPerPage);
+    if (totalPages <= 0) { totalPages = 1; }
+    if (startPage < 1 || startPage > totalPages ) {
+        startPage = 1;
+    }
+
+    console.log(`LOG: Retrieving clan battle information from page ${startPage}`);
+
+    let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setThumbnail("https://static.wikia.nocookie.net/princess-connect/images/5/5b/11-25-20CB.jpg")
+        .setTitle(`Clan Battle History`)
+        .setDescription(`page ${startPage} / ${totalPages}`)
+        .setFooter(footerText, client.user.avatarURL())
+        .setTimestamp();
+
+    for (let i = (startPage - 1) * displayPerPage; 
+        i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
+        messageDisplay.addField(`Clan Battle ${i}`, `Occured On ${cbArray[i].getUTCMonth()}, ${cbArray[i].getUTCFullYear()}`);
+    }
 }
 
 
@@ -1506,7 +1550,7 @@ const updateCollection = async (id, charname, starlevel) => {
 
 // Bot Commands
 const COMMANDS = { help, ping, reset, resetgacha, say, profile, daily, 
-    getclanbattle, rollgacha, characters, character, getattacks, scanimage };
+    getclanbattle, clanbattle, rollgacha, characters, character, getattacks, scanimage };
 
 // Chaining Events
 client
