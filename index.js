@@ -507,13 +507,12 @@ const addXp = async message => {
     if (currentTime - userData[id].lastmessage > 3000) { //missing 00
         let newXP = Math.floor(Math.random() * 5) + 1;
         userData[id].exp += newXP;
-        
-        console.log(`LOG: ${newXP} XP has been granted to ${message.author.username} (${id})`);
+
+        console.log(`LOG: ${newXP} XP has been granted to ${message.author.username} (${id}) they have ${userData[id].exp} XP now`);
 
         userData[id].lastmessage = currentTime;
 
-        let curJewel = userData[id].jewels;
-        let curLevel = 1 + Math.floor(Math.sqrt(newXP));
+        let curLevel = 1 + Math.floor(Math.sqrt(userData[id].exp));
 
         if (curLevel > userData[id].level) {
             // Level up!
@@ -600,11 +599,11 @@ const profile = async message => {
 
 const daily = async message => {
     let startofDay = new Date();
-    startofDay = startofDay.setUTCHours(0,0,0,0);
+    startofDay.setUTCHours(0,0,0,0);
 
     let startofTomorrow = new Date();
     startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
-    startofTomorrow = startofTomorrow.setUTCHours(0,0,0,0);
+    startofTomorrow.setUTCHours(0,0,0,0);
 
     let timeBefore = Math.floor(startofTomorrow.getTime() - startofDay.getTime() / 3600000);
 
@@ -893,12 +892,12 @@ const characters = async (message, args) => {
 
     for (let i = startPage - 1; i < characters.length && i < startPage + 9; i+= 2) {
         let starlevel1 = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        let char1str = `\`${starlevel1} ${characters[i]}\``;
+        let char1str = `\`${starlevel1} ${characters[i]}\`\n`;
         
         let char2str = `\u200B`;
         if (i+1 < characters.length) {
             let starlevel2 = '★'.repeat(collectionData[message.author.id][characters[i+1]]);
-            char2str = `\`${starlevel2} ${characters[i+1]}\``
+            char2str = `**\`${starlevel2} ${characters[i+1]}\`**`
         } 
 
         messageDisplay.addField(char1str, char2str);
