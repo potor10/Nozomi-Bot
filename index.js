@@ -717,7 +717,7 @@ const getclanbattle = async (message, args) => {
         searchCBid = (cbDate.getUTCMonth() - cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
     }
 
-    console.log(`LOG: Searching clan battle ${searchCBid}`);
+    console.log(`LOG: Searching Clan Battle ${searchCBid}`);
 
     let parseUser = message.author;
     let avatarUser = message.author.avatarURL();
@@ -729,14 +729,14 @@ const getclanbattle = async (message, args) => {
 
     createUserIfNotExist(parseUser.id);
 
-    console.log(`LOG: Retrieving clan battle #${searchCBid} from ${parseUser.id}`)
+    console.log(`LOG: Retrieving Clan Battle #${searchCBid} from ${parseUser.id}`)
     let totalDamage = await retrieveDamageFromClanId(parseUser.id, searchCBid);
 
     let damageMessage = new MessageEmbed()
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(avatarUser)
-        .setTitle(`${parseUser.displayName||parseUser.username}'s damage on clan battle #${searchCBid}`)
+        .setTitle(`${parseUser.displayName||parseUser.username}'s damage on Clan Battle #${searchCBid}`)
         .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
         .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage)
         .setFooter(footerText, client.user.avatarURL())
@@ -775,7 +775,7 @@ const clanbattlehistory = async (message, args) => {
         startPage = 1;
     }
 
-    console.log(`LOG: Retrieving clan battle information from page ${startPage}`);
+    console.log(`LOG: Retrieving Clan Battle information from page ${startPage}`);
 
     let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
@@ -822,7 +822,7 @@ const getattacks = async (message, args) => {
         let attackClanBattleId = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
         if (attackClanBattleId > currentClanBattleId || attackClanBattleId < 0) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                `is out of range of the clan battle period`);
+                `is out of range of the Clan Battle period`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
@@ -850,7 +850,7 @@ const getattacks = async (message, args) => {
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
             .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                ` : clan battle #${attackClanBattleId}`)
+                ` : Clan Battle #${attackClanBattleId}`)
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
         
@@ -1332,7 +1332,7 @@ const updateOCRValues = async (message, values, rectangles) => {
         let attackCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
         if (attackCBid > currentClanBattleId || attackCBid < 0) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                `is out of range of the clan battle period`);
+                `is out of range of the Clan Battle period`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
@@ -1347,7 +1347,7 @@ const updateOCRValues = async (message, values, rectangles) => {
         .setTitle(`${message.author.displayName||message.author.username}'s attack`)
         .setDescription(`On ` + 
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
-            `during clan battle #${attackCBid} ` + `${nozomiBlushEmoji}`)
+            `: Clan Battle #${attackCBid} ` + `${nozomiBlushEmoji}`)
         .addFields(
             { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
             { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
@@ -1404,9 +1404,9 @@ const help = message => {
         `**__Nozomi Bot Commands__**\n\n` +                        
         `**${prefix}profile** *[optional @user target]* to obtain your / @user profile information  \n` + 
         `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to obtain attack information on a specific date  \n` + 
-        `**${prefix}getclanbattle** *[clan battle number] [optional @user target]* to obtain clan battle information on a specific month  \n` +
-        `**${prefix}getclanbattle** *[month] [date] [year] [optional @user target]* to obtain clan battle information on a specific month  \n` + 
-        `**${prefix}clanbattlehistory** *[optional page number]* to obtain a directory of all previous clan battles and when they occured \n` + 
+        `**${prefix}getclanbattle** *[Clan Battle number] [optional @user target]* to obtain Clan Battle information on a specific month  \n` +
+        `**${prefix}getclanbattle** *[month] [date] [year] [optional @user target]* to obtain Clan Battle information on a specific month  \n` + 
+        `**${prefix}clanbattlehistory** *[optional page number]* to obtain a directory of all previous Clan Battles and when they occured \n` + 
         `**${prefix}daily** to obtain your daily gems\n` + 
         `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
         `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
@@ -1414,7 +1414,7 @@ const help = message => {
         `**__Nozomi Bot Clan Battle Tracker__**\n\n` +
         `**${prefix}scanimage** *[optional single digit 1-3 (default 3)]* as a comment. Make sure to upload a screenshot of the game as an attachment. \n` +
         `This optional parameter will be used to specify how many attempts are visible (Top > Down) on the screenshot\n\n` +
-        `Aside from minigames, Nozomi Bot can also serve as a clan battle damage tracker!\n` +
+        `Aside from minigames, Nozomi Bot can also serve as a Clan Battle damage tracker!\n` +
         `To use Nozomi Bot clan track functionality, you must upload an image of the damage attempts for the day to discord.\n` +
         `An example image is provide below, although the image you upload does not necessarily need to be identical, \n` +
         `It is mandatory that the damage text / date of attack are positioned in the correct spots!\n\n` +
