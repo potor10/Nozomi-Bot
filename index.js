@@ -709,6 +709,13 @@ const getclanbattle = async (message, args) => {
         date = Date.parse(parseDate);
         
         cbDate = new Date(date);
+
+        if (isNaN(cbDate.getTime())) {  
+            let reminder = await message.reply(`Error: Invalid Date!`);
+            setTimeout(() => { reminder.delete();}, 5000);
+            return;
+        } 
+        
         if (cbDate < cbStart) {
             cbDate = new Date(cbStart);
         } else if (cbDate > new Date()) {
@@ -829,6 +836,12 @@ const getattacks = async (message, args) => {
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
+
+        if (isNaN(newdate.getTime())) {  
+            let reminder = await message.reply(`Error: Invalid Date!`);
+            setTimeout(() => { reminder.delete();}, 5000);
+            return;
+        } 
 
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
@@ -1341,6 +1354,12 @@ const updateOCRValues = async (message, values, rectangles) => {
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
+
+        if (isNaN(newdate.getTime())) {  
+            let reminder = await message.reply(`Error: Invalid Date!`);
+            setTimeout(() => { reminder.delete();}, 5000);
+            return;
+        } 
 
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
