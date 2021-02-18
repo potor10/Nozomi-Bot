@@ -606,7 +606,7 @@ const profile = async message => {
 
     await message.channel.send(new MessageEmbed()
         .setURL("https://twitter.com/priconne_en")
-        .setColor(3447003)
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(avatarUser)
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
