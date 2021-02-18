@@ -717,7 +717,7 @@ const getattacks = async (message, args) => {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
-            .setDescription(`On ${parseDate}`)
+            .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
         
@@ -1141,7 +1141,7 @@ const returnOCR = async (message, attempts, maxAttempts) => {
         }
 
         if (isClan) {
-            await updateOCRValues(message, values);
+            await updateOCRValues(message, values, rectangles);
         }
         await worker.terminate();
     });
@@ -1149,14 +1149,14 @@ const returnOCR = async (message, attempts, maxAttempts) => {
 
 /* Updates the attack DB based on OCR result and displays a message*/
 /** @param {import("discord.js").Message} message */
-const updateOCRValues = async (message, values) => {
+const updateOCRValues = async (message, values, rectangles) => {
     const intAttacks = [];
 
-    for (let i = 2; i < 5; i++) {
+    for (let i = 2; i < rectangles.length; i++) {
         if (i < values.length) {
             intAttacks.unshift(parseInt(values[i].split('\n', 1)[0].trim(), 10));
         } else {
-            intAttacks.unshift[0];
+            intAttacks.unshift(0);
         }
     }
     
