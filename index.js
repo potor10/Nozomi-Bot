@@ -84,7 +84,8 @@ const initDB = async () => {
 
         CREATE TABLE COLLECTION (
             uid varchar NOT NULL,
-            charname varchar NOT NULL
+            charname varchar NOT NULL,
+            starlevel int NOT NULL
         );
 
         CREATE TABLE CB (
@@ -280,7 +281,9 @@ const initCollectionDataObj = async () => {
 
     for (let collect in collectedCharData) {
         if (collectedCharData.hasOwnProperty(collect)) {
-            collectionData[collectedCharData[collect].uid][collectedCharData[collect].charname] = 1;
+            collectionData[collectedCharData[collect].uid][collectedCharData[collect].charname] = {
+                starlevel : collectedCharData[collect].starlevel
+            }
         }
     }
 
@@ -808,6 +811,32 @@ const rollgacha = async (message) => {
 }
 
 
+/*
+    Other Functions For Gacha
+*/
+const characters = async (message, args) => {
+    let startPage = await parseFirstArgAsInt(args, 1);
+    let characters = Object.keys(collectionData[message.author.id]);
+
+    let totalPages = Math.ceil(characters.length / 15);
+    if (startPage < 1 || startPage > totalPages + 1 ) {
+        startPage = 1;
+    }
+    
+    let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setTitle(`${message.author.displayName||message.author.username}'s character list`)
+        .setDescription(`page ${startPage} / ${totalPages}`)
+        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+        .setTimestamp();
+
+    for (let i = startPage - 1; i > characters.length || i < startPage + 15; i++) {
+        messageDisplay.addField('', 'Some value here', true);
+    }
+    await message.channel.send();
+}
+
+
 
 /*
     Functions For OCR CB Damage Recognitions 
@@ -1091,9 +1120,11 @@ const updateCollection = async (id, charname) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
+    let starlevel = collectionData[id][charname][starlevel];
+
     const query = `
         INSERT INTO COLLECTION (uid, charname)
-            SELECT '${id}', '${charname}'
+            SELECT '${id}', '${charname}', ${starlevel}
             WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charname = '${charname}');
     `;
 
