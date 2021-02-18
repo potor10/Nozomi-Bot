@@ -210,9 +210,9 @@ const initGachaDataObj = async () => {
     const query = `SELECT * FROM CHARDB`;
 
     let gachaDataObj = {
-        '1' : {},
-        '2' : {},
-        '3' : {}
+        1 : {},
+        2 : {},
+        3 : {}
     };
 
     let charData;
@@ -233,7 +233,7 @@ const initGachaDataObj = async () => {
             fullimageurl : row.fullimageurl
         }
 
-        gachaDataObj[`${row.starlevel}`][charNameKey] = charInfo;
+        gachaDataObj[row.starlevel][charNameKey] = charInfo;
     }
 
     return gachaDataObj;
@@ -292,7 +292,6 @@ const initCbid = async () => {
     Plus, The Attacks isn't going to be accessed often (Once Per Day)
 */
 const retrieveDamageDB = async (id, date) => {
-
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
@@ -306,6 +305,8 @@ const retrieveDamageDB = async (id, date) => {
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE uid = '${id}';
     `;
+
+    console.log(query);
 
     const values = [];
     try {
@@ -371,7 +372,7 @@ const updategacha = async (message) => {
 
         for (let i = 0; i < charArray.length; i++) {
             for (let j = 0; j < charArray[i].length; j++) {
-                gachaData[`${i+1}`][charArray[i][j].name] = { 
+                gachaData[i+1][charArray[i][j].name] = { 
                     thumbnailurl : charArray[i][j].thumbnailurl, 
                     fullimageurl : charArray[i][j].fullimageurl
                 };
@@ -968,11 +969,15 @@ const updateAll = async () => {
             updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
         }
     } 
-    for(let charname in gachaData) {
-        if (gachaData.hasOwnProperty(charname)) {
-            updateCharDB(charname, gachaData[charname].thumbnailurl, gachaData[charname].fullimageurl, gachaData[charname].starlevel);
-        }
-    } 
+    for (let starlevel in gachaData) {
+        if (gachaData.hasOwnProperty(starlevel)) {
+            for(let charname in gachaData[starlevel]) {
+                if (gachaData[starlevel].hasOwnProperty(charname)) {
+                    updateCharDB(charname, gachaData[starlevel][charname].thumbnailurl, gachaData[starlevel][charname].fullimageurl, starlevel);
+                }
+            }
+        } 
+    }
     for(let id in collectionData) {
         if (collectionData.hasOwnProperty(id)) {
             for(let charname in collectionData[id]) {
