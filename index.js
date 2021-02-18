@@ -1047,8 +1047,10 @@ const getOcrImage = msgAttach => {
 /** @param {import("discord.js").Message} message */
 const returnOCR = async (message, args) => {
     const maxAttempts = 3;
+    console.log(message.content);
+    console.log(args);
     let attemptsInImg = 3;
-    if (message.content === `${prefix}setattempts`) {
+    if (message.content.trim() === `${prefix}setattempts`) {
         attemptsInImg = parseFirstArgAsInt(args, maxAttempts);
         if (attemptsInImg > maxAttempts || attemptsInImg < 1) {
             attemptsInImg = maxAttempts;
@@ -1227,7 +1229,7 @@ const help = message => {
         `**${prefix}character** *[mandatory character name(no stars)]* to view full art of a character you've obtained from gacha \n\n\n` + 
         `**__Nozomi Bot Clan Battle Tracker__**\n\n` +
         `Upload a screenshot of the game as an attachment and user optional **.setattempts** *[optional single digit 1-3 (default 3)]* as a comment.\n` +
-        `This optional parameter will be used to specify how many attempts are visible (Top > Down) on the screenshot\n` 
+        `This optional parameter will be used to specify how many attempts are visible (Top > Down) on the screenshot\n\n` +
         `Aside from minigames, Nozomi Bot can also serve as a clan battle damage tracker!\n` +
         `To use Nozomi Bot clan track functionality, you must upload an image of the damage attempts for the day to discord.\n` +
         `An example image is provide below, although the image you upload does not necessarily need to be identical, \n` +
@@ -1271,14 +1273,15 @@ const help = message => {
         .setAuthor(client.user.username, client.user.avatarURL())
         .setTitle(`Setting Nozomi Bot To Only Search For 2 Attempts In Image`)
         .setDescription(`Example Screenshot For Clan Battle`)
-        .attachFiles(['./img/ex3.png'])
-        .setImage('attachment://ex3.png')
+        .attachFiles(['./img/ex4.png'])
+        .setImage('attachment://ex4.png')
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp();
     
     message.author.send(ex1);
     message.author.send(ex2);
     message.author.send(ex3);
+    message.author.send(ex4);
 }
 
 
