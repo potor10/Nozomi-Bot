@@ -697,6 +697,10 @@ const getclanbattle = async (message, args) => {
     if (args.length < 3) {
         searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
 
+        if (searchCBid > currentClanBattleId) {
+            searchCBid = currentClanBattleId;
+        }
+
         let startDate = new Date(cbStart);
         startDate.setUTCMonth(searchCBid + startDate.getUTCMonth());
         cbDate = new Date(startDate);
@@ -745,7 +749,7 @@ const getclanbattle = async (message, args) => {
 /*
     Function To Get Previous Clan Battles And Their Times
 */
-const clanbattle = async (message, args) => {
+const clanbattlehistory = async (message, args) => {
     currentClanBattleId = await initCbid();
     
     if (!Array.isArray(args)) {
@@ -788,7 +792,7 @@ const clanbattle = async (message, args) => {
             clanBattleStr += ` (Current)`
         }
         messageDisplay.addField(clanBattleStr, 
-            `Occured on ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
+            `Occured on the month of ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
     }
 
     await message.channel.send(messageDisplay);
@@ -1386,7 +1390,10 @@ const help = message => {
         `Ahaha, from now on, I'll be in your care!* \n\n\n` + 
         `**__Nozomi Bot Commands__**\n\n` +                        
         `**${prefix}profile** *[optional @user target]* to obtain your / @user profile information  \n` + 
-        `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to obtain clan battle information on a certain date  \n` + 
+        `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to obtain attack information on a specific date  \n` + 
+        `**${prefix}getclanbattle** *[clan battle number] [optional @user target]* to obtain clan battle information on a specific month  \n` +
+        `**${prefix}getclanbattle** *[month] [date] [year] [optional @user target]* to obtain clan battle information on a specific month  \n` + 
+        `**${prefix}clanbattlehistory** *[optional page number]* to obtain a directory of all previous clan battles and when they occured \n` + 
         `**${prefix}daily** to obtain your daily gems\n` + 
         `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
         `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
@@ -1564,7 +1571,7 @@ const updateCollection = async (id, charname, starlevel) => {
 
 // Bot Commands
 const COMMANDS = { help, ping, reset, resetgacha, say, profile, daily, 
-    getclanbattle, clanbattle, rollgacha, characters, character, getattacks, scanimage };
+    getclanbattle, clanbattlehistory, rollgacha, characters, character, getattacks, scanimage };
 
 // Chaining Events
 client
