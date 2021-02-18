@@ -606,7 +606,7 @@ function loadImage (url) {
 }
 
 /* Combines given images into a single pull */
-const createImage = async (message, obtainedImages, amuletsObtained, newUnits, isDupe) => {
+const createImage = async (message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults) => {
     let sizThumb = 121;
     let sizOverlay = 40;
 
@@ -667,8 +667,10 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp();
             
-            rollResults.delete();
-            message.channel.send(combinedRoll);
+            setTimeout(() => { 
+                rollResults.delete();
+                message.channel.send(combinedRoll);
+            }, 5000);
     });
 }
 
@@ -788,7 +790,7 @@ const rollgacha = async (message) => {
 
         userData[id].amulets += amuletsObtained;
 
-        createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe);
+        createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
     } else {
         let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
             `You Are Missing ${jewelCost-profile.jewels} <:jewel:811495998194450454> `);
