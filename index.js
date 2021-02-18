@@ -605,16 +605,16 @@ const daily = async message => {
     startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
     startofTomorrow.setUTCHours(0,0,0,0);
 
-    let timeBefore = Math.floor(startofTomorrow.getTime() - startofDay.getTime() / 3600000);
+    let timeBefore = Math.floor((startofTomorrow.getTime() - startofDay.getTime()) / 3600000);
 
     if (startofDay > userData[message.author.id].lastclaim) {
         console.log(`LOG: ${message.author.username} claimed on ${startofDay}`);
         userData[message.author.id].lastclaim = startofDay;
         userData[message.author.id].jewels += 10000;
-        await message.reply(`Success! You Have Claimed 10000 ${jewelEmoji} Today \n` +
+        await message.reply(`Success! You Have Claimed 10000 ${jewelEmoji} Today \n\n` +
             `Come Back In ${timeBefore} Hours To Claim Again`);
     } else {
-        await message.channel.send(`Oof out of ${staminaEmoji}, You Have Already Claimed Today \n` +
+        await message.channel.send(`Oof out of ${staminaEmoji}, You Have Already Claimed Today \n\n` +
         `Come Back In ${timeBefore} Hours To Claim Again`);
     }
 };
@@ -888,6 +888,8 @@ const characters = async (message, args) => {
         return 0;
       });
 
+      console.log(characters);
+
     let totalPages = Math.ceil(characters.length / displayPerPage);
     if (startPage < 1 || startPage > totalPages + 1 ) {
         startPage = 1;
@@ -905,7 +907,7 @@ const characters = async (message, args) => {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
         let charstr = `\`\`\`${starlevel} ${characters[i]}\`\`\``;
 
-        messageDisplay.addField(charstr, '\u200b');
+        messageDisplay.addField('\u200b', charstr);
     }
 
     await message.channel.send(messageDisplay);
