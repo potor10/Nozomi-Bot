@@ -411,24 +411,22 @@ const retrieveAttack = async (id, date) => {
     return output;
 }
 
-const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
+const updateAttackDB = async (id, date, attempt1, attempt2, attempt3, cbid) => {    
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    currentClanBattleId = await initCbid();
-
     const query = `
-        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${currentClanBattleId}
+        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
             WHERE uid = '${id}' AND attackDate = '${date}';
         INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${currentClanBattleId}
+            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
             WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = '${date}');
     `;
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${currentClanBattleId}`);
+        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -702,12 +700,14 @@ const getclanbattle = async (message, args) => {
         let startDate = new Date(cbStart);
         startDate.setUTCMonth(searchCBid + startDate.getUTCMonth());
         cbDate = new Date(startDate);
-
     } else if (args.length >= 3) {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
         
         cbDate = new Date(date);
+        if (cbDate < cbStart) {
+            cbDate = new Date(cbStart);
+        }
         searchCBid = (cbDate.getUTCMonth() - cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
     }
 
@@ -1314,8 +1314,11 @@ const updateOCRValues = async (message, values, rectangles) => {
         console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
         
         let newdate = new Date(date);
+        let attackCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
-        await updateAttackDB(message.author.id, newdate, intAttacks[0], intAttacks[1], intAttacks[2]);
+
+        await updateAttackDB(message.author.id, newdate, intAttacks[0], intAttacks[1], intAttacks[2], attackCBid);
 
         await message.channel.send(new MessageEmbed()
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
