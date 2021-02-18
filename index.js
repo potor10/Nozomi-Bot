@@ -152,7 +152,6 @@ const reset = message => {
 const resetchardb = async message => {
     if (message.author.id == 154775062178824192) {
         await initCharDB();
-        await initGachaDB();
 
         // Initialize
         gachaData = initGachaDataObj();
@@ -356,7 +355,7 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
     Functions Designed To Update The Current Global Objects
 
 */
-const updateGachaDB = async () => {
+const updategacha = async () => {
 
     const urls = [];
     urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
@@ -382,7 +381,6 @@ const updateGachaDB = async () => {
     }
 }
 
-/* Helper Functions For initGachaDB */
 const webScrape = async (url, findTable, findImg) => {
     let returnArray = [];
 
