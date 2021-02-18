@@ -901,7 +901,7 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = startPage - 1; i < characters.length && i < startPage + displayPerPage - 1; i++) {
+    for (let i = (startPage - 1) * displayPerPage; i < characters.length && i < startPage + displayPerPage - 1; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
         let charstr = `\`\`\`${starlevel} ${characters[i]}\`\`\``;
 
