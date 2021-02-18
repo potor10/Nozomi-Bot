@@ -819,7 +819,14 @@ const getattacks = async (message, args) => {
         };
 
         let newdate = new Date(date);
-        let attackClanBattle = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        let attackClanBattleId = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        if (attackClanBattleId > currentClanBattleId || attackClanBattleId < 0) {
+            let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                `is out of range of the clan battle period`);
+            setTimeout(() => { reminder.delete();}, 5000);
+            return;
+        }
+
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
         console.log(`LOG: Date Parsed From Args, Found ${date}, Converted To ${newdate}`);
@@ -843,7 +850,7 @@ const getattacks = async (message, args) => {
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
             .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                ` on clan battle #${attackClanBattle}`)
+                ` on clan battle #${attackClanBattleId}`)
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
         
@@ -1323,6 +1330,12 @@ const updateOCRValues = async (message, values, rectangles) => {
         
         let newdate = new Date(date);
         let attackCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        if (attackCBid > currentClanBattleId || attackCBid < 0) {
+            let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                `is out of range of the clan battle period`);
+            setTimeout(() => { reminder.delete();}, 5000);
+            return;
+        }
 
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
