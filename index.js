@@ -41,7 +41,7 @@ let currentClanBattleId;
 let isResetGacha = false;
 
 // Jewel Emoji
-const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, str.length-2);
+const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, jewelEmoji.length-2);
 
 
 /* 
@@ -205,7 +205,6 @@ const initAll = async () => {
 
 const initGacha = async () => {
     gachaData = await initGachaDataObj();
-    console.log(gachaData);
 }
 
 const initUserDataObj = async () => {
@@ -741,8 +740,6 @@ const getRolledCharData = async (id, rarity) => {
         collectionData[id] = {};
     }
 
-    console.log(collectionData[id]);
-
     if (randomUnit in collectionData[id]) {
         if (rarity == 3) {
             amulets = 50;
@@ -804,8 +801,6 @@ const rollgacha = async (message) => {
             let isDupe = [];
 
             for (let i = 0; i < 10; i++) {
-                console.log(`ran ${i} times`);  
-
                 const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
 
                 if (rarityRolled < threeStarRate) {
