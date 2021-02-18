@@ -133,14 +133,12 @@ const initCharDB = async () => {
     These Functions Will Reset Important Databases To Their Original State
 */
 /** @param {import("discord.js").Message} message */
-const reset = message => {
+const reset = async message => {
     if (message.author.id == 154775062178824192) {
         initDB();
 
         // Initialize
-        userData = initUserDataObj();
-        collectionData = initCollectionDataObj();
-        currentClanBattleId = initCbid();
+        await initAll();
 
         console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
     } else {
@@ -154,7 +152,7 @@ const resetgacha = async message => {
         await initCharDB();
 
         // Initialize
-        gachaData = initGachaDataObj();
+        gachaData = await initGachaDataObj();
 
         console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
     } else {
@@ -168,6 +166,12 @@ const resetgacha = async message => {
     Initialize The Objects
     We Retrieve The SQL Data From The DB Once Only. It is Done Here
 */
+const initAll = async () => {
+    userData = await initUserDataObj();
+    collectionData = await initCollectionDataObj();
+    currentClanBattleId = await initCbid();
+}
+
 const initUserDataObj = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
@@ -1126,10 +1130,7 @@ process.on("SIGINT", () => (updateAll(), process.exit(0)));
 initDB();
 
 // Initialize
-userData = initUserDataObj();
-gachaData = initGachaDataObj();
-collectionData = initCollectionDataObj();
-currentClanBattleId = initCbid();
+initAll();
 
 // Log In
 console.log("Logging In To Princonne Bot");
