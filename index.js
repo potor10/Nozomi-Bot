@@ -36,6 +36,8 @@ dbConfig.ssl = { rejectUnauthorized: false };
 let userData;
 let gachaData;
 let collectionData;
+
+const cbStart = new Date('Feb 10 2021');
 let currentClanBattleId;
 
 // Used at the end to determine if we need to resend query
@@ -201,7 +203,7 @@ const resetgacha = async message => {
 const initAll = async () => {
     userData = await initUserDataObj();
     collectionData = await initCollectionDataObj();
-    currentClanBattleId = await initCbid();
+    cbid = await initCbid();
 }
 
 const initGacha = async () => {
@@ -315,22 +317,8 @@ const initCollectionDataObj = async () => {
 }
 
 const initCbid = async () => {
-    const pgdb = new PGdb(dbConfig);
-    pgdb.connect();
-
-    const query = `SELECT cbid FROM CB`;
-
-    let output;
-    try {
-        const res = await pgdb.query(query);
-        output = res.rows[0].cbid;
-    } catch (err) {
-        console.log(err.stack);
-    } finally {
-        pgdb.end();
-    }
-
-    return output;
+    currentDate = new Date();
+    return (currentDate.getUTCMonth() - cbStart.getUTCMonth()) + ((currentDate.getUTCYear() - cbStart.getUTCYear()) * 12);
 }
 
 
@@ -342,6 +330,8 @@ const initCbid = async () => {
 const retrieveDamageDB = async (id, date) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
+
+    currentClanBattleId = await initCbid();
 
     const query = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
@@ -369,6 +359,30 @@ const retrieveDamageDB = async (id, date) => {
     }
 
     return values;
+}
+
+const retrieveDamageFromClanId = async (id, clanId) => {
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
+            FROM ATTACKS WHERE cbid = ${clanId} AND uid = '${id}';
+    `;
+
+    let damage;
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: Obtained Damage Values For ${id}`);
+        
+        damage = res.rows[0].total;
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+
+    return damage;
 }
 
 const retrieveAttack = async (id, date) => {
@@ -401,6 +415,8 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
+
+    currentClanBattleId = await initCbid();
 
     const query = `
         UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${currentClanBattleId}
@@ -559,7 +575,6 @@ const addXp = async message => {
             let nozomiIdx = Math.floor(Math.random() * 5);
 
             await message.channel.send(new MessageEmbed()
-                .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setThumbnail(randomNozomi[nozomiIdx])
@@ -606,7 +621,6 @@ const profile = async message => {
     ];
 
     await message.channel.send(new MessageEmbed()
-        .setURL("https://twitter.com/priconne_en")
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(avatarUser)
@@ -669,20 +683,62 @@ const daily = async message => {
 
 
 /*
-    Function To Edit Clanbattle Value
+    Function To Get The Total Damage From A Certain CB
 */
-const clanbattle = async (message, args) => {
-    let newClanBattleId = parseFirstArgAsInt(args, currentClanBattleId);
-    if (currentClanBattleId != newClanBattleId) {
-        if (message.author.id == 154775062178824192) {
-            currentClanBattleId = newClanBattleId;
-            await message.channel.send(`Current Clan Battle Identification Number Set To: ${newClanBattleId}`);
-        } else {
-            message.channel.send(`You do not have the permission to use this`);
-        }
-    } else {
-        await message.channel.send(`Current Clan Battle Identification Number Is: ${currentClanBattleId}`);
+const getclanbattle = async (message, args) => {
+    let searchCBid = currentClanBattleId;
+    
+    if (!Array.isArray(args)) {
+        message.channel.send("Error parsing arguments");
+        return;
     }
+
+    let month = cbStart.getUTCMonth();
+    let year = cbStart.getUTCYear();
+    
+    if (args.length < 3) {
+        searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
+
+        month = cbStart.setUTCMonth(searchCBid).getUTCMonth();
+        year = cbStart.setUTCMonth(searchCBid).getUTCYear();
+    } else if (args.length >= 3) {
+        let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
+        date = Date.parse(parseDate);
+        
+        let newdate = new Date(date);
+
+        month = newdate.getUTCMonth();
+        year = newdate.getUTCYear();
+
+        searchCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCYear() - cbStart.getUTCYear()) * 12);
+    }
+
+    console.log(`LOG: Searching clan battle ${searchCBid}`);
+
+    let parseUser = message.author;
+    let avatarUser = message.author.avatarURL();
+
+    if (message.mentions.members.first()) {
+        parseUser = message.mentions.members.first();
+        avatarUser = message.mentions.members.first().user.avatarURL();
+    }
+
+    createUserIfNotExist(parseUser.id);
+
+    console.log(`LOG: Retrieving clan battle ${searchCBid} from ${parseUser.id}`)
+    let totalDamage = await retrieveDamageFromClanId(parseUser.id, searchCBid);
+
+    let damageMessage = new MessageEmbed()
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setThumbnail(avatarUser)
+        .setTitle(`${parseUser.displayName||parseUser.username}'s damage on clan battle ${searchCBid}`)
+        .setDescription(`Battle occured on the month of ${month}, ${year}`)
+        .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage)
+        .setFooter(footerText, client.user.avatarURL())
+        .setTimestamp();
+
+    await message.channel.send(damageMessage);
 }
 
 
@@ -723,7 +779,6 @@ const getattacks = async (message, args) => {
         let obtainedAttacks = await retrieveAttack(parseUser.id, newdate);
 
         let damageMessage = new MessageEmbed()
-            .setURL("https://twitter.com/priconne_en")
             .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
             .setAuthor(client.user.username, client.user.avatarURL())
             .setThumbnail(avatarUser)
@@ -1211,7 +1266,6 @@ const updateOCRValues = async (message, values, rectangles) => {
         await updateAttackDB(message.author.id, newdate, intAttacks[0], intAttacks[1], intAttacks[2]);
 
         await message.channel.send(new MessageEmbed()
-        .setURL("https://twitter.com/priconne_en")
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setTitle(`${message.author.displayName||message.author.username}'s attack`)
@@ -1339,13 +1393,6 @@ const help = message => {
 
 /* Update Methods Designed To Update The Postgre SQL DB After The App Stops  */
 const updateAll = async () => {
-    await updateCBID(currentClanBattleId);
-    for(let id in userData) {
-        if (userData.hasOwnProperty(id)) {
-            await updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
-        }
-    } 
-
     for(let id in collectionData) {
         if (collectionData.hasOwnProperty(id)) {
             for(let charname in collectionData[id]) {
@@ -1458,7 +1505,7 @@ const updateCollection = async (id, charname, starlevel) => {
 
 // Bot Commands
 const COMMANDS = { help, ping, reset, resetgacha, say, profile, daily, 
-    clanbattle, rollgacha, characters, character, getattacks, scanimage };
+    getclanbattle, rollgacha, characters, character, getattacks, scanimage };
 
 // Chaining Events
 client
