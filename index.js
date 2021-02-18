@@ -281,6 +281,9 @@ const initCollectionDataObj = async () => {
 
     for (let collect in collectedCharData) {
         if (collectedCharData.hasOwnProperty(collect)) {
+            if (!(collectedCharData[collect].uid in collectionData)) {
+                collectionData[collectedCharData[collect].uid] = {};
+            }
             collectionData[collectedCharData[collect].uid][collectedCharData[collect].charname] = 
                 collectedCharData[collect].starlevel
         }
