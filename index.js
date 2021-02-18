@@ -26,85 +26,34 @@ const client = new Client();
 let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
-const initGachaDB = async () => {
+// Objects Used To Store Realtime Changes - Obtained Once On Startup
+let userData = initUserDataObj();
+let gachaData = initGachaDataObj();
+let collectionData = initCollectionDataObj();
+let currentClanBattleId = initCbid();
 
-    const url1star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85';
-    const url2star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85';
-    const url3star = 'https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85';
+// Bot Commands
+const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
 
-    const findTable = '.table > tbody > tr > td > a';
-    const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-    const charArray1star = await webScrape(url1star, findTable, findImg);
-    const charArray2star = await webScrape(url2star, findTable, findImg);
-    const charArray3star = await webScrape(url3star, findTable, findImg);
 
-    for (let i = 0; i < charArray1star.length; i++) {
-        await updateCharDB(charArray1star[i].name, charArray1star[i].thumbnailURL, charArray1star[i].fullImageURL, 1);
-    }
+/* 
+    General Helper Functions
+*/
+const parseFirstArgAsInt = (args, defaultValue) => {
+    if (!Array.isArray(args)) return defaultValue;
+    if (args.length) {
+        let parseAmt = parseInt(args.shift().toLowerCase(), 10);
+        if (!isNaN(parseAmt) && parseAmt > 0) return parseAmt;
+    } else return defaultValue;
+};
 
-    for (let i = 0; i < charArray2star.length; i++) {
-        await updateCharDB(charArray2star[i].name, charArray2star[i].thumbnailURL, charArray2star[i].fullImageURL, 2);
-    }
 
-    for (let i = 0; i < charArray3star.length; i++) {
-        await updateCharDB(charArray3star[i].name, charArray3star[i].thumbnailURL, charArray3star[i].fullImageURL, 3);
-    }
-}
 
-const webScrape = async (url, findTable, findImg) => {
-    let returnArray = [];
-
-    try {
-        const response = await got(url);
-        let $ = cheerio.load(response.body);
-        console.log(`LOG: Finding Data From Units From: ${url}`);
-
-        let firstClass = $('.ie5').first().html();
-        $ = cheerio.load(firstClass);
-
-        let rows = $(findTable);
-
-        for (let i = 0; i < rows.length; i++) {
-            let imgTitle = $('img', rows[i]).attr('title');
-            let idxName = imgTitle.lastIndexOf('★');
-
-            if (idxName != -1) {
-                let thumbnailURL = $('img', rows[i]).attr('src');
-                let characterName = imgTitle.substr(idxName + 1);
-
-                let characterInfo = await getGachaData(rows[i].attribs.href, thumbnailURL, findImg, characterName);
-                returnArray.push(characterInfo);
-            }
-        }
-
-        return returnArray;
-    } catch (error) {
-        console.log(error.response.body);
-        //=> 'Internal server error ...'
-    }
-}
-
-const getGachaData = async (href, thumbnailURL, findImg, characterName) => {
-    try {
-		const response = await got(href);
-        let innerPage = cheerio.load(response.body);
-
-        let fullImageURL = innerPage(findImg).first().attr('src');
-
-        let characterInfo = {
-            name: characterName,
-            thumbnailURL: thumbnailURL,
-            fullImageURL: fullImageURL
-        } 
-
-        return characterInfo;
-    } catch (error) {
-        console.log(error.response.body);
-        //=> 'Internal server error ...'
-    }
-}
-
+/* 
+    Initialize Database Functions
+    These Functions Will Initialize The Postgre Database Via Providing SQL Query
+*/
 const initDB = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
@@ -117,7 +66,7 @@ const initDB = async () => {
 
         CREATE TABLE ATTACKS (
             uid varchar NOT NULL,
-            attackDate date NOT NULL,
+            attackdate date NOT NULL,
             attempt1damage int DEFAULT 0,
             attempt2damage int DEFAULT 0,
             attempt3damage int DEFAULT 0,
@@ -128,14 +77,14 @@ const initDB = async () => {
             uid varchar NOT NULL,
             level int DEFAULT 1,
             exp int DEFAULT 0,
-            lastMessage bigint DEFAULT 0,
+            lastmessage bigint DEFAULT 0,
             jewels int DEFAULT 0,
-            tears int DEFAULT 0
+            amulets int DEFAULT 0
         );
 
         CREATE TABLE COLLECTION (
             uid varchar NOT NULL,
-            charName varchar NOT NULL
+            charname varchar NOT NULL
         );
 
         CREATE TABLE CB (
@@ -164,10 +113,10 @@ const initCharDB = async () => {
         DROP TABLE IF EXISTS CHARDB;
     
         CREATE TABLE CHARDB (
-            charName varchar NOT NULL,
-            thumbnailURL varchar NOT NULL,
-            fullImageURL varchar NOT NULL,
-            starLevel int NOT NULL
+            charname varchar NOT NULL,
+            thumbnailurl varchar NOT NULL,
+            fullimageurl varchar NOT NULL,
+            starlevel int NOT NULL
         );
     `
 
@@ -181,119 +130,161 @@ const initCharDB = async () => {
     }
 }
 
-const updateCBID = async (cbid) => {
+
+/*
+    Reset Functions 
+    These Functions Will Reset Important Databases To Their Original State
+*/
+/** @param {import("discord.js").Message} message */
+const reset = message => {
+    if (message.author.id == 154775062178824192) {
+        initDB();
+        console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
+    } else {
+        console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
+    }
+};
+
+/** @param {import("discord.js").Message} message */
+const resetchardb = async message => {
+    if (message.author.id == 154775062178824192) {
+        await initCharDB();
+        await initGachaDB();
+        console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
+    } else {
+        console.log(`LOG: Failed attempt to reset CharDB by ${message.author.username} (${message.author.id})`);
+    }
+}
+
+
+
+/* 
+    Initialize The Objects
+    We Retrieve The SQL Data From The DB Once Only. It is Done Here
+*/
+const initUserDataObj = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    const query = `
-        UPDATE CB 
-            SET cbid = ${cbid};
-    `;
+    const query = `SELECT * FROM STATS`;
+
+    let output = {};
+    let userArr;
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: CB table is successfully updated with value ${cbid}`);
+        userArr = res.rows;
     } catch (err) {
         console.log(err.stack);
     } finally {
         pgdb.end();
     }
+
+    for (let row in userArr) {
+        let objectKey = row.uid;
+
+        let userStats = {
+            level : row.level,
+            exp : row.exp,
+            lastmessage : row.lastmessage,
+            jewels : row.jewels,
+            amulets : row.amulets
+        }
+
+        output[objectKey] = userStats;
+    }
+
+    return output
 }
 
-const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
-    cbid = await retrieveCBID();
-
+const initGachaDataObj = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    const query = `
-        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
-            WHERE uid = '${id}' AND attackDate = '${date}';
-        INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
-            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
-            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = '${date}');
-    `;
+    const query = `SELECT * FROM CHARDB`;
 
+    let gachaDataObj = {
+        '1' : {},
+        '2' : {},
+        '3' : {}
+    };
+
+    let charData;
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
+        charData = res.rows;
     } catch (err) {
         console.log(err.stack);
     } finally {
         pgdb.end();
     }
+
+    for (let row in charData) {
+        let charNameKey = row.charname;
+
+        let charInfo = {
+            thumbnailurl : row.thumbnailurl,
+            fullimageurl : row.fullimageurl
+        }
+
+        gachaDataObj[`${row.starlevel}`][charNameKey] = charInfo;
+    }
+
+    return gachaDataObj;
 }
 
-const updateStatsDB = async (id, level, xp, lastMessage, jewels, tears) => {    
+const initCollectionDataObj = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    const query = `
-        UPDATE STATS SET level = ${level}, exp = ${xp}, lastMessage = ${lastMessage}, jewels = ${jewels}, tears = ${tears}
-            WHERE uid = '${id}';
-        INSERT INTO STATS (uid, level, exp, lastMessage, jewels, tears)
-            SELECT '${id}', ${level}, ${xp}, ${lastMessage}, ${jewels}, ${tears}
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
-    `;
+    const query = `SELECT * FROM COLLECTION`;
 
+    let collectionData = {};
+
+    let collectedCharData;
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${xp}, ${jewels}, ${tears}`);
+        collectedCharData = res.rows;
     } catch (err) {
         console.log(err.stack);
     } finally {
         pgdb.end();
     }
+
+    for (let row in collectedCharData) {
+        let objectKey = row.uid;
+
+        collectionData[objectKey][row.charname] = 1;
+    }
+
+    return collectionData;
 }
 
-const updateCharDB = async (charName, thumbnailURL, fullImageURL, starLevel) => {    
+const initCbid = async () => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    console.log(charName);
+    const query = `SELECT cbid FROM CB`;
 
-    const query = `
-        UPDATE CHARDB SET thumbnailURL = '${thumbnailURL}', fullImageURL = '${fullImageURL}', starLevel = ${starLevel}
-            WHERE charName = '${charName}';
-        INSERT INTO CHARDB (charName, thumbnailURL, fullImageURL, starLevel)
-            SELECT '${charName}', '${thumbnailURL}', '${fullImageURL}', ${starLevel}
-            WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charName = '${charName}');
-    `;
-
+    let output;
     try {
         const res = await pgdb.query(query);
+        output = res.rows[0].cbid;
     } catch (err) {
         console.log(err.stack);
     } finally {
         pgdb.end();
     }
-}
 
-const addCollection = async (id, charName) => {    
-    const pgdb = new PGdb(dbConfig);
-    pgdb.connect();
-
-    console.log(charName);
-
-    const query = `
-        INSERT INTO COLLECTION (uid, charName)
-            SELECT '${id}', '${charName}'
-            WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charName = '${charName}');
-    `;
-
-    console.log(query);
-
-    try {
-        const res = await pgdb.query(query);
-        console.log(`LOG: ${charName} was successfully added to ${id}'s collection`);
-    } catch (err) {
-        console.log(err.stack);
-    } finally {
-        pgdb.end();
-    }
+    return output;
 }
 
 
+
+/*
+    Retrieving / Updating Attacks Directly From The DB For Easier Calculations 
+    Plus, The Attacks isn't going to be accessed often (Once Per Day)
+*/
 const retrieveDamageDB = async (id, date) => {
     cbid = await retrieveCBID();
 
@@ -328,192 +319,154 @@ const retrieveDamageDB = async (id, date) => {
     return values;
 }
 
-const retrieveStats = async (id) => {
+const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
+    cbid = await retrieveCBID();
+
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
     const query = `
-        INSERT INTO STATS (uid, level, exp, lastMessage, jewels, tears) 
-            SELECT '${id}', 1, 0, 0, 0, 0
-            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
-    `;
-
-    const selectQuery = `
-        SELECT * FROM STATS WHERE uid = '${id}';
+        UPDATE ATTACKS SET attempt1damage = ${attempt1}, attempt2damage = ${attempt2}, attempt3damage = ${attempt3}, cbid = ${cbid}
+            WHERE uid = '${id}' AND attackDate = '${date}';
+        INSERT INTO ATTACKS (uid, attackDate, attempt1damage, attempt2damage, attempt3damage, cbid)
+            SELECT '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}
+            WHERE NOT EXISTS (SELECT 1 FROM ATTACKS WHERE uid = '${id}' AND attackDate = '${date}');
     `;
 
     try {
         const res = await pgdb.query(query);
-    } catch (err) {
-        console.log(err.stack);
-    } 
-
-    let output;
-    try {
-        const res = await pgdb.query(selectQuery);
-        output = res.rows[0];
+        console.log(`LOG: ATTACKS table is successfully updated with values: '${id}', '${date}', ${attempt1}, ${attempt2}, ${attempt3}, ${cbid}`);
     } catch (err) {
         console.log(err.stack);
     } finally {
         pgdb.end();
     }
-
-    return output;
 }
 
-const retrieveGacha = async (starLevel) => {
-    const pgdb = new PGdb(dbConfig);
-    pgdb.connect();
 
-    const selectQuery = `
-        SELECT * FROM CHARDB WHERE starLevel = ${starLevel};
-    `;
 
-    let output;
-    try {
-        const res = await pgdb.query(selectQuery);
-        output = res.rows;
-    } catch (err) {
-        console.log(err.stack);
-    } finally {
-        pgdb.end();
+/* 
+    Functions Designed To Update The Current Global Objects
+
+*/
+const updateGachaDB = async () => {
+
+    const urls = [];
+    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
+    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85');
+    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85');
+
+    const findTable = '.table > tbody > tr > td > a';
+    const findImg = '.ie5 > table > tbody > tr > .style_td img';
+
+    const charArray = [];
+    
+    for (let i = 0; i < urls.length; i++) {
+        charArray.push(await webScrape(urls[i], findTable, findImg));
     }
 
-    return output;
-}
-
-const retrieveCBID = async () => {
-    const pgdb = new PGdb(dbConfig);
-    pgdb.connect();
-
-    const query = `
-        SELECT cbid
-        FROM CB;
-    `;
-
-    let output;
-    try {
-        const res = await pgdb.query(query);
-        output = res.rows[0].cbid;
-    } catch (err) {
-        console.log(err.stack);
-    } finally {
-        pgdb.end();
-    }
-
-    return output;
-}
-
-const retrieveCollection = async (id) => {    
-    const pgdb = new PGdb(dbConfig);
-    pgdb.connect();
-
-    const query = `
-        SELECT charName FROM COLLECTION
-            WHERE uid = ${id};
-    `;
-
-    let output = [];
-    try {
-        const res = await pgdb.query(query);
-        for (let row in res.rows) {
-            output.push(row.charName);
+    for (let i = 0; i < charArray.length; i++) {
+        for (let j = 0; j < charArray[i].length; j++) {
+            gachaData[`${i+1}`][charArray[i][j].name] = { 
+                thumbnailurl : charArray[i][j].thumbnailurl, 
+                fullimageurl : charArray[i][j].fullimageurl
+            };
         }
-    } catch (err) {
-        console.log(err.stack);
-    } finally {
-        pgdb.end();
     }
-
-    return output;
 }
 
-const checkCollection = async (id, charName) => {    
-    const pgdb = new PGdb(dbConfig);
-    pgdb.connect();
+/* Helper Functions For initGachaDB */
+const webScrape = async (url, findTable, findImg) => {
+    let returnArray = [];
 
-    console.log(charName);
-
-    const query = `
-        SELECT charName FROM COLLECTION
-            WHERE uid = '${id}' and charName = '${charName}';
-    `;
-
-    let output = true;
     try {
-        const res = await pgdb.query(query);
-        console.log(res.rows);
-        if (res.rows.length == 0) {
-            output = false;
+        const response = await got(url);
+        let $ = cheerio.load(response.body);
+        console.log(`LOG: Finding Data From Units From: ${url}`);
+
+        let firstClass = $('.ie5').first().html();
+        $ = cheerio.load(firstClass);
+
+        let rows = $(findTable);
+
+        for (let i = 0; i < rows.length; i++) {
+            let imgTitle = $('img', rows[i]).attr('title');
+            let idxName = imgTitle.lastIndexOf('★');
+
+            if (idxName != -1) {
+                let thumbnailurl = $('img', rows[i]).attr('src');
+                let characterName = imgTitle.substr(idxName + 1);
+
+                let characterInfo = await getGachaData(rows[i].attribs.href, thumbnailurl, findImg, characterName);
+                returnArray.push(characterInfo);
+            }
         }
-    } catch (err) {
-        console.log(err.stack);
-    } finally {
-        pgdb.end();
-    }
 
-    return output;
-}
-
-const reactionFilter = (author, reaction, user) => 
-        ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
-
-/** @param {import("discord.js").Message} message */
-const awaitEmoji = async (message, text, emoji, option, cancelText) => {
-    /** @type {import("discord.js").Message} */
-    let emojiText = await message.channel.send(text);
-    emojiText.react(emoji);
-    return await emojiText.awaitReactions((reaction, user) => 
-                        reactionFilter(message.author, reaction, user), option)
-             .catch(() => { message.channel.send(cancelText); });
-};
-
-/** @param {import("discord.js").Message} message */
-const reset = message => {
-    if (message.author.id == 154775062178824192) {
-        initDB();
-        console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
-    } else {
-        console.log(`LOG: Failed attempt to reset users by ${message.author.username} (${message.author.id})`);
-    }
-};
-
-/** @param {import("discord.js").Message} message */
-const resetchardb = message => {
-    if (message.author.id == 154775062178824192) {
-        initCharDB();
-        console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
-    } else {
-        console.log(`LOG: Failed attempt to reset CharDB by ${message.author.username} (${message.author.id})`);
+        return returnArray;
+    } catch (error) {
+        console.log(error.response.body);
+        //=> 'Internal server error ...'
     }
 }
 
-/** @param {import("discord.js").Message} message */
-const updategacha = message => {
-    if (message.author.id == 154775062178824192) {
-        initGachaDB();
-        console.log(`LOG: CharDB have been initialized by ${message.author.username} (${message.author.id})`);
-    } else {
-        console.log(`LOG: Failed attempt to initialize CharDB by ${message.author.username} (${message.author.id})`);
+const getGachaData = async (href, thumbnailurl, findImg, characterName) => {
+    try {
+		const response = await got(href);
+        let innerPage = cheerio.load(response.body);
+
+        let fullimageurl = innerPage(findImg).first().attr('src');
+
+        let characterInfo = {
+            name: characterName,
+            thumbnailurl: thumbnailurl,
+            fullimageurl: fullimageurl
+        } 
+
+        return characterInfo;
+    } catch (error) {
+        console.log(error.response.body);
+        //=> 'Internal server error ...'
+    }
+}
+
+const createUserIfNotExist = async (id) => {
+    if (!(id in userData)) {
+        let userStats = {
+            level : 1,
+            exp : 0,
+            lastmessage : 0,
+            jewels : 0,
+            amulets : 0
+        }
+        userData[id] = userStats;
     }
 }
 
 
+
+/*
+    Functions Designed To Modify And Edit Basic UserProfile Functions
+*/
 /** @param {import("discord.js").Message} message */
 const addXp = async message => {
     let currentTime = Date.now();
-    let profile = await retrieveStats(message.author.id);
+    let id = message.author.id;
 
-    if (currentTime - profile.lastmessage > 3000) { //missing 00
-        let newXP = profile.exp + Math.floor(Math.random() * 5) + 1;
-        console.log(`LOG: ${newXP - profile.exp} XP has been granted to ${message.author.username} (${message.author.id})`);
+    createUserIfNotExist(id);
 
-        let curJewel = profile.jewels;
+    if (currentTime - userData[id].lastmessage > 3000) { //missing 00
+        let newXP = userData[id].exp + Math.floor(Math.random() * 5) + 1;
+        console.log(`LOG: ${newXP - userData[id].exp} XP has been granted to ${message.author.username} (${id})`);
 
+        let curJewel = userData[id].jewels;
         let curLevel = 1 + Math.floor(Math.sqrt(newXP));
-        if (curLevel > profile.level) {
+
+        if (curLevel > userData[id].level) {
             // Level up!
-            profile.level = curLevel;
+            userData[id].level = curLevel;
+
+            let earnedJewels = curLevel * 10 * (Math.floor(Math.random() * 50) + 1);
+            userData[id].jewels += earnedJewels;
 
             let randomNozomi = [
                 'https://static.wikia.nocookie.net/princess-connect/images/4/45/Cute-human-longsword-sakurai_nozomi_rare_gacha001-0-normal.png',
@@ -525,8 +478,6 @@ const addXp = async message => {
 
             let nozomiIdx = Math.floor(Math.random() * 5);
 
-            let earnedJewels = curLevel * 10 * (Math.floor(Math.random() * 50) + 1);
-            curJewel = earnedJewels + curJewel;
             await message.channel.send(new MessageEmbed()
                 .setURL("https://twitter.com/priconne_en")
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -538,45 +489,10 @@ const addXp = async message => {
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp());
 
-            console.log(`LOG: ${message.author.username} (${message.author.id}) has leveled up to ${curLevel}`);
+            console.log(`LOG: ${message.author.username} (${id}) has leveled up to ${curLevel}`);
         }
-        updateStatsDB(message.author.id, curLevel, newXP, currentTime, curJewel, profile.tears);
     }
 };
-
-
-// Commands
-const help = message => message.author.send(`I'll be counting on you, so let's work together until I can become a top idol, okay? Ahaha, from now on, I'll be in your care! \n\n` + 
-                                            `TYPE **.ebola** TO BECOME DOWN SYNDROMED \n` + 
-                                            `TYPE **.daily** TO OBTAIN YOUR DAILY REWARDS AND SETUP YOUR PROFILE \n` + 
-                                            `TYPE **.spin** TO SPIN THE WHEEL OF BITCONNECT\n` + 
-                                            `TYPE **.profile** [@user] TO LOOK AT PROFILES \n` + 
-                                            `TYPE **.price <size>** TO LOOK AT BITCONNECT PRICES \n` + 
-                                            `TYPE **.buy/.sell <amt> <size>** TO PURCHASE OR SELL BITCONNECT`);
-
-const parseFirstArgAsInt = (args, defaultValue) => {
-    if (!Array.isArray(args)) return defaultValue;
-    if (args.length) {
-        let parseAmt = parseInt(args.shift().toLowerCase(), 10);
-        if (!isNaN(parseAmt) && parseAmt > 0) return parseAmt;
-    } else return defaultValue;
-};
-
-const clanbattle = async (message, args) => {
-    let currentCBID = await retrieveCBID();
-    let newCBID = parseFirstArgAsInt(args, currentCBID);
-    if (currentCBID != newCBID) {
-        if (message.author.id == 154775062178824192) {
-            await updateCBID(newCBID);
-            await message.channel.send(`Current Clan Battle Identification Number Set To: ${newCBID}`);
-        } else {
-            message.channel.send(`You do not have the permission to use this`);
-        }
-    } else {
-        await message.channel.send(`Current Clan Battle Identification Number Is: ${currentCBID}`);
-    }
-    
-}
 
 /** @param {import("discord.js").Message} message */
 const profile = async message => {
@@ -587,7 +503,9 @@ const profile = async message => {
         profileUser =  message.mentions.members.first();
         avatarUser = profileUser.user.avatarURL();
     }
-    let profileData = await retrieveStats(profileUser.id);
+
+    createUserIfNotExist(profileUser.id);
+    let id = profileUser.id;
 
     const pad = (num) => { 
         return ('00'+num).slice(-2) 
@@ -596,13 +514,13 @@ const profile = async message => {
     let date = new Date();
     date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
 
-    let profileDamage = await retrieveDamageDB(profileUser.id, date);
+    let profileDamage = await retrieveDamageDB(id, date);
 
     const randomStatus = Math.floor(Math.random() * 5);
     const statusStrings = [
         "A Dapper Fellow <:coolnozomi:811498063527936031>",
         "Empty In Mana <:mana:811498063515353149>",
-        "Drowning In Tears <:tears:811495998450565140>",
+        "Drowning In Amulets <:tears:811495998450565140>",
         "Pulling Literal Garbage <:garbage:811498063427928086>",
         "Out Of Shape <:stamina:811495998328930314>"
     ];
@@ -614,65 +532,45 @@ const profile = async message => {
         .setThumbnail(avatarUser)
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription(statusStrings[randomStatus])
-        .addField("Level <:starico:811495998479532032>", profileData.level)
+        .addField("Level <:starico:811495998479532032>", userData[id].level)
         .addFields(
             { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
             { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
             { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
-            { name: "Jewels <:jewel:811495998194450454> ", value: profileData.jewels, inline: true },
-            { name: "Tears <:tears:811495998450565140>", value: profileData.tears, inline: true },
+            { name: "Jewels <:jewel:811495998194450454> ", value: userData[id].jewels, inline: true },
+            { name: "Amulets <:tears:811495998450565140>", value: userData[id].amulets, inline: true },
         )
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
 };
 
-/** @param {import("discord.js").Message} message */
-const ebola = async message => {
-    await message.react(BITCONNECT_EMOJI);
-    let collected = await message.awaitReactions((reaction, user) => 
-                                    reactionFilter(message.author, reaction, user), 
-                                    { max: 1, time: 60000, errors: ['time'] })
-                                .catch(() => message.reply('You failed to react in time.'));
-    if (!collected) return await message.reply('You failed to react in time.');
 
-    let reaction = collected.first();
-    if (reaction.emoji.name === "bitconnect") {
-        // Find The Role 
-        let autismRole = message.guild.roles.find(r => r.name === "YOU HAVE AUTISM!");
-        if (!autismRole) return await message.channel.send("Looks like this channel doesn't have" +
-                                                            "**YOU HAVE AUTISM!** role");
-        if (message.member.roles.has(autismRole.id)){
-            return message.reply("YOU ALREADY ARE AUTISTIC");
+
+/*
+    Function To Edit Clanbattle Value
+*/
+const clanbattle = async (message, args) => {
+    let newClanBattleId = parseFirstArgAsInt(args, currentClanBattleId);
+    if (currentClanBattleId != newClanBattleId) {
+        if (message.author.id == 154775062178824192) {
+            currentClanBattleId = newClanBattleId
+            await message.channel.send(`Current Clan Battle Identification Number Set To: ${newClanBattleId}`);
         } else {
-            let success = await message.member.addRole(autismRole)
-                                                .catch(() => console.log("Looks like I can't add" +
-                                                                    "**YOU HAVE AUTISM!** role"));
-            if (success) {
-                await message.reply("YOU NOW HAVE AUTISM!");
-                console.log(`${message.author.username} is now autistic`);
-            }
+            message.channel.send(`You do not have the permission to use this`);
         }
+    } else {
+        await message.channel.send(`Current Clan Battle Identification Number Is: ${currentClanBattleId}`);
     }
-};
+    
+}
 
-/** @param {import("discord.js").Message} message */
-const ping = async message => {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server 
-    // (one-way, not round-trip)
-    let m = await message.channel.send("Ping?");
-    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}` + 
-              `ms. API Latency is ${Math.round(client.ping)}ms`);
-};
 
-/** @param {import("discord.js").Message} message */
-const say = async (message, args) => {
-    const sayMessage = args.join(" ");
-    message.deletable ? message.delete() : console.log(`Looks like I can't delete ` + 
-                                                       `message in ${message.channel.name}`);
-    await message.channel.send(sayMessage);
-};
 
+
+/*
+    Functions For Gacha 
+*/
+/* Loads an image as a canvas Image object from URL */
 function loadImage (url) {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -684,22 +582,114 @@ function loadImage (url) {
     })
 }
 
+/* Combines given images into a single pull */
+const createImage = async (message, obtainedImages, amuletsObtained, newUnits) => {
+    let sizThumb = 121;
+    let sizOverlay = 40;
+
+    let amuletSRC = await loadImage(
+        `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
+    
+    var canvas = new Canvas(sizThumb * 5, sizThumb * 2);
+    var ctx = canvas.getContext('2d');
+    
+    let x = 0;
+    let y = 0;
+    
+    for (let i = 0; i < obtainedImages.length; i++) {
+        ctx.drawImage(obtainedImages[i], x, y, sizThumb, sizThumb);
+
+        x+= sizThumb;
+        if (i == 4) {
+            x = 0;
+            y += sizThumb;
+        }
+    }
+
+    x = sizThumb - sizOverlay;
+    y = sizThumb - sizOverlay;
+    ctx.globalAlpha = 0.8;
+
+    for (let i = 0; i < isDupe.length; i++) {
+        if (isDupe[i]) {
+            ctx.drawImage(amuletSRC, x, y, sizOverlay, sizOverlay);
+        }
+
+        x+= sizThumb;
+        if (i == 4) {
+            x = sizThumb - sizOverlay;
+            y += sizThumb;
+        }
+    }
+
+    const out = fs.createWriteStream('./test.png');
+    const stream = canvas.createPNGStream();
+    stream.pipe(out);
+    out.on('finish', () =>  {
+            console.log('LOG: The PNG agregate file was created.');
+
+            let amuletStr = `You have earned ${amuletsObtained} <:tears:811495998450565140>`;
+
+            if (newUnits > 0) {
+                amuletStr += ` and have obtained ${newUnits} new characters!`
+            }
+
+            let combinedRoll = new MessageEmbed()
+                .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                .setAuthor(client.user.username, client.user.avatarURL())
+                .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                .setDescription(amuletStr)
+                .attachFiles(['./test.png'])
+                .setImage('attachment://test.png')
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setTimestamp();
+            
+            rollResults.delete();
+            message.channel.send(combinedRoll);
+    });
+}
+
+/* Obtains A Random Character */
+const getRolledCharData = async (id, rarity) => {
+    const randomUnit = Math.floor(Math.random() * charstarArr[`${rarity-1}`].length);
+    
+    const rolledName = charstarArr[`${rarity-1}`].charname;
+    const rolledThumb = charstarArr[`${rarity-1}`].thumbnailurl;
+    let isDupe = 0;
+    let amulets = 0;
+
+    console.log(randomUnit);
+    console.log(charstarArr[`${rarity-1}`].charname);
+    if (rolledName in collectionData[id]) {
+        if (rarity == 3) {
+            amulets = 50;
+        } else if (rarity == 2) {
+            amulets = 10;
+        } else {
+            amulets = 1;
+        }
+        isDupe = 1;
+    } else {
+        collectionData[id].rolledName = 1;
+    }
+
+    const obtainedImage = await loadImage(rolledThumb);
+
+    let outputData = [obtainedImage, isDupe, amulets]
+    return outputData;
+}
+
 const rollgacha = async (message) => {
-    let profile = await retrieveStats(message.author.id);
-    console.log(profile);
+    createUserIfNotExist(message.author.id);
+    let id = message.author.id;
+
     const jewelCost = 0;
 
-    if (profile.jewels >= jewelCost) {
+    if (userData[id].jewels >= jewelCost) {
         // Deduct the jewels immediately
-        await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
-            profile.jewels - jewelCost, profile.tears);
+        userData[id].jewels -= jewelCost;
 
-        const char3star = await retrieveGacha(3);
-        const char2star = await retrieveGacha(2);
-        const char1star = await retrieveGacha(1);
-
-        console.log(char2star);
-
+        const pulledChars = [];
         let rollString = '';
 
         let embedRoll = new MessageEmbed()
@@ -712,172 +702,78 @@ const rollgacha = async (message) => {
 
         let rollResults = await message.channel.send(embedRoll);
         
-        let timesRun = 0;
         let silverCount = 0;
-        let tearsObtained = 0;
+        let amuletsObtained = 0;
         let newUnits = 0;
 
         let obtainedImages = [];
         let isDupe = [];
 
-        const interval = setInterval(async () => {
-            if(timesRun === 10){
-                clearInterval(interval);
+        for (let i = 0; i < 10; i++) {
+            console.log(`ran ${i} times`);  
 
-                // Refresh profile stats before making changes
-                profile = await retrieveStats(message.author.id);
-                await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
-                    profile.jewels, profile.tears + tearsObtained);
-                
-                let sizThumb = 121;
-                let sizOverlay = 40;
+            const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
 
-                let tearSRC = await loadImage(
-                    `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
-                
-                var canvas = new Canvas(sizThumb * 5, sizThumb * 2);
-                var ctx = canvas.getContext('2d');
-                
-                let x = 0;
-                let y = 0;
-                
-                for (let i = 0; i < obtainedImages.length; i++) {
-                    ctx.drawImage(obtainedImages[i], x, y, sizThumb, sizThumb);
+            if (rarityRolled < threeStarRate) {
+                rollString += '<:poggerona:811498063578529792>';
+                let rollImgData = await getRolledCharData(id, 3);
 
-                    x+= sizThumb;
-                    if (i == 4) {
-                        x = 0;
-                        y += sizThumb;
-                    }
+                obtainedImages.push(rollImgData[0]);
+                isDupe[i] = rollImgData[1];
+
+                if (!rollImgData[1]) {
+                    newUnits++;
                 }
 
-                x = sizThumb - sizOverlay;
-                y = sizThumb - sizOverlay;
-                ctx.globalAlpha = 0.8;
+                amuletsObtained += rollImgData[2];
+            } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
+                rollString += '<:bitconnect:811498063641837578>';
+                let rollImgData = await getRolledCharData(id, 2);
 
-                for (let i = 0; i < isDupe.length; i++) {
-                    if (isDupe[i]) {
-                        ctx.drawImage(tearSRC, x, y, sizOverlay, sizOverlay);
-                    }
+                obtainedImages.push(rollImgData[0]);
+                isDupe[i] = rollImgData[1];
 
-                    x+= sizThumb;
-                    if (i == 4) {
-                        x = sizThumb - sizOverlay;
-                        y += sizThumb;
-                    }
+                if (!rollImgData[1]) {
+                    newUnits++;
                 }
-
-                const out = fs.createWriteStream('./test.png');
-                const stream = canvas.createPNGStream();
-                stream.pipe(out);
-                out.on('finish', () =>  {
-                        console.log('LOG: The PNG agregate file was created.');
-
-                        let tearsStr = `You have earned ${tearsObtained} <:tears:811495998450565140>`;
-
-                        if (newUnits > 0) {
-                            tearsStr += ` and have obtained ${newUnits} new characters!`
-                        }
-
-                        let combinedRoll = new MessageEmbed()
-                            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-                            .setAuthor(client.user.username, client.user.avatarURL())
-                            .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
-                            .setDescription(tearsStr)
-                            .attachFiles(['./test.png'])
-                            .setImage('attachment://test.png')
-                            .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
-                            .setTimestamp();
-                        
-                        rollResults.delete();
-                        message.channel.send(combinedRoll);
-                    }
-                );
-            } else if (timesRun < 10) {    
-                console.log(`ran ${timesRun} times`);        
-                const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
-                if (rarityRolled < threeStarRate) {
-                    const randomUnit = Math.floor(Math.random() * char3star.length);
-                    rollString += '<:poggerona:811498063578529792>';
-                    
-                    const rolledName = char1star[randomUnit].charname;
-                    const rolledThumb = char2star[randomUnit].thumbnailurl;
-
-                    console.log(randomUnit);
-                    console.log(char3star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, rolledName)) {
-                        tearsObtained += 50;
-                        isDupe[timesRun] = 1;
-
-                    } else {
-                        await addCollection(message.author.id, rolledName);
-                        console.log(char3star[randomUnit].charname);
-                        isDupe[timesRun] = 0;
-                        newUnits++;
-                    }
-
-                    const obtainedImage = await loadImage(rolledThumb);
-                    obtainedImages.push(obtainedImage);
-                } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                    const randomUnit = Math.floor(Math.random() * char2star.length);
-                    rollString += '<:bitconnect:811498063641837578>';
-
-                    const rolledName = char1star[randomUnit].charname;
-                    const rolledThumb = char2star[randomUnit].thumbnailurl;
-
-                    console.log(randomUnit);
-                    console.log(char2star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, rolledName)) {
-                        tearsObtained += 10;
-                        isDupe[timesRun] = 1;
-
-                    } else {
-                        await addCollection(message.author.id, rolledName);
-                        isDupe[timesRun] = 0;
-                        newUnits++;
-                    }
-
-                    const obtainedImage = await loadImage(rolledThumb);
-                    obtainedImages.push(obtainedImage);
-                } else {
-                    silverCount++;
-
-                    const randomUnit = Math.floor(Math.random() * char1star.length);
-                    rollString += '<:garbage:811498063427928086>';
-
-                    const rolledName = char1star[randomUnit].charname;
-                    const rolledThumb = char1star[randomUnit].thumbnailurl;
-
-                    console.log(randomUnit);
-                    console.log(char1star[randomUnit].charname);
-                    if (await checkCollection(message.author.id, rolledName)) {
-                        tearsObtained += 1;
-                        isDupe[timesRun] = 1;
-
-                    } else {
-                        await addCollection(message.author.id, rolledName);
-                        isDupe[timesRun] = 0;
-                        newUnits++;
-                    }
-
-                    const obtainedImage = await loadImage(rolledThumb);
-                    obtainedImages.push(obtainedImage);
-                }
-
-                embedRoll.setDescription(`${rollString}`);
-                rollResults.edit(embedRoll);
+                
+                amuletsObtained += rollImgData[2];
             } else {
-                clearInterval(interval);
+                silverCount++;
+
+                rollString += '<:garbage:811498063427928086>';
+                let rollImgData = await getRolledCharData(id, 1);
+
+                obtainedImages.push(rollImgData[0]);
+                isDupe[i] = rollImgData[1];
+
+                if (!rollImgData[1]) {
+                    newUnits++;
+                }
+                
+                amuletsObtained += rollImgData[2];
             }
-            timesRun += 1;
-        }, 2000); 
+            embedRoll.setDescription(`${rollString}`);
+            rollResults.edit(embedRoll);
+            
+        }
+
+        userData[id].amulets += amuletsObtained;
+
+        createImage(message, obtainedImages, amuletsObtained, newUnits);
     } else {
         let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
-            `You Are Missing ${1500-profile.jewels} <:jewel:811495998194450454> `);
+            `You Are Missing ${jewelCost-profile.jewels} <:jewel:811495998194450454> `);
         setTimeout(() => { reminder.delete();}, 5000);
     }
 }
 
+
+
+/*
+    Functions For OCR CB Damage Recognitions 
+*/
+/* Makes sure the attachment is a picture */
 const getOcrImage = msgAttach => {
     const url = msgAttach.url;
 
@@ -893,6 +789,7 @@ const getOcrImage = msgAttach => {
     return isImage;
 }
 
+/* Returns the OCR result from input message */
 /** @param {import("discord.js").Message} message */
 const returnOCR = async message => {
     message.attachments.forEach(async attachment => {
@@ -970,56 +867,204 @@ const returnOCR = async message => {
         }
 
         if (isClan) {
-            const intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
-            const intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
-            const intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
-            
-            const pad = (num) => { 
-                return ('00'+num).slice(-2) 
-            };
-            
-            let date;
-            const let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            let idxDate = -1;
-            for (i = 0; i < let3Month.length; i++) {
-                if (values[1].indexOf(let3Month[i]) != -1) {
-                    idxDate = values[1].indexOf(let3Month[i]);
-                    break;
-                }
-            }
-
-            if (idxDate != -1) {
-                date = Date.parse(`${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
-                console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
-                
-                let newdate = new Date(date);
-                newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
-                await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
-
-                await message.channel.send(new MessageEmbed()
-                .setURL("https://twitter.com/priconne_en")
-                .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-                .setAuthor(client.user.username, client.user.avatarURL())
-                .setTitle(`${message.author.displayName||message.author.username}'s attack`)
-                .setDescription(`on ` + 
-                    `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
-                    `<:nozomiblush:811498063918137375>`)
-                .addFields(
-                    { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
-                    { name: "Attempt 2 <:critrate:811495998383325244>", value: intAttack2, inline: true },
-                    { name: "Attempt 3 <:critrate:811495998383325244>", value: intAttack3, inline: true },
-                )
-                .addField(`Total Damage Dealt For This Day <:critdamage:811495998463148102>`, intAttack1 + intAttack2 + intAttack3)
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
-                .setTimestamp());
-            }
+            await updateOCRValues(message, values);
         }
         await worker.terminate();
     });
 }
 
-// Bot Commands
-const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
+/* Updates the attack DB based on OCR result and displays a message*/
+/** @param {import("discord.js").Message} message */
+const updateOCRValues = async (message, values) => {
+    const intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
+    const intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
+    const intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
+    
+    const pad = (num) => { 
+        return ('00'+num).slice(-2) 
+    };
+    
+    let date;
+    const let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let idxDate = -1;
+    for (i = 0; i < let3Month.length; i++) {
+        if (values[1].indexOf(let3Month[i]) != -1) {
+            idxDate = values[1].indexOf(let3Month[i]);
+            break;
+        }
+    }
+
+    if (idxDate != -1) {
+        date = Date.parse(`${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
+        console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
+        
+        let newdate = new Date(date);
+        newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
+        await updateAttackDB(message.author.id, newdate, intAttack1, intAttack2, intAttack3);
+
+        await message.channel.send(new MessageEmbed()
+        .setURL("https://twitter.com/priconne_en")
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setTitle(`${message.author.displayName||message.author.username}'s attack`)
+        .setDescription(`on ` + 
+            `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
+            `<:nozomiblush:811498063918137375>`)
+        .addFields(
+            { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
+            { name: "Attempt 2 <:critrate:811495998383325244>", value: intAttack2, inline: true },
+            { name: "Attempt 3 <:critrate:811495998383325244>", value: intAttack3, inline: true },
+        )
+        .addField(`Total Damage Dealt For This Day <:critdamage:811495998463148102>`, intAttack1 + intAttack2 + intAttack3)
+        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+        .setTimestamp());
+    }
+}
+
+
+/*
+    Fundamental Discord Bot Commands
+*/
+/** @param {import("discord.js").Message} message */
+const ping = async message => {
+    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
+    // The second ping is an average latency between the bot and the websocket server 
+    // (one-way, not round-trip)
+    let m = await message.channel.send("Ping?");
+    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}` + 
+              `ms. API Latency is ${Math.round(client.ping)}ms`);
+};
+
+/** @param {import("discord.js").Message} message */
+const say = async (message, args) => {
+    const sayMessage = args.join(" ");
+    message.deletable ? message.delete() : console.log(`Looks like I can't delete ` + 
+                                                       `message in ${message.channel.name}`);
+    await message.channel.send(sayMessage);
+};
+
+// Commands
+const help = message => message.author.send(`I'll be counting on you, so let's work together until I can become a top idol, okay? Ahaha, from now on, I'll be in your care! \n\n` + 
+                                            `TYPE **.ebola** TO BECOME DOWN SYNDROMED \n` + 
+                                            `TYPE **.daily** TO OBTAIN YOUR DAILY REWARDS AND SETUP YOUR PROFILE \n` + 
+                                            `TYPE **.spin** TO SPIN THE WHEEL OF BITCONNECT\n` + 
+                                            `TYPE **.profile** [@user] TO LOOK AT PROFILES \n` + 
+                                            `TYPE **.price <size>** TO LOOK AT BITCONNECT PRICES \n` + 
+                                            `TYPE **.buy/.sell <amt> <size>** TO PURCHASE OR SELL BITCONNECT`);
+
+
+
+/* Update Methods Designed To Update The Postgre SQL DB After The App Stops  */
+const updateAll = async () => {
+    updateCBID(currentClanBattleId);
+    for(let id in userData) {
+        if (userData.hasOwnProperty(id)) {
+            updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
+        }
+    } 
+    for(let charname in gachaData) {
+        if (gachaData.hasOwnProperty(charname)) {
+            updateCharDB(charname, gachaData[charname].thumbnailurl, gachaData[charname].fullimageurl, gachaData[charname].starlevel);
+        }
+    } 
+    for(let id in collectionData) {
+        if (collectionData.hasOwnProperty(id)) {
+            for(let charname in collectionData[id]) {
+                if (collectionData[id].hasOwnProperty(charname)) {
+                    updateCollection(id, charname);
+                }
+            }
+        }
+    }
+}
+
+const updateCBID = async (cbid) => {
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        UPDATE CB 
+            SET cbid = ${cbid};
+    `;
+
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: CB table is successfully updated with value ${cbid}`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
+
+const updateStatsDB = async (id, level, exp, lastmessage, jewels, amulets) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `
+        UPDATE STATS SET level = ${level}, exp = ${exp}, lastmessage = ${lastmessage}, jewels = ${jewels}, amulets = ${amulets}
+            WHERE uid = '${id}';
+        INSERT INTO STATS (uid, level, exp, lastMessage, jewels, amulets)
+            SELECT '${id}', ${level}, ${exp}, ${lastmessage}, ${jewels}, ${amulets}
+            WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
+    `;
+
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: STATS table is successfully updated with values: '${id}', ${level}, ${exp}, ${jewels}, ${amulets}`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
+
+const updateCharDB = async (charname, thumbnailurl, fullimageurl, starlevel) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    console.log(charName);
+
+    const query = `
+        UPDATE CHARDB SET thumbnailurl = '${thumbnailurl}', fullimageurl = '${fullimageurl}', starlevel = ${starlevel}
+            WHERE charname = '${charname}';
+        INSERT INTO CHARDB (charname, thumbnailurl, fullimageurl, starlevel)
+            SELECT '${charname}', '${thumbnailurl}', '${fullimageurl}', ${starlevel}
+            WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charname = '${charname}');
+    `;
+
+    try {
+        const res = await pgdb.query(query);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
+
+const updateCollection = async (id, charname) => {    
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    console.log(charName);
+
+    const query = `
+        INSERT INTO COLLECTION (uid, charname)
+            SELECT '${id}', '${charname}'
+            WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charname = '${charname}');
+    `;
+
+    console.log(query);
+
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: ${charname} was successfully added to ${id}'s collection`);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+}
 
 // Chaining Events
 client
@@ -1059,7 +1104,7 @@ client
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
-process.on("SIGINT", () => (process.exit(0)));
+process.on("SIGINT", () => (updateAll(), process.exit(0)));
 
 // Start Stuff
 initDB();
@@ -1067,3 +1112,53 @@ initDB();
 // Log In
 console.log("Logging In To Princonne Bot");
 client.login(process.env["BOT_TOKEN"]);
+
+
+
+
+
+
+
+/* Method GRAVEYARD, FOR THE STUFF THAT ISN'T GONNA BE USED */
+
+const reactionFilter = (author, reaction, user) => 
+        ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
+
+/** @param {import("discord.js").Message} message */
+const awaitEmoji = async (message, text, emoji, option, cancelText) => {
+    /** @type {import("discord.js").Message} */
+    let emojiText = await message.channel.send(text);
+    emojiText.react(emoji);
+    return await emojiText.awaitReactions((reaction, user) => 
+                        reactionFilter(message.author, reaction, user), option)
+             .catch(() => { message.channel.send(cancelText); });
+};
+
+/** @param {import("discord.js").Message} message */
+const ebola = async message => {
+    await message.react(BITCONNECT_EMOJI);
+    let collected = await message.awaitReactions((reaction, user) => 
+                                    reactionFilter(message.author, reaction, user), 
+                                    { max: 1, time: 60000, errors: ['time'] })
+                                .catch(() => message.reply('You failed to react in time.'));
+    if (!collected) return await message.reply('You failed to react in time.');
+
+    let reaction = collected.first();
+    if (reaction.emoji.name === "bitconnect") {
+        // Find The Role 
+        let autismRole = message.guild.roles.find(r => r.name === "YOU HAVE AUTISM!");
+        if (!autismRole) return await message.channel.send("Looks like this channel doesn't have" +
+                                                            "**YOU HAVE AUTISM!** role");
+        if (message.member.roles.has(autismRole.id)){
+            return message.reply("YOU ALREADY ARE AUTISTIC");
+        } else {
+            let success = await message.member.addRole(autismRole)
+                                                .catch(() => console.log("Looks like I can't add" +
+                                                                    "**YOU HAVE AUTISM!** role"));
+            if (success) {
+                await message.reply("YOU NOW HAVE AUTISM!");
+                console.log(`${message.author.username} is now autistic`);
+            }
+        }
+    }
+};
