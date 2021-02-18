@@ -815,6 +815,10 @@ const rollgacha = async (message) => {
     Other Functions For Gacha
 */
 const characters = async (message, args) => {
+    if (!(message.author.id in collectionData)) {
+        collectionData[id] = {};
+    }
+
     let startPage = await parseFirstArgAsInt(args, 1);
     let characters = Object.keys(collectionData[message.author.id]);
 
@@ -840,6 +844,10 @@ const characters = async (message, args) => {
 }
 
 const character = async (message, args) => {
+    if (!(message.author.id in collectionData)) {
+        collectionData[id] = {};
+    }
+
     if (!Array.isArray(args)) {
         await message.channel.send(`Error in parsing arguments`);
     } 
@@ -1062,6 +1070,17 @@ const updateAll = async () => {
             await updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
         }
     } 
+
+    for(let id in collectionData) {
+        if (collectionData.hasOwnProperty(id)) {
+            for(let charname in collectionData[id]) {
+                if (collectionData[id].hasOwnProperty(charname)) {
+                    await updateCollection(id, charname);
+                }
+            }
+        }
+    }
+
     if (isResetGacha) {
         for (let starlevel in gachaData) {
             if (gachaData.hasOwnProperty(starlevel)) {
@@ -1071,15 +1090,6 @@ const updateAll = async () => {
                     }
                 }
             } 
-        }
-    }
-    for(let id in collectionData) {
-        if (collectionData.hasOwnProperty(id)) {
-            for(let charname in collectionData[id]) {
-                if (collectionData[id].hasOwnProperty(charname)) {
-                    await updateCollection(id, charname);
-                }
-            }
         }
     }
 }
@@ -1152,7 +1162,7 @@ const updateCollection = async (id, charname) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    let starlevel = collectionData[id][charname][starlevel];
+    let starlevel = collectionData[id][charname].starlevel;
 
     const query = `
         INSERT INTO COLLECTION (uid, charname)
