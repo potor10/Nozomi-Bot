@@ -694,26 +694,20 @@ const getclanbattle = async (message, args) => {
         return;
     }
 
-    let month = cbStart.getUTCMonth();
-    let year = cbStart.getUTCFullYear();
+    let cbDate = new Date(cbStart);
     
     if (args.length < 3) {
         searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
 
         let startDate = new Date(cbStart);
         startDate.setUTCMonth(searchCBid + startDate.getUTCMonth());
-        month = startDate.getUTCMonth();
-        year = startDate.getUTCFullYear();
+        cbDate = new Date(startDate);
 
     } else if (args.length >= 3) {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
         
-        let newdate = new Date(date);
-
-        month = newdate.getUTCMonth();
-        year = newdate.getUTCFullYear();
-
+        cbDate = new Date(date);
         searchCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
     }
 
@@ -737,7 +731,7 @@ const getclanbattle = async (message, args) => {
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(avatarUser)
         .setTitle(`${parseUser.displayName||parseUser.username}'s damage on clan battle ${searchCBid}`)
-        .setDescription(`Battle occured on the month of ${month}, ${year}`)
+        .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
         .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage)
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp();
@@ -789,7 +783,8 @@ const clanbattle = async (message, args) => {
         i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
         let clanBattleStr = `Clan Battle ${i}`;
         if (i = currentClanBattleId) { clanBattleStr += ` (Current)`};
-        messageDisplay.addField(clanBattleStr, `Occured On ${cbArray[i].getUTCMonth()}, ${cbArray[i].getUTCFullYear()}`);
+        messageDisplay.addField(clanBattleStr, 
+            `Occured On ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
     }
 
     await message.channel.send(messageDisplay);
