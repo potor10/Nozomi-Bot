@@ -680,8 +680,6 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
 const getRolledCharData = async (id, rarity) => {
     const keys = Object.keys(gachaData[rarity]);
     const randomUnit = keys[Math.floor(Math.random() * keys.length)];
-
-    console.log(randomUnit);
     
     const rolledThumb = gachaData[rarity][randomUnit].thumbnailurl;
 
