@@ -202,17 +202,19 @@ const initUserDataObj = async () => {
     console.log(userArr);
 
     for (let user in userArr) {
-        let objectKey = user.uid;
+        if (userArr.hasOwnProperty(user)) {
+            let objectKey = user.uid;
 
-        let userStats = {
-            level : user.level,
-            exp : user.exp,
-            lastmessage : user.lastmessage,
-            jewels : user.jewels,
-            amulets : user.amulets
+            let userStats = {
+                level : user.level,
+                exp : user.exp,
+                lastmessage : user.lastmessage,
+                jewels : user.jewels,
+                amulets : user.amulets
+            }
+
+            output[objectKey] = userStats;
         }
-
-        output[objectKey] = userStats;
     }
 
     return output
@@ -240,15 +242,17 @@ const initGachaDataObj = async () => {
         pgdb.end();
     }
 
-    for (let row in charData) {
-        let charNameKey = row.charname;
+    for (let char in charData) {
+        if (charData.hasOwnProperty(char)) {
+            let charNameKey = char.charname;
 
-        let charInfo = {
-            thumbnailurl : row.thumbnailurl,
-            fullimageurl : row.fullimageurl
+            let charInfo = {
+                thumbnailurl : char.thumbnailurl,
+                fullimageurl : char.fullimageurl
+            }
+
+            gachaDataObj[char.starlevel][charNameKey] = charInfo;
         }
-
-        gachaDataObj[row.starlevel][charNameKey] = charInfo;
     }
 
     return gachaDataObj;
@@ -272,10 +276,10 @@ const initCollectionDataObj = async () => {
         pgdb.end();
     }
 
-    for (let row in collectedCharData) {
-        let objectKey = row.uid;
-
-        collectionData[objectKey][row.charname] = 1;
+    for (let collect in collectedCharData) {
+        if (collectedCharData.hasOwnProperty(collect)) {
+            collectionData[collect.uid][collect.charname] = 1;
+        }
     }
 
     return collectionData;
