@@ -705,7 +705,7 @@ const getRolledCharData = async (id, rarity) => {
         }
         isDupe = 1;
     } else {
-        collectionData[id][randomUnit] = 1;
+        collectionData[id][randomUnit] = rarity;
     }
 
     const obtainedImage = await loadImage(rolledThumb);
@@ -831,9 +831,11 @@ const characters = async (message, args) => {
         .setTimestamp();
 
     for (let i = startPage - 1; i > characters.length || i < startPage + 15; i++) {
-        messageDisplay.addField('', 'Some value here', true);
+        let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
+        messageDisplay.addField(`${characters[i]}`, starlevel, false);
     }
-    await message.channel.send();
+    
+    await message.channel.send(messageDisplay);
 }
 
 
