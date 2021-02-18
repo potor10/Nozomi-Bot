@@ -379,7 +379,7 @@ const retrieveAttack = async (id, date) => {
 
     const query = `SELECT * FROM ATTACKS WHERE attackdate = '${date}' AND uid = '${id}'`;
 
-    const output;
+    let output;
     try {
         const res = await pgdb.query(query);
         console.log(`LOG: Obtained Attacks For ${id}`);
