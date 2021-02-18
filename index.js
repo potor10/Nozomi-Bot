@@ -677,8 +677,15 @@ const getattacks = async (message, args) => {
         return;
     }
 
-    if (args.length) {
-        let parseDate = args.shift().toLowerCase().trim();
+    if (args.length >= 3) {
+        let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
+        date = Date.parse(parseDate);
+        
+        let newdate = new Date(date);
+        newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
+
+        console.log(`LOG: Date Parsed From Args, Found ${date}, Converted To ${newdate}`);
+
         let parseUser = message.author;
         let avatarUser = message.author.avatarURL();
 
@@ -690,7 +697,7 @@ const getattacks = async (message, args) => {
         createUserIfNotExist(parseUser.id);
 
         console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`)
-        let obtainedAttacks = await retrieveAttack(parseUser.id, parseDate);
+        let obtainedAttacks = await retrieveAttack(parseUser.id, newdate);
 
         let damageMessage = new MessageEmbed()
             .setURL("https://twitter.com/priconne_en")
@@ -1407,7 +1414,7 @@ const updateCollection = async (id, charname, starlevel) => {
 
 // Bot Commands
 const COMMANDS = { help, ping, reset, resetgacha, say, profile, daily, 
-    clanbattle, rollgacha, characters, character };
+    clanbattle, rollgacha, characters, character, getattacks };
 
 // Chaining Events
 client
