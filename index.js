@@ -683,7 +683,6 @@ const getRolledCharData = async (id, rarity) => {
 
     console.log(randomUnit);
     
-    const rolledName = gachaData[rarity][randomUnit];
     const rolledThumb = gachaData[rarity][randomUnit].thumbnailurl;
 
     let isDupe = 0;
@@ -695,7 +694,7 @@ const getRolledCharData = async (id, rarity) => {
 
     console.log(collectionData[id]);
 
-    if (rolledName in collectionData[id]) {
+    if (randomUnit in collectionData[id]) {
         if (rarity == 3) {
             amulets = 50;
         } else if (rarity == 2) {
