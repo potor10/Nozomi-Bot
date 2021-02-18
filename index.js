@@ -37,7 +37,7 @@ let userData;
 let gachaData;
 let collectionData;
 
-const cbStart = new Date('Feb 10 2021');
+const cbStart = new Date('Feb 10 2000');
 let currentClanBattleId;
 
 // Used at the end to determine if we need to resend query
@@ -700,8 +700,8 @@ const getclanbattle = async (message, args) => {
     if (args.length < 3) {
         searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
 
-        month = cbStart.setUTCMonth(searchCBid).getUTCMonth();
-        year = cbStart.setUTCMonth(searchCBid).getUTCFullYear();
+        month = (cbStart.setUTCMonth(searchCBid)).getUTCMonth();
+        year = (cbStart.setUTCMonth(searchCBid)).getUTCFullYear();
     } else if (args.length >= 3) {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
@@ -783,6 +783,8 @@ const clanbattle = async (message, args) => {
         i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
         messageDisplay.addField(`Clan Battle ${i}`, `Occured On ${cbArray[i].getUTCMonth()}, ${cbArray[i].getUTCFullYear()}`);
     }
+
+    await message.channel.send(messageDisplay);
 }
 
 
