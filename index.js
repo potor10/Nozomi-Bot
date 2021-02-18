@@ -152,8 +152,7 @@ const resetgacha = async message => {
         await initCharDB();
 
         // Initialize
-        gachaData = await initGachaDataObj();
-        console.log(gachaData);
+        await initGacha();
 
         console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
     } else {
