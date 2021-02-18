@@ -672,7 +672,7 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
                 rollResults.delete();
                 message.channel.send(combinedRoll);
                 userData[message.author.id].inRoll = false
-            }, 2000);
+            }, 5000);
     });
 }
 
@@ -685,12 +685,15 @@ const getRolledCharData = async (id, rarity) => {
     
     const rolledName = gachaData[rarity][randomUnit];
     const rolledThumb = gachaData[rarity][randomUnit].thumbnailurl;
+
     let isDupe = 0;
     let amulets = 0;
 
     if (!(id in collectionData)) {
         collectionData[id] = {};
     }
+
+    console.log(collectionData[id]);
 
     if (rolledName in collectionData[id]) {
         if (rarity == 3) {
