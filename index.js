@@ -37,7 +37,7 @@ let userData;
 let gachaData;
 let collectionData;
 
-const cbStart = new Date('Feb 10 2000');
+const cbStart = new Date('Feb 10 2021');
 let currentClanBattleId;
 
 // Used at the end to determine if we need to resend query
@@ -626,7 +626,7 @@ const profile = async message => {
         .setDescription(statusStrings[randomStatus])
         .addField(`Level ${starLevelEmoji}`, userData[id].level)
         .addFields(
-            { name: `Dealt This War ${blueSwordEmoji} `, value: profileDamage[0], inline: true },
+            { name: `Dealt This Month ${blueSwordEmoji} `, value: profileDamage[0], inline: true },
             { name: `Dealt Today ${greenSwordEmoji} `, value: profileDamage[1], inline: true },
             { name: `Total Dealt ${swordEmoji}`, value: profileDamage[2], inline: true },
             { name: `Jewels ${jewelEmoji} `, value: userData[id].jewels, inline: true },
@@ -707,6 +707,8 @@ const getclanbattle = async (message, args) => {
         cbDate = new Date(date);
         if (cbDate < cbStart) {
             cbDate = new Date(cbStart);
+        } else if (cbDate > new Date()) {
+            cbDate = new Date();
         }
         searchCBid = (cbDate.getUTCMonth() - cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
     }
@@ -723,14 +725,14 @@ const getclanbattle = async (message, args) => {
 
     createUserIfNotExist(parseUser.id);
 
-    console.log(`LOG: Retrieving clan battle ${searchCBid} from ${parseUser.id}`)
+    console.log(`LOG: Retrieving clan battle #${searchCBid} from ${parseUser.id}`)
     let totalDamage = await retrieveDamageFromClanId(parseUser.id, searchCBid);
 
     let damageMessage = new MessageEmbed()
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setThumbnail(avatarUser)
-        .setTitle(`${parseUser.displayName||parseUser.username}'s damage on clan battle ${searchCBid}`)
+        .setTitle(`${parseUser.displayName||parseUser.username}'s damage on clan battle #${searchCBid}`)
         .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
         .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage)
         .setFooter(footerText, client.user.avatarURL())
@@ -781,12 +783,12 @@ const clanbattle = async (message, args) => {
 
     for (let i = (startPage - 1) * displayPerPage; 
         i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
-        let clanBattleStr = `Clan Battle ${i}`;
+        let clanBattleStr = `Clan Battle #${i}`;
         if (i == currentClanBattleId) { 
             clanBattleStr += ` (Current)`
         }
         messageDisplay.addField(clanBattleStr, 
-            `Occured On ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
+            `Occured on ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
     }
 
     await message.channel.send(messageDisplay);
@@ -813,6 +815,7 @@ const getattacks = async (message, args) => {
         };
 
         let newdate = new Date(date);
+        let attackClanBattle = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
         console.log(`LOG: Date Parsed From Args, Found ${date}, Converted To ${newdate}`);
@@ -835,7 +838,8 @@ const getattacks = async (message, args) => {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
-            .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
+            .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                ` on clan battle #${attackClanBattle}`)
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
         
@@ -1324,9 +1328,9 @@ const updateOCRValues = async (message, values, rectangles) => {
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setTitle(`${message.author.displayName||message.author.username}'s attack`)
-        .setDescription(`on ` + 
+        .setDescription(`On ` + 
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
-            `${nozomiBlushEmoji}`)
+            `during clan battle #${attackCBid} ` + `${nozomiBlushEmoji}`)
         .addFields(
             { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
             { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
