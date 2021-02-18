@@ -833,7 +833,7 @@ const characters = async (message, args) => {
 
     for (let i = startPage - 1; i > characters.length || i < startPage + 15; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        messageDisplay.addField(`${characters[i]}`, starlevel, false);
+        messageDisplay.addField(`${characters[i]}`, `${starlevel}`, false);
     }
 
     await message.channel.send(messageDisplay);
@@ -843,23 +843,27 @@ const character = async (message, args) => {
     if (!Array.isArray(args)) {
         await message.channel.send(`Error in parsing arguments`);
     } 
-    let character = args.shift().trim();
-    
-    if (character in collectionData[message.author.id]) {
-        let starlevel = collectionData[message.author.id][character];
-        let charFullImg = gachaData[starlevel][character].fullimageurl;
-
-        let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-            .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`${character}`)
-            .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
-            .setImage(`${charFullImg}`)
-            .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
-            .setTimestamp();
+    if (args.length) {
+        let character = args.shift().trim();
         
-        await message.channel.send(messageDisplay);
+        if (character in collectionData[message.author.id]) {
+            let starlevel = collectionData[message.author.id][character];
+            let charFullImg = gachaData[starlevel][character].fullimageurl;
+
+            let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                .setAuthor(client.user.username, client.user.avatarURL())
+                .setTitle(`${character}`)
+                .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
+                .setImage(`${charFullImg}`)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setTimestamp();
+            
+            await message.channel.send(messageDisplay);
+        } else {
+            await message.reply(`You don't own ${character}`);
+        }
     } else {
-        await message.reply(`You don't own ${character}`);
+        await message.reply(`Please add a character name after the command`);
     }
 }
 
