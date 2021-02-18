@@ -32,9 +32,6 @@ let gachaData;
 let collectionData;
 let currentClanBattleId;
 
-// Bot Commands
-const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
-
 
 
 /* 
@@ -1077,6 +1074,11 @@ const updateCollection = async (id, charname) => {
         pgdb.end();
     }
 }
+
+
+
+// Bot Commands
+const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
 
 // Chaining Events
 client
