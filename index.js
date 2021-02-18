@@ -601,7 +601,7 @@ const daily = async message => {
     startofDay = startofDay.setUTCHours(0,0,0,0);
 
     let startofTomorrow = new Date();
-    startofTomorrow = startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
+    startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
     startofTomorrow = startofTomorrow.setUTCHours(0,0,0,0);
 
     let timeBefore = math.floor(startofTomorrow.getTime() - startofDay.getTime() / 3600000);
@@ -889,9 +889,17 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = startPage - 1; i < characters.length && i < startPage + 9; i++) {
-        let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        messageDisplay.addField(`\u200B`, `\`\`\`${starlevel} ${characters[i]}\`\`\``);
+    for (let i = startPage - 1; i < characters.length && i < startPage + 9; i+= 2) {
+        let starlevel1 = '★'.repeat(collectionData[message.author.id][characters[i]]);
+        let char1str = `\`\`\`${starlevel1} ${characters[i]}\`\`\``;
+        
+        let char2str = `\u200B`;
+        if (i+1 < characters.length) {
+            let starlevel2 = '★'.repeat(collectionData[message.author.id][characters[i+1]]);
+            char2str = `\`\`\`${starlevel2} ${characters[i+1]}\`\`\``
+        } 
+
+        messageDisplay.addField(char1str, char2str);
     }
 
     await message.channel.send(messageDisplay);
