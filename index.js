@@ -700,7 +700,7 @@ const getattacks = async (message, args) => {
         let avatarUser = message.author.avatarURL();
 
         if (message.mentions.members.first()) {
-            parseUserId = message.mentions.members.first();
+            parseUser = message.mentions.members.first();
             avatarUser = message.mentions.members.first().user.avatarURL();
         }
     
