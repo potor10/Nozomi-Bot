@@ -317,7 +317,7 @@ const initCollectionDataObj = async () => {
 }
 
 const initCbid = async () => {
-    currentDate = new Date();
+    const currentDate = new Date();
     return (currentDate.getUTCMonth() - cbStart.getUTCMonth()) + ((currentDate.getUTCYear() - cbStart.getUTCYear()) * 12);
 }
 
@@ -740,6 +740,7 @@ const getclanbattle = async (message, args) => {
 
     await message.channel.send(damageMessage);
 }
+
 
 
 
