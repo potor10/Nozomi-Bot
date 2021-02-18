@@ -674,7 +674,7 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
                 rollResults.delete();
                 message.channel.send(combinedRoll);
                 userData[message.author.id].inRoll = false
-            }, 5000);
+            }, 3000);
     });
 }
 
@@ -834,7 +834,7 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = startPage - 1; i > characters.length || i < startPage + 15; i++) {
+    for (let i = startPage - 1; i < characters.length && i < startPage + 15; i++) {
         console.log(characters[i])
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
         console.log(starlevel);
@@ -1165,7 +1165,7 @@ const updateCollection = async (id, charname, starlevel) => {
     pgdb.connect();
 
     const query = `
-        INSERT INTO COLLECTION (uid, charname)
+        INSERT INTO COLLECTION (uid, charname, starlevel)
             SELECT '${id}', '${charname}', ${starlevel}
             WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charname = '${charname}');
     `;
