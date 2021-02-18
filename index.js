@@ -874,10 +874,21 @@ const characters = async (message, args) => {
         collectionData[message.author.id] = {};
     }
 
+    let displayPerPage = 5;
     let startPage = await parseFirstArgAsInt(args, 1);
     let characters = Object.keys(collectionData[message.author.id]);
 
-    let totalPages = Math.ceil(characters.length / 10);
+    characters.sort(function(x, y) {
+        if (collectionData[message.author.id][x] < collectionData[message.author.id][y]) {
+          return -1;
+        }
+        if (collectionData[message.author.id][x] > collectionData[message.author.id][y]) {
+          return 1;
+        }
+        return 0;
+      });
+
+    let totalPages = Math.ceil(characters.length / displayPerPage);
     if (startPage < 1 || startPage > totalPages + 1 ) {
         startPage = 1;
     }
@@ -890,17 +901,11 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = startPage - 1; i < characters.length && i < startPage + 9; i+= 2) {
-        let starlevel1 = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        let char1str = `\`${starlevel1} ${characters[i]}\`\n`;
-        
-        let char2str = `\u200B`;
-        if (i+1 < characters.length) {
-            let starlevel2 = '★'.repeat(collectionData[message.author.id][characters[i+1]]);
-            char2str = `**\`${starlevel2} ${characters[i+1]}\`**`
-        } 
+    for (let i = startPage - 1; i < characters.length && i < startPage + displayPerPage - 1; i++) {
+        let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
+        let charstr = `\`\`\`${starlevel} ${characters[i]}\`\`\``;
 
-        messageDisplay.addField(char1str, char2str);
+        messageDisplay.addField(charstr, '\u200b');
     }
 
     await message.channel.send(messageDisplay);
