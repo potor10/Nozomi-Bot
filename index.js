@@ -850,7 +850,7 @@ const rollgacha = async (message) => {
     createUserIfNotExist(message.author.id);
     let id = message.author.id;
 
-    const jewelCost = 0;
+    const jewelCost = 1500;
 
     let collected = await awaitEmoji(message, 
         `Rolling x10 On This Gacha Will Cost` + 
@@ -940,11 +940,11 @@ const rollgacha = async (message) => {
         } else {
             let reminder;
             if (userData[id].inroll) {
-                reminder =await message.reply(`You Are Currently Already Doing An x10 Roll! \n` +
-                    `Please Wait Until The Roll Is Finished Before Trying Again `);
+                reminder =await message.reply(`You are currently doing an x10 roll! \n` +
+                    `Please wait until the roll is finished before trying again `);
             } else {
-                reminder =await message.reply(`You Need At Least ${jewelCost} ${jewelEmoji} To Roll! \n` +
-                    `You Are Missing ${jewelCost-userData[id].jewels} ${jewelEmoji}`);
+                reminder =await message.reply(`You need at least ${jewelCost} ${jewelEmoji} to roll! \n` +
+                    `You are missing ${jewelCost-userData[id].jewels} ${jewelEmoji}`);
             }
             setTimeout(() => { reminder.delete();}, 5000);
         }
@@ -1410,7 +1410,7 @@ const updateCollection = async (id, charname, starlevel) => {
 
     try {
         const res = await pgdb.query(query);
-        console.log(`LOG: ${charname} was successfully added to ${id}'s collection`);
+        //console.log(`LOG: ${charname} was successfully added to ${id}'s collection`);
     } catch (err) {
         console.log(err.stack);
     } finally {
