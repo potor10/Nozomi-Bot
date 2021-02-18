@@ -32,6 +32,9 @@ let gachaData;
 let collectionData;
 let currentClanBattleId;
 
+// Used at the end to determine if we need to resend query
+let isResetGacha = false;
+
 
 
 /* 
@@ -153,7 +156,9 @@ const resetgacha = async message => {
 
         // Initialize
         await initGacha();
+        await updateGacha();
 
+        isResetGacha = true;
         console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
     } else {
         console.log(`LOG: Failed attempt to reset CharDB by ${message.author.username} (${message.author.id})`);
@@ -198,8 +203,6 @@ const initUserDataObj = async () => {
     } finally {
         pgdb.end();
     }
-
-    console.log(userArr);
 
     for (let user in userArr) {
         if (userArr.hasOwnProperty(user)) {
@@ -369,33 +372,31 @@ const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {
     Functions Designed To Update The Current Global Objects
 
 */
-const updategacha = async (message) => {
-    if (message.author.id == 154775062178824192) {
-        const urls = [];
-        urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
-        urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85');
-        urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85');
+const updateGacha = async () => {
+    const urls = [];
+    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
+    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85');
+    urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85');
 
-        const findTable = '.table > tbody > tr > td > a';
-        const findImg = '.ie5 > table > tbody > tr > .style_td img';
+    const findTable = '.table > tbody > tr > td > a';
+    const findImg = '.ie5 > table > tbody > tr > .style_td img';
 
-        const charArray = [];
-        
-        for (let i = 0; i < urls.length; i++) {
-            charArray.push(await webScrape(urls[i], findTable, findImg));
-        }
-
-        console.log(charArray);
-
-        for (let i = 0; i < charArray.length; i++) {
-            for (let j = 0; j < charArray[i].length; j++) {
-                gachaData[i+1][charArray[i][j].name] = { 
-                    thumbnailurl : charArray[i][j].thumbnailurl, 
-                    fullimageurl : charArray[i][j].fullimageurl
-                };
-            }
-        }
+    const charArray = [];
+    
+    for (let i = 0; i < urls.length; i++) {
+        charArray.push(await webScrape(urls[i], findTable, findImg));
     }
+
+    console.log(charArray);
+
+    for (let i = 0; i < charArray.length; i++) {
+        for (let j = 0; j < charArray[i].length; j++) {
+            gachaData[i+1][charArray[i][j].name] = { 
+                thumbnailurl : charArray[i][j].thumbnailurl, 
+                fullimageurl : charArray[i][j].fullimageurl
+            };
+        }
+    }   
 }
 
 const webScrape = async (url, findTable, findImg) => {
@@ -990,14 +991,16 @@ const updateAll = async () => {
             await updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
         }
     } 
-    for (let starlevel in gachaData) {
-        if (gachaData.hasOwnProperty(starlevel)) {
-            for(let charname in gachaData[starlevel]) {
-                if (gachaData[starlevel].hasOwnProperty(charname)) {
-                    await updateCharDB(charname, gachaData[starlevel][charname].thumbnailurl, gachaData[starlevel][charname].fullimageurl, starlevel);
+    if (isResetGacha) {
+        for (let starlevel in gachaData) {
+            if (gachaData.hasOwnProperty(starlevel)) {
+                for(let charname in gachaData[starlevel]) {
+                    if (gachaData[starlevel].hasOwnProperty(charname)) {
+                        await updateCharDB(charname, gachaData[starlevel][charname].thumbnailurl, gachaData[starlevel][charname].fullimageurl, starlevel);
+                    }
                 }
-            }
-        } 
+            } 
+        }
     }
     for(let id in collectionData) {
         if (collectionData.hasOwnProperty(id)) {
@@ -1103,7 +1106,7 @@ const updateCollection = async (id, charname) => {
 
 
 // Bot Commands
-const COMMANDS = { help, ping, reset, resetgacha, updategacha, say, profile, clanbattle, rollgacha };
+const COMMANDS = { help, ping, reset, resetgacha, say, profile, clanbattle, rollgacha };
 
 // Chaining Events
 client
