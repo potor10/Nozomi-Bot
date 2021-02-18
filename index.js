@@ -1138,9 +1138,10 @@ client
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 process.on("SIGINT", async () => (await updateAll(), process.exit(0)));
+process.on("SIGTERM", async () => (await updateAll(), process.exit(0)));
 
 // Start Stuff
-initDB();
+//initDB();
 
 // Initialize
 initAll();
