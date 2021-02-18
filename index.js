@@ -980,17 +980,17 @@ const help = message => message.author.send(`I'll be counting on you, so let's w
 
 /* Update Methods Designed To Update The Postgre SQL DB After The App Stops  */
 const updateAll = async () => {
-    updateCBID(currentClanBattleId);
+    await updateCBID(currentClanBattleId);
     for(let id in userData) {
         if (userData.hasOwnProperty(id)) {
-            updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
+            await updateStatsDB(id, userData[id].level, userData[id].exp, userData[id].lastmessage, userData[id].jewels, userData[id].amulets);
         }
     } 
     for (let starlevel in gachaData) {
         if (gachaData.hasOwnProperty(starlevel)) {
             for(let charname in gachaData[starlevel]) {
                 if (gachaData[starlevel].hasOwnProperty(charname)) {
-                    updateCharDB(charname, gachaData[starlevel][charname].thumbnailurl, gachaData[starlevel][charname].fullimageurl, starlevel);
+                    await updateCharDB(charname, gachaData[starlevel][charname].thumbnailurl, gachaData[starlevel][charname].fullimageurl, starlevel);
                 }
             }
         } 
@@ -999,7 +999,7 @@ const updateAll = async () => {
         if (collectionData.hasOwnProperty(id)) {
             for(let charname in collectionData[id]) {
                 if (collectionData[id].hasOwnProperty(charname)) {
-                    updateCollection(id, charname);
+                    await updateCollection(id, charname);
                 }
             }
         }
@@ -1137,7 +1137,7 @@ client
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
-process.on("SIGINT", () => (updateAll(), process.exit(0)));
+process.on("SIGINT", async () => (await updateAll(), process.exit(0)));
 
 // Start Stuff
 initDB();
