@@ -1142,6 +1142,7 @@ process.on("SIGTERM", async () => (await updateAll(), process.exit(0)));
 
 // Start Stuff
 //initDB();
+// OK
 
 // Initialize
 initAll();
