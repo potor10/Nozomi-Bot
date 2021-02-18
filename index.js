@@ -606,7 +606,7 @@ function loadImage (url) {
 }
 
 /* Combines given images into a single pull */
-const createImage = async (message, obtainedImages, amuletsObtained, newUnits) => {
+const createImage = async (message, obtainedImages, amuletsObtained, newUnits, isDupe) => {
     let sizThumb = 121;
     let sizOverlay = 40;
 
@@ -788,7 +788,7 @@ const rollgacha = async (message) => {
 
         userData[id].amulets += amuletsObtained;
 
-        createImage(message, obtainedImages, amuletsObtained, newUnits);
+        createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe);
     } else {
         let reminder = await message.reply(`You Need At Least 1500 <:jewel:811495998194450454> To Roll! \n` +
             `You Are Missing ${jewelCost-profile.jewels} <:jewel:811495998194450454> `);
@@ -1042,8 +1042,6 @@ const updateStatsDB = async (id, level, exp, lastmessage, jewels, amulets) => {
             SELECT '${id}', ${level}, ${exp}, ${lastmessage}, ${jewels}, ${amulets}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
-
-    console.log(query);
 
     try {
         const res = await pgdb.query(query);
