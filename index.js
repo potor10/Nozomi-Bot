@@ -1078,7 +1078,7 @@ const updateCollection = async (id, charname) => {
 
 
 // Bot Commands
-const COMMANDS = { help, ping, reset, resetchardb, updategacha, say, profile, clanbattle, rollgacha };
+const COMMANDS = { help, ping, reset, resetchardb, say, profile, clanbattle, rollgacha };
 
 // Chaining Events
 client
