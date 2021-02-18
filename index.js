@@ -135,7 +135,7 @@ const initCharDB = async () => {
 /** @param {import("discord.js").Message} message */
 const reset = async message => {
     if (message.author.id == 154775062178824192) {
-        initDB();
+        await initDB();
 
         // Initialize
         await initAll();
