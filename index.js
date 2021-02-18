@@ -1008,7 +1008,8 @@ const characters = async (message, args) => {
       });
 
     let totalPages = Math.ceil(characters.length / displayPerPage);
-    if (startPage < 1 || startPage > totalPages + 1 ) {
+    if (totalPages <= 0) { totalPages = 1; }
+    if (startPage < 1 || startPage > totalPages ) {
         startPage = 1;
     }
     
