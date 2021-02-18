@@ -476,7 +476,7 @@ const addXp = async message => {
         let newXP = userData[id].exp + Math.floor(Math.random() * 5) + 1;
         console.log(`LOG: ${newXP - userData[id].exp} XP has been granted to ${message.author.username} (${id})`);
 
-        userData[id].lastmessage =currentTime;
+        userData[id].lastmessage = currentTime;
 
         let curJewel = userData[id].jewels;
         let curLevel = 1 + Math.floor(Math.sqrt(newXP));
@@ -1032,10 +1032,12 @@ const updateStatsDB = async (id, level, exp, lastmessage, jewels, amulets) => {
     const query = `
         UPDATE STATS SET level = ${level}, exp = ${exp}, lastmessage = ${lastmessage}, jewels = ${jewels}, amulets = ${amulets}
             WHERE uid = '${id}';
-        INSERT INTO STATS (uid, level, exp, lastMessage, jewels, amulets)
+        INSERT INTO STATS (uid, level, exp, lastmessage, jewels, amulets)
             SELECT '${id}', ${level}, ${exp}, ${lastmessage}, ${jewels}, ${amulets}
             WHERE NOT EXISTS (SELECT 1 FROM STATS WHERE uid = '${id}');
     `;
+
+    console.log(query);
 
     try {
         const res = await pgdb.query(query);
