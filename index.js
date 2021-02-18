@@ -203,6 +203,8 @@ const initUserDataObj = async () => {
 
     for (let user in userArr) {
         if (userArr.hasOwnProperty(user)) {
+            console.log(user);
+            console.log(userArr[user]);
             let objectKey = user.uid;
 
             let userStats = {
