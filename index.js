@@ -815,13 +815,13 @@ const rollgacha = async (message) => {
 */
 const characters = async (message, args) => {
     if (!(message.author.id in collectionData)) {
-        collectionData[id] = {};
+        collectionData[message.author.id] = {};
     }
 
     let startPage = await parseFirstArgAsInt(args, 1);
     let characters = Object.keys(collectionData[message.author.id]);
 
-    let totalPages = Math.ceil(characters.length / 15);
+    let totalPages = Math.ceil(characters.length / 10);
     if (startPage < 1 || startPage > totalPages + 1 ) {
         startPage = 1;
     }
@@ -834,11 +834,9 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = startPage - 1; i < characters.length && i < startPage + 15; i++) {
-        console.log(characters[i])
+    for (let i = startPage - 1; i < characters.length && i < startPage + 9; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        console.log(starlevel);
-        messageDisplay.addField(`${characters[i]}`, `${starlevel}`);
+        messageDisplay.addField(`${characters[i]}`, `${starlevel}\n`, true);
     }
 
     await message.channel.send(messageDisplay);
@@ -846,7 +844,7 @@ const characters = async (message, args) => {
 
 const character = async (message, args) => {
     if (!(message.author.id in collectionData)) {
-        collectionData[id] = {};
+        collectionData[message.author.id] = {};
     }
 
     if (!Array.isArray(args)) {
