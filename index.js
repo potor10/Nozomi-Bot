@@ -1591,15 +1591,15 @@ client
     .on("ready", () => {
         // Bot Ready
         console.log(`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`); 
-        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.cache.size} SERVERS`);
+        client.user.setActivity(`${prefix}help : Nozomi Bot On ${client.guilds.cache.size} Servers`);
     })
     .on("guildCreate", guild => {
         console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.cache.size} SERVERS`);
+        client.user.setActivity(`${prefix}help : Nozomi Bot On ${client.guilds.cache.size} Servers`);
     })
     .on("guildDelete", guild => {
         console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-        client.user.setActivity(`RAD DREAM HAS INFECTED ${client.guilds.cache.size} SERVERS`);
+        client.user.setActivity(`${prefix}help : Nozomi Bot On ${client.guilds.cache.size} Servers`);
     })
     .on("message", async message => {
         // Ignore Bot
