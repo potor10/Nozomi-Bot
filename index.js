@@ -626,6 +626,9 @@ const profile = async message => {
 const daily = async message => {
     createUserIfNotExist(message.author.id);
 
+    let bonusGems = (userData[message.author.id].level - 1) * Math.floor((Math.random() * 5) + 1) * 10;
+    let dailyGems = 500 + bonusGems;
+
     let startofDay = new Date();
     startofDay.setUTCHours(0,0,0,0);
 
@@ -640,12 +643,25 @@ const daily = async message => {
     if (startofDay > userData[message.author.id].lastclaim) {
         console.log(`LOG: ${message.author.username} claimed on ${startofDay}`);
         userData[message.author.id].lastclaim = startofDay;
-        userData[message.author.id].jewels += 10000;
-        await message.reply(`Success! You Have Claimed 10000 ${jewelEmoji} Today \n\n` +
-            `Come Back In ${timeBefore} Hours To Claim Again`);
+        userData[message.author.id].jewels += dailyGems;
+
+        await message.channel.send(new MessageEmbed()
+            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+            .setAuthor(client.user.username, client.user.avatarURL())
+            .setTitle(`Success! You Have Claimed ${dailyGems} ${jewelEmoji} Today`)
+            .setDescription(`(${bonusGems} ${jewelEmoji} bonus for being level ${userData[message.author.id].level})`)
+            .addField(`\u200B`, `Come Back In ${timeBefore} Hours To Claim Again`)
+            .setFooter(footerText, client.user.avatarURL())
+            .setTimestamp());
     } else {
-        await message.channel.send(`Oof out of ${staminaEmoji}, You Have Already Claimed Today \n\n` +
-        `Come Back In ${timeBefore} Hours To Claim Again`);
+        await message.channel.send(new MessageEmbed()
+            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+            .setAuthor(client.user.username, client.user.avatarURL())
+            .setTitle(`Oof out of ${staminaEmoji}`)
+            .setDescription(`You Have Already Claimed Today`)
+            .addField(`\u200B`, `Come Back In ${timeBefore} Hours To Claim Again`)
+            .setFooter(footerText, client.user.avatarURL())
+            .setTimestamp());
     }
 };
 
@@ -940,11 +956,21 @@ const rollgacha = async (message) => {
         } else {
             let reminder;
             if (userData[id].inroll) {
-                reminder =await message.reply(`You are currently doing an x10 roll! \n` +
-                    `Please wait until the roll is finished before trying again `);
+                reminder = await message.channel.send(new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`You are currently doing an x10 roll!`)
+                    .setDescription(`Please wait until the roll is finished before trying again`)
+                    .setFooter(footerText, client.user.avatarURL())
+                    .setTimestamp());
             } else {
-                reminder =await message.reply(`You need at least ${jewelCost} ${jewelEmoji} to roll! \n` +
-                    `You are missing ${jewelCost-userData[id].jewels} ${jewelEmoji}`);
+                reminder = await message.channel.send(new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`You need at least ${jewelCost} ${jewelEmoji} to roll!`)
+                    .setDescription(`You are missing ${jewelCost-userData[id].jewels} ${jewelEmoji}`)
+                    .setFooter(footerText, client.user.avatarURL())
+                    .setTimestamp());
             }
             setTimeout(() => { reminder.delete();}, 5000);
         }
@@ -1025,10 +1051,12 @@ const character = async (message, args) => {
             
             await message.channel.send(messageDisplay);
         } else {
-            await message.reply(`You don't own ${character}`);
+            let reminder = await message.reply(`You don't own ${character}`);
+            setTimeout(() => { reminder.delete();}, 5000);
         }
     } else {
-        await message.reply(`Please add a character name after the command`);
+        let reminder = await message.reply(`Please add a character name after the command`);
+        setTimeout(() => { reminder.delete();}, 5000);
     }
 }
 
