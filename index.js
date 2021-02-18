@@ -825,6 +825,7 @@ const characters = async (message, args) => {
     
     let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
+        .setThumbnail(message.author.avatarURL())
         .setTitle(`${message.author.displayName||message.author.username}'s character list`)
         .setDescription(`page ${startPage} / ${totalPages}`)
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
@@ -834,9 +835,34 @@ const characters = async (message, args) => {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
         messageDisplay.addField(`${characters[i]}`, starlevel, false);
     }
-    
+
     await message.channel.send(messageDisplay);
 }
+
+const character = async (message, args) => {
+    if (!Array.isArray(args)) {
+        await message.channel.send(`Error in parsing arguments`);
+    } 
+    let character = args.shift().trim();
+    
+    if (character in collectionData[message.author.id]) {
+        let starlevel = collectionData[message.author.id][character];
+        let charFullImg = gachaData[starlevel][character].fullimageurl;
+
+        let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+            .setAuthor(client.user.username, client.user.avatarURL())
+            .setTitle(`${character}`)
+            .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
+            .setImage(`${charFullImg}`)
+            .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+            .setTimestamp();
+        
+        await message.channel.send(messageDisplay);
+    } else {
+        await message.reply(`You don't own ${character}`);
+    }
+}
+
 
 
 
@@ -1145,7 +1171,7 @@ const updateCollection = async (id, charname) => {
 
 
 // Bot Commands
-const COMMANDS = { help, ping, reset, resetgacha, say, profile, clanbattle, rollgacha };
+const COMMANDS = { help, ping, reset, resetgacha, say, profile, clanbattle, rollgacha, characters, character };
 
 // Chaining Events
 client
