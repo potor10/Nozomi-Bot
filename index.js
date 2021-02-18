@@ -22,6 +22,7 @@ let { prefix, oneStarRate, twoStarRate, threeStarRate,
     threeStarEmoji, twoStarEmoji, oneStarEmoji,
     starLevelEmoji, swordSmallAttackEmoji, swordBigAttackEmoji, swordEmoji,
     blueSwordEmoji, greenSwordEmoji } = require("./config.json");
+const { parse } = require("path");
 prefix = prefix || ".";
 
 // Initialize Discord Client
@@ -681,6 +682,10 @@ const getattacks = async (message, args) => {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
         
+        const pad = (num) => { 
+            return ('00'+num).slice(-2) 
+        };
+
         let newdate = new Date(date);
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
@@ -1052,19 +1057,7 @@ const getOcrImage = msgAttach => {
 
 /* Returns the OCR result from input message */
 /** @param {import("discord.js").Message} message */
-const returnOCR = async (message, args) => {
-    const maxAttempts = 3;
-    console.log(message.content);
-    console.log(args);
-    let attemptsInImg = 3;
-    if (message.content.trim() === `${prefix}setattempts`) {
-        attemptsInImg = parseFirstArgAsInt(args, maxAttempts);
-        if (attemptsInImg > maxAttempts || attemptsInImg < 1) {
-            attemptsInImg = maxAttempts;
-        }
-    }
-    console.log(`LOG: Running OCR With ${attemptsInImg} attempts`);
-
+const returnOCR = async (message, maxAttempts) => {
     message.attachments.forEach(async attachment => {
         const worker = createWorker({
             //logger: m => console.log(m), // Add logger here
@@ -1198,6 +1191,21 @@ const updateOCRValues = async (message, values) => {
         .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttacks[0] + intAttacks[1] + intAttacks[2])
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp());
+    }
+}
+
+const scanimage = async (message, args) => {
+    let attemptsInImg = parseFirstArgAsInt(args, 3);
+    if (attemptsInImg > maxAttempts || attemptsInImg < 1) {
+        attemptsInImg = maxAttempts;
+    }
+    
+    console.log(`LOG: Running OCR With ${attemptsInImg} attempts`);
+
+    if (message.attachments.size > 0) {
+        if (message.attachments.every(getOcrImage)){
+            await returnOCR(message, attemptsInImg);
+        }
     }
 }
 
@@ -1414,7 +1422,7 @@ const updateCollection = async (id, charname, starlevel) => {
 
 // Bot Commands
 const COMMANDS = { help, ping, reset, resetgacha, say, profile, daily, 
-    clanbattle, rollgacha, characters, character, getattacks };
+    clanbattle, rollgacha, characters, character, getattacks, scanimage };
 
 // Chaining Events
 client
@@ -1436,12 +1444,6 @@ client
         if(message.author.bot) return;
 
         await addXp(message);
-
-        if (message.attachments.size > 0) {
-            if (message.attachments.every(getOcrImage)){
-                await returnOCR(message);
-            }
-        }
 
         // Prefix Matches
         if(message.content.indexOf(prefix) !== 0) return;
