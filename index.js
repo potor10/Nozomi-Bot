@@ -700,8 +700,10 @@ const getclanbattle = async (message, args) => {
     if (args.length < 3) {
         searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
 
-        month = (cbStart.setUTCMonth(searchCBid)).getUTCMonth();
-        year = (cbStart.setUTCMonth(searchCBid)).getUTCFullYear();
+        let startDate = new Date(cbStart);
+        startDate.setUTCMonth(searchCBid)
+        month = startDate.getUTCMonth();
+        year = startDate.getUTCFullYear();
     } else if (args.length >= 3) {
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
         date = Date.parse(parseDate);
@@ -756,7 +758,9 @@ const clanbattle = async (message, args) => {
 
     let cbArray = [];
     for (let i = 0; i < currentClanBattleId; i++) {
-        let cbDate = cbStart.setUTCMonth(i);
+        let curDate = new Date(cbStart);
+        curDate.setUTCMonth(i);
+        let cbDate = curDate;
         cbArray.push(cbDate);
     }
 
