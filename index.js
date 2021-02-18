@@ -704,7 +704,7 @@ const getRolledCharData = async (id, rarity) => {
         }
         isDupe = 1;
     } else {
-        collectionData[id][rolledName] = 1;
+        collectionData[id][randomUnit] = 1;
     }
 
     const obtainedImage = await loadImage(rolledThumb);
