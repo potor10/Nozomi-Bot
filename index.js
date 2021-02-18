@@ -16,7 +16,12 @@ const { Canvas, Image } = require('canvas');
 const fs = require('fs');
 
 // Load Config Json with Prefix and Token 
-let { prefix, oneStarRate, twoStarRate, threeStarRate } = require("./config.json");
+let { prefix, oneStarRate, twoStarRate, threeStarRate, 
+    jewelEmoji, amuletEmoji, manaEmoji, staminaEmoji,
+    nozomiCoolEmoji, nozomiBlushEmoji,
+    threeStarEmoji, twoStarEmoji, oneStarEmoji,
+    starLevelEmoji, swordSmallAttackEmoji, swordBigAttackEmoji, swordEmoji,
+    blueSwordEmoji, greenSwordEmoji } = require("./config.json");
 prefix = prefix || ".";
 
 // Initialize Discord Client
@@ -35,6 +40,8 @@ let currentClanBattleId;
 // Used at the end to determine if we need to resend query
 let isResetGacha = false;
 
+// Jewel Emoji
+const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, str.length-2);
 
 
 /* 
@@ -46,6 +53,20 @@ const parseFirstArgAsInt = (args, defaultValue) => {
         let parseAmt = parseInt(args.shift().toLowerCase(), 10);
         if (!isNaN(parseAmt) && parseAmt > 0) return parseAmt;
     } else return defaultValue;
+};
+
+const reactionFilter = (author, reaction, user) => 
+        [JEWEL_EMOJI].includes(reaction.emoji.id) && user.id === author.id;
+
+
+/** @param {import("discord.js").Message} message */
+const awaitEmoji = async (message, text, emoji, option, cancelText) => {
+    /** @type {import("discord.js").Message} */
+    let emojiText = await message.channel.send(text);
+    emojiText.react(emoji);
+    return await emojiText.awaitReactions((reaction, user) => 
+                        reactionFilter(message.author, reaction, user), option)
+             .catch(() => { message.channel.send(cancelText); });
 };
 
 
@@ -215,7 +236,8 @@ const initUserDataObj = async () => {
                 lastmessage : userArr[user].lastmessage,
                 jewels : userArr[user].jewels,
                 amulets : userArr[user].amulets,
-                inRoll : false
+                inroll : false,
+                lastclaim : 0
             }
 
             output[objectKey] = userStats;
@@ -463,7 +485,9 @@ const createUserIfNotExist = async (id) => {
             exp : 0,
             lastmessage : 0,
             jewels : 0,
-            amulets : 0
+            amulets : 0,
+            inroll : false,
+            lastclaim : 0
         }
         userData[id] = userStats;
     }
@@ -514,7 +538,7 @@ const addXp = async message => {
                 .setThumbnail(randomNozomi[nozomiIdx])
                 .setTitle(`${message.author.displayName||message.author.username}'s Level Up!`)
                 .setDescription(`You've leveled up to level **${curLevel}**! \n\n` +
-                    `Congrats, you've earned ${earnedJewels} <:jewel:811495998194450454>`)
+                    `Congrats, you've earned ${earnedJewels} ${jewelEmoji}`)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
                 .setTimestamp());
 
@@ -547,11 +571,11 @@ const profile = async message => {
 
     const randomStatus = Math.floor(Math.random() * 5);
     const statusStrings = [
-        "A Dapper Fellow <:coolnozomi:811498063527936031>",
-        "Empty In Mana <:mana:811498063515353149>",
-        "Drowning In Amulets <:tears:811495998450565140>",
-        "Pulling Literal Garbage <:garbage:811498063427928086>",
-        "Out Of Shape <:stamina:811495998328930314>"
+        `A Dapper Fellow ${nozomiCoolEmoji}`,
+        `Empty In Mana ${manaEmoji}`,
+        `Drowning In Amulets ${amuletEmoji}}`,
+        `Pulling Literal Garbage ${oneStarEmoji}`,
+        `Out Of Shape ${staminaEmoji}`
     ];
 
     await message.channel.send(new MessageEmbed()
@@ -561,16 +585,38 @@ const profile = async message => {
         .setThumbnail(avatarUser)
         .setTitle(`${profileUser.displayName||profileUser.username}'s profile`)
         .setDescription(statusStrings[randomStatus])
-        .addField("Level <:starico:811495998479532032>", userData[id].level)
+        .addField(`Level ${starLevelEmoji}`, userData[id].level)
         .addFields(
-            { name: "Dealt This War <:bluesword:811495998479925268>", value: profileDamage[0], inline: true },
-            { name: "Dealt Today <:greensword:811495998374805514> ", value: profileDamage[1], inline: true },
-            { name: "Total Dealt <:patk:811495998156439563>", value: profileDamage[2], inline: true },
-            { name: "Jewels <:jewel:811495998194450454> ", value: userData[id].jewels, inline: true },
-            { name: "Amulets <:tears:811495998450565140>", value: userData[id].amulets, inline: true },
+            { name: `Dealt This War ${blueSwordEmoji} `, value: profileDamage[0], inline: true },
+            { name: `Dealt Today ${greenSwordEmoji} `, value: profileDamage[1], inline: true },
+            { name: `Total Dealt ${swordEmoji}`, value: profileDamage[2], inline: true },
+            { name: `Jewels ${jewelEmoji} `, value: userData[id].jewels, inline: true },
+            { name: `Amulets ${amuletEmoji}`, value: userData[id].amulets, inline: true },
         )
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
+};
+
+const daily = async message => {
+    let startofDay = new Date();
+    startofDay = startofDay.setUTCHours(0,0,0,0);
+
+    let startofTomorrow = new Date();
+    startofTomorrow = startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
+    startofTomorrow = startofTomorrow.setUTCHours(0,0,0,0);
+
+    let timeBefore = math.floor(startofTomorrow.getTime() - startofDay.getTime() / 3600000);
+
+    if (startofDay > userData[message.author.id].lastclaim) {
+        console.log(`LOG: ${message.author.username} claimed on ${startofDay}`);
+        userData[message.author.id].lastclaim = startofDay;
+        userData[message.author.id].jewels += 10000;
+        await message.reply(`Success! You Have Claimed 10000 ${jewelEmoji} Today \n` +
+            `Come Back In ${timeBefore} Hours To Claim Again`);
+    } else {
+        await message.channel.send(`Oof out of ${staminaEmoji}, You Have Already Claimed Today \n` +
+        `Come Back In ${timeBefore} Hours To Claim Again`);
+    }
 };
 
 
@@ -657,7 +703,7 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
     out.on('finish', () =>  {
             console.log('LOG: The PNG agregate file was created.');
 
-            let amuletStr = `You have earned ${amuletsObtained} <:tears:811495998450565140>`;
+            let amuletStr = `You have earned ${amuletsObtained} ${amuletEmoji}`;
 
             if (newUnits > 0) {
                 amuletStr += ` and have obtained ${newUnits} new characters!`
@@ -676,7 +722,7 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
             setTimeout(() => { 
                 rollResults.delete();
                 message.channel.send(combinedRoll);
-                userData[message.author.id].inRoll = false
+                userData[message.author.id].inroll = false
             }, 3000);
     });
 }
@@ -722,93 +768,104 @@ const rollgacha = async (message) => {
 
     const jewelCost = 0;
 
-    if (userData[id].jewels >= jewelCost && !userData[id].inRoll) {
-        // Deduct the jewels immediately
-        userData[id].jewels -= jewelCost;
-        userData[id].inRoll = true;
+    let collected = await awaitEmoji(message, 
+        `Rolling x10 On This Gacha Will Cost` + 
+        ` **${jewelCost}** ${jewelEmoji}, React To Confirm`,
+        JEWEL_EMOJI, { max: 1, time: 20000, errors: ['time'] }, 
+        'The Roll Has Been Cancelled.');
 
-        const pulledChars = [];
-        let rollString = '';
+    if (!collected) return;
+    let reaction = collected.first();
 
-        let embedRoll = new MessageEmbed()
-            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-            .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
-            .setDescription(`${rollString}`)
-            .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
-            .setTimestamp();
+    if (reaction.emoji.id === JEWEL_EMOJI) {
+        if (userData[id].jewels >= jewelCost && !userData[id].inroll) {
+            // Deduct the jewels immediately
+            userData[id].jewels -= jewelCost;
+            userData[id].inroll = true;
 
-        let rollResults = await message.channel.send(embedRoll);
-        
-        let silverCount = 0;
-        let amuletsObtained = 0;
-        let newUnits = 0;
+            const pulledChars = [];
+            let rollString = '';
 
-        let obtainedImages = [];
-        let isDupe = [];
+            let embedRoll = new MessageEmbed()
+                .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                .setAuthor(client.user.username, client.user.avatarURL())
+                .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                .setDescription(`${rollString}`)
+                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setTimestamp();
 
-        for (let i = 0; i < 10; i++) {
-            console.log(`ran ${i} times`);  
-
-            const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
-
-            if (rarityRolled < threeStarRate) {
-                rollString += '<:poggerona:811498063578529792>';
-                let rollImgData = await getRolledCharData(id, 3);
-
-                obtainedImages.push(rollImgData[0]);
-                isDupe[i] = rollImgData[1];
-
-                if (!rollImgData[1]) {
-                    newUnits++;
-                }
-
-                amuletsObtained += rollImgData[2];
-            } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                rollString += '<:bitconnect:811498063641837578>';
-                let rollImgData = await getRolledCharData(id, 2);
-
-                obtainedImages.push(rollImgData[0]);
-                isDupe[i] = rollImgData[1];
-
-                if (!rollImgData[1]) {
-                    newUnits++;
-                }
-                
-                amuletsObtained += rollImgData[2];
-            } else {
-                silverCount++;
-
-                rollString += '<:garbage:811498063427928086>';
-                let rollImgData = await getRolledCharData(id, 1);
-
-                obtainedImages.push(rollImgData[0]);
-                isDupe[i] = rollImgData[1];
-
-                if (!rollImgData[1]) {
-                    newUnits++;
-                }
-                
-                amuletsObtained += rollImgData[2];
-            }
-            embedRoll.setDescription(`${rollString}`);
-            rollResults.edit(embedRoll);
+            let rollResults = await message.channel.send(embedRoll);
             
-        }
+            let silverCount = 0;
+            let amuletsObtained = 0;
+            let newUnits = 0;
 
-        userData[id].amulets += amuletsObtained;
+            let obtainedImages = [];
+            let isDupe = [];
 
-        createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
-    } else {
-        let reminder;
-        if (userData[id].inRoll) {
-            reminder =await message.reply(`You Are Currently Already Doing An x10 Roll! \n` +
-                `Please Wait Until The Roll Is Finished Before Trying Again `);
+            for (let i = 0; i < 10; i++) {
+                console.log(`ran ${i} times`);  
+
+                const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+
+                if (rarityRolled < threeStarRate) {
+                    rollString += threeStarEmoji;
+                    let rollImgData = await getRolledCharData(id, 3);
+
+                    obtainedImages.push(rollImgData[0]);
+                    isDupe[i] = rollImgData[1];
+
+                    if (!rollImgData[1]) {
+                        newUnits++;
+                    }
+
+                    amuletsObtained += rollImgData[2];
+                } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
+                    rollString += twoStarEmoji;
+                    let rollImgData = await getRolledCharData(id, 2);
+
+                    obtainedImages.push(rollImgData[0]);
+                    isDupe[i] = rollImgData[1];
+
+                    if (!rollImgData[1]) {
+                        newUnits++;
+                    }
+                    
+                    amuletsObtained += rollImgData[2];
+                } else {
+                    silverCount++;
+
+                    rollString += oneStarEmoji;
+                    let rollImgData = await getRolledCharData(id, 1);
+
+                    obtainedImages.push(rollImgData[0]);
+                    isDupe[i] = rollImgData[1];
+
+                    if (!rollImgData[1]) {
+                        newUnits++;
+                    }
+                    
+                    amuletsObtained += rollImgData[2];
+                }
+                embedRoll.setDescription(`${rollString}`);
+                rollResults.edit(embedRoll);
+                
+            }
+
+            userData[id].amulets += amuletsObtained;
+
+            createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
         } else {
-            reminder =await message.reply(`You Need At Least ${jewelCost} <:jewel:811495998194450454> To Roll! \n` +
-                `You Are Missing ${jewelCost-userData[id].jewels} <:jewel:811495998194450454> `);
+            let reminder;
+            if (userData[id].inroll) {
+                reminder =await message.reply(`You Are Currently Already Doing An x10 Roll! \n` +
+                    `Please Wait Until The Roll Is Finished Before Trying Again `);
+            } else {
+                reminder =await message.reply(`You Need At Least ${jewelCost} ${jewelEmoji} To Roll! \n` +
+                    `You Are Missing ${jewelCost-userData[id].jewels} ${jewelEmoji}`);
+            }
+            setTimeout(() => { reminder.delete();}, 5000);
         }
-        setTimeout(() => { reminder.delete();}, 5000);
     }
 }
 
@@ -839,7 +896,7 @@ const characters = async (message, args) => {
 
     for (let i = startPage - 1; i < characters.length && i < startPage + 9; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        messageDisplay.addField(`\u200B`, `\`\`\`${starlevel} ${characters[i]}\`\`\`\n`);
+        messageDisplay.addField(`\u200B`, `\`\`\`${starlevel} ${characters[i]}\`\`\``);
     }
 
     await message.channel.send(messageDisplay);
@@ -860,9 +917,11 @@ const character = async (message, args) => {
             let starlevel = collectionData[message.author.id][character];
             let charFullImg = gachaData[starlevel][character].fullimageurl;
 
+            let starstr = '★'.repeat(starlevel);
+
             let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
-                .setTitle(`${character}`)
+                .setTitle(`${starstr} ${character}`)
                 .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
                 .setImage(`${charFullImg}`)
                 .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
@@ -1019,13 +1078,13 @@ const updateOCRValues = async (message, values) => {
         .setTitle(`${message.author.displayName||message.author.username}'s attack`)
         .setDescription(`on ` + 
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
-            `<:nozomiblush:811498063918137375>`)
+            `${nozomiBlushEmoji}`)
         .addFields(
-            { name: "Attempt 1 <:critrate:811495998383325244>", value: intAttack1, inline: true },
-            { name: "Attempt 2 <:critrate:811495998383325244>", value: intAttack2, inline: true },
-            { name: "Attempt 3 <:critrate:811495998383325244>", value: intAttack3, inline: true },
+            { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttack1, inline: true },
+            { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttack2, inline: true },
+            { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttack3, inline: true },
         )
-        .addField(`Total Damage Dealt For This Day <:critdamage:811495998463148102>`, intAttack1 + intAttack2 + intAttack3)
+        .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttack1 + intAttack2 + intAttack3)
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp());
     }
@@ -1171,8 +1230,6 @@ const updateCollection = async (id, charname, starlevel) => {
             WHERE NOT EXISTS (SELECT 1 FROM COLLECTION WHERE uid = '${id}' AND charname = '${charname}');
     `;
 
-    console.log(query);
-
     try {
         const res = await pgdb.query(query);
         console.log(`LOG: ${charname} was successfully added to ${id}'s collection`);
@@ -1186,7 +1243,8 @@ const updateCollection = async (id, charname, starlevel) => {
 
 
 // Bot Commands
-const COMMANDS = { help, ping, reset, resetgacha, say, profile, clanbattle, rollgacha, characters, character };
+const COMMANDS = { help, ping, reset, resetgacha, say, profile, daily, 
+    clanbattle, rollgacha, characters, character };
 
 // Chaining Events
 client
@@ -1240,53 +1298,3 @@ initGacha();
 // Log In
 console.log("Logging In To Princonne Bot");
 client.login(process.env["BOT_TOKEN"]);
-
-
-
-
-
-
-
-/* Method GRAVEYARD, FOR THE STUFF THAT ISN'T GONNA BE USED */
-
-const reactionFilter = (author, reaction, user) => 
-        ["bitconnect"].includes(reaction.emoji.name) && user.id === author.id;
-
-/** @param {import("discord.js").Message} message */
-const awaitEmoji = async (message, text, emoji, option, cancelText) => {
-    /** @type {import("discord.js").Message} */
-    let emojiText = await message.channel.send(text);
-    emojiText.react(emoji);
-    return await emojiText.awaitReactions((reaction, user) => 
-                        reactionFilter(message.author, reaction, user), option)
-             .catch(() => { message.channel.send(cancelText); });
-};
-
-/** @param {import("discord.js").Message} message */
-const ebola = async message => {
-    await message.react(BITCONNECT_EMOJI);
-    let collected = await message.awaitReactions((reaction, user) => 
-                                    reactionFilter(message.author, reaction, user), 
-                                    { max: 1, time: 60000, errors: ['time'] })
-                                .catch(() => message.reply('You failed to react in time.'));
-    if (!collected) return await message.reply('You failed to react in time.');
-
-    let reaction = collected.first();
-    if (reaction.emoji.name === "bitconnect") {
-        // Find The Role 
-        let autismRole = message.guild.roles.find(r => r.name === "YOU HAVE AUTISM!");
-        if (!autismRole) return await message.channel.send("Looks like this channel doesn't have" +
-                                                            "**YOU HAVE AUTISM!** role");
-        if (message.member.roles.has(autismRole.id)){
-            return message.reply("YOU ALREADY ARE AUTISTIC");
-        } else {
-            let success = await message.member.addRole(autismRole)
-                                                .catch(() => console.log("Looks like I can't add" +
-                                                                    "**YOU HAVE AUTISM!** role"));
-            if (success) {
-                await message.reply("YOU NOW HAVE AUTISM!");
-                console.log(`${message.author.username} is now autistic`);
-            }
-        }
-    }
-};
