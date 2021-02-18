@@ -1272,7 +1272,7 @@ const help = message => {
         `Ahaha, from now on, I'll be in your care!* \n\n\n` + 
         `**__Nozomi Bot Commands__**\n\n` +                        
         `**${prefix}profile** *[optional @user target]* to obtain your / @user profile information  \n` + 
-        `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to clan battle information on a certain date  \n` + 
+        `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to obtain clan battle information on a certain date  \n` + 
         `**${prefix}daily** to obtain your daily gems\n` + 
         `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
         `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
