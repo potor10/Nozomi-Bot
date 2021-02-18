@@ -1301,7 +1301,7 @@ const returnOCR = async (message, attempts, maxAttempts) => {
                 console.log(`LOG: Image was not detected as clan war image`);
                 break;
             } else if (i==0) {
-                message.react(client.emojis.get(NOZOMI_BLUSH_EMOJI));
+                message.react(client.emojis.cache.get(NOZOMI_BLUSH_EMOJI));
             }
             values.push(text);
         }
@@ -1371,7 +1371,7 @@ const updateOCRValues = async (message, values, rectangles) => {
         .setTitle(`${message.author.displayName||message.author.username}'s attack`)
         .setDescription(`On ` + 
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
-            `: Clan Battle #${attackCBid} ` + `${nozomiBlushEmoji}`)
+            `: Clan Battle #${attackCBid}`)
         .addFields(
             { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
             { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
