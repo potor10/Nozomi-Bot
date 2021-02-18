@@ -821,7 +821,7 @@ const characters = async (message, args) => {
     let startPage = await parseFirstArgAsInt(args, 1);
     let characters = Object.keys(collectionData[message.author.id]);
 
-    let totalPages = Math.ceil(characters.length / 10);
+    let totalPages = Math.ceil(characters.length / 9);
     if (startPage < 1 || startPage > totalPages + 1 ) {
         startPage = 1;
     }
@@ -834,9 +834,9 @@ const characters = async (message, args) => {
         .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
         .setTimestamp();
 
-    for (let i = startPage - 1; i < characters.length && i < startPage + 9; i++) {
+    for (let i = startPage - 1; i < characters.length && i < startPage + 8; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        messageDisplay.addField(`${characters[i]}`, `${starlevel}\n`, true);
+        messageDisplay.addField(`${starlevel}`, `\`\`\`${characters[i]}\`\`\`\n`, true);
     }
 
     await message.channel.send(messageDisplay);
