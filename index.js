@@ -505,8 +505,10 @@ const addXp = async message => {
     createUserIfNotExist(id);
 
     if (currentTime - userData[id].lastmessage > 3000) { //missing 00
-        let newXP = userData[id].exp + Math.floor(Math.random() * 5) + 1;
-        console.log(`LOG: ${newXP - userData[id].exp} XP has been granted to ${message.author.username} (${id})`);
+        let newXP = Math.floor(Math.random() * 5) + 1;
+        userData[id].exp += newXP;
+        
+        console.log(`LOG: ${newXP} XP has been granted to ${message.author.username} (${id})`);
 
         userData[id].lastmessage = currentTime;
 
@@ -604,7 +606,7 @@ const daily = async message => {
     startofTomorrow.setDate(startofTomorrow.getUTCDate() + 1);
     startofTomorrow = startofTomorrow.setUTCHours(0,0,0,0);
 
-    let timeBefore = math.floor(startofTomorrow.getTime() - startofDay.getTime() / 3600000);
+    let timeBefore = Math.floor(startofTomorrow.getTime() - startofDay.getTime() / 3600000);
 
     if (startofDay > userData[message.author.id].lastclaim) {
         console.log(`LOG: ${message.author.username} claimed on ${startofDay}`);
@@ -891,12 +893,12 @@ const characters = async (message, args) => {
 
     for (let i = startPage - 1; i < characters.length && i < startPage + 9; i+= 2) {
         let starlevel1 = '★'.repeat(collectionData[message.author.id][characters[i]]);
-        let char1str = `\`\`\`${starlevel1} ${characters[i]}\`\`\``;
+        let char1str = `\`${starlevel1} ${characters[i]}\``;
         
         let char2str = `\u200B`;
         if (i+1 < characters.length) {
             let starlevel2 = '★'.repeat(collectionData[message.author.id][characters[i+1]]);
-            char2str = `\`\`\`${starlevel2} ${characters[i+1]}\`\`\``
+            char2str = `\`${starlevel2} ${characters[i+1]}\``
         } 
 
         messageDisplay.addField(char1str, char2str);
