@@ -1091,8 +1091,6 @@ const updateCollection = async (id, charname) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    console.log(charName);
-
     const query = `
         INSERT INTO COLLECTION (uid, charname)
             SELECT '${id}', '${charname}'
