@@ -40,6 +40,9 @@ let currentClanBattleId;
 // Used at the end to determine if we need to resend query
 let isResetGacha = false;
 
+// Footer text
+let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
+
 // Jewel Emoji
 const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, jewelEmoji.length-1);
 
@@ -347,7 +350,7 @@ const retrieveDamageDB = async (id, date) => {
             FROM ATTACKS WHERE cbid = ${currentClanBattleId} AND uid = '${id}';
 
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
-            FROM ATTACKS WHERE attackDate = '${date}' AND uid = '${id}';
+            FROM ATTACKS WHERE attackdate = '${date}' AND uid = '${id}';
 
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE uid = '${id}';
@@ -368,6 +371,27 @@ const retrieveDamageDB = async (id, date) => {
     }
 
     return values;
+}
+
+const retrieveAttack = async (id, date) => {
+    const pgdb = new PGdb(dbConfig);
+    pgdb.connect();
+
+    const query = `SELECT * FROM ATTACKS WHERE attackdate = '${date}' AND uid = '${id}'`;
+
+    const output;
+    try {
+        const res = await pgdb.query(query);
+        console.log(`LOG: Obtained Attacks For ${id}`);
+        
+        output = res.rows[0];
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        pgdb.end();
+    }
+
+    return output;
 }
 
 const updateAttackDB = async (id, date, attempt1, attempt2, attempt3) => {    
@@ -539,7 +563,7 @@ const addXp = async message => {
                 .setTitle(`${message.author.displayName||message.author.username}'s Level Up!`)
                 .setDescription(`You've leveled up to level **${curLevel}**! \n\n` +
                     `Congrats, you've earned ${earnedJewels} ${jewelEmoji}`)
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setFooter(footerText, client.user.avatarURL())
                 .setTimestamp());
 
             console.log(`LOG: ${message.author.username} (${id}) has leveled up to ${curLevel}`);
@@ -593,11 +617,13 @@ const profile = async message => {
             { name: `Jewels ${jewelEmoji} `, value: userData[id].jewels, inline: true },
             { name: `Amulets ${amuletEmoji}`, value: userData[id].amulets, inline: true },
         )
-        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+        .setFooter(footerText, client.user.avatarURL())
         .setTimestamp());
 };
 
 const daily = async message => {
+    createUserIfNotExist(message.author.id);
+
     let startofDay = new Date();
     startofDay.setUTCHours(0,0,0,0);
 
@@ -636,7 +662,52 @@ const clanbattle = async (message, args) => {
     } else {
         await message.channel.send(`Current Clan Battle Identification Number Is: ${currentClanBattleId}`);
     }
+}
+
+
+
+/*
+    Function To Get A Certain Day's Attacks
+*/
+const getattacks = async (message, args) => {
+    if (!Array.isArray(args)) {
+        message.channel.send("Error parsing arguments");
+        return;
+    }
+
+    if (args.length) {
+        let parseDate = args.shift().toLowerCase().trim();
+        let parseUser = message.author;
+        let avatarUser = message.author.avatarURL();
+
+        if (message.mentions.members.first()) {
+            parseUserId = message.mentions.members.first();
+            avatarUser = message.mentions.members.first().user.avatarURL();
+        }
     
+        createUserIfNotExist(parseUser.id);
+
+        console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`)
+        let obtainedAttacks = await retrieveAttack(parseUser.id, parseDate);
+
+        let damageMessage = new MessageEmbed()
+            .setURL("https://twitter.com/priconne_en")
+            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+            .setAuthor(client.user.username, client.user.avatarURL())
+            .setThumbnail(avatarUser)
+            .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
+            .setDescription(`On ${parseDate}`)
+            .setFooter(footerText, client.user.avatarURL())
+            .setTimestamp();
+        
+        let totalDamage = obtainedAttacks.attempt1damage + obtainedAttacks.attempt2damage + obtainedAttacks.attempt3damage;
+        damageMessage.addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage);
+        damageMessage.addField(`Attempt 1 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage);
+        damageMessage.addField(`Attempt 2 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage);
+        damageMessage.addField(`Attempt 3 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage);
+
+        await message.channel.send(damageMessage);
+    } 
 }
 
 
@@ -716,7 +787,7 @@ const createImage = async (message, obtainedImages, amuletsObtained, newUnits, i
                 .setDescription(amuletStr)
                 .attachFiles(['./test.png'])
                 .setImage('attachment://test.png')
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setFooter(footerText, client.user.avatarURL())
                 .setTimestamp();
             
             setTimeout(() => { 
@@ -789,7 +860,7 @@ const rollgacha = async (message) => {
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                 .setDescription(`${rollString}`)
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setFooter(footerText, client.user.avatarURL())
                 .setTimestamp();
 
             let rollResults = await message.channel.send(embedRoll);
@@ -900,11 +971,11 @@ const characters = async (message, args) => {
         .setThumbnail(message.author.avatarURL())
         .setTitle(`${message.author.displayName||message.author.username}'s character list`)
         .setDescription(`page ${startPage} / ${totalPages}`)
-        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+        .setFooter(footerText, client.user.avatarURL())
         .setTimestamp();
 
     for (let i = (startPage - 1) * displayPerPage; 
-        i < characters.length && i < ((startPage - 1) * displayPerPage) + displayPerPage - 1; i++) {
+        i < characters.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
         let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
         let charstr = `\`\`\`${starlevel} ${characters[i]}\`\`\``;
 
@@ -936,7 +1007,7 @@ const character = async (message, args) => {
                 .setTitle(`${starstr} ${character}`)
                 .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
                 .setImage(`${charFullImg}`)
-                .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+                .setFooter(footerText, client.user.avatarURL())
                 .setTimestamp();
             
             await message.channel.send(messageDisplay);
@@ -972,7 +1043,14 @@ const getOcrImage = msgAttach => {
 
 /* Returns the OCR result from input message */
 /** @param {import("discord.js").Message} message */
-const returnOCR = async message => {
+const returnOCR = async (message, args) => {
+    const maxAttempts = 3;
+    let attemptsInImg = parseFirstArgAsInt(args, maxAttempts);
+    if (attemptsInImg > maxAttempts || attemptsInImg < 1) {
+        attemptsInImg = maxAttempts;
+    }
+    console.log(`LOG: Running OCR With ${attemptsInImg} attempts`);
+
     message.attachments.forEach(async attachment => {
         const worker = createWorker({
             //logger: m => console.log(m), // Add logger here
@@ -1035,7 +1113,8 @@ const returnOCR = async message => {
 
         const values = [];
         isClan = true;
-        for (let i = 0; i < rectangles.length; i++) {
+
+        for (let i = 0; i < rectangles.length + attemptsInImg - maxAttempts; i++) {
             const { data: { text } } = await worker.recognize(newURL, {rectangle: rectangles[i]} );
             if (i==0 && text.indexOf("Trial Run") == -1) {
                 isClan = false;
@@ -1057,9 +1136,15 @@ const returnOCR = async message => {
 /* Updates the attack DB based on OCR result and displays a message*/
 /** @param {import("discord.js").Message} message */
 const updateOCRValues = async (message, values) => {
-    const intAttack1 = parseInt(values[4].split('\n', 1)[0].trim(), 10);
-    const intAttack2 = parseInt(values[3].split('\n', 1)[0].trim(), 10);
-    const intAttack3 = parseInt(values[2].split('\n', 1)[0].trim(), 10);
+    const intAttacks = [];
+
+    for (let i = 2; i < 5; i++) {
+        if (i < values.length) {
+            intAttacks.unshift(parseInt(values[i].split('\n', 1)[0].trim(), 10));
+        } else {
+            intAttacks.unshift[0];
+        }
+    }
     
     const pad = (num) => { 
         return ('00'+num).slice(-2) 
@@ -1092,12 +1177,12 @@ const updateOCRValues = async (message, values) => {
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
             `${nozomiBlushEmoji}`)
         .addFields(
-            { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttack1, inline: true },
-            { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttack2, inline: true },
-            { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttack3, inline: true },
+            { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[2], inline: true },
+            { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
+            { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
         )
         .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttack1 + intAttack2 + intAttack3)
-        .setFooter(`© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`, client.user.avatarURL())
+        .setFooter(footerText, client.user.avatarURL())
         .setTimestamp());
     }
 }
@@ -1125,13 +1210,59 @@ const say = async (message, args) => {
 };
 
 // Commands
-const help = message => message.author.send(`I'll be counting on you, so let's work together until I can become a top idol, okay? Ahaha, from now on, I'll be in your care! \n\n` + 
-                                            `TYPE **.ebola** TO BECOME DOWN SYNDROMED \n` + 
-                                            `TYPE **.daily** TO OBTAIN YOUR DAILY REWARDS AND SETUP YOUR PROFILE \n` + 
-                                            `TYPE **.spin** TO SPIN THE WHEEL OF BITCONNECT\n` + 
-                                            `TYPE **.profile** [@user] TO LOOK AT PROFILES \n` + 
-                                            `TYPE **.price <size>** TO LOOK AT BITCONNECT PRICES \n` + 
-                                            `TYPE **.buy/.sell <amt> <size>** TO PURCHASE OR SELL BITCONNECT`);
+const help = message => { 
+    message.author.send(
+        `*I'll be counting on you, so let's work together until I can become a top idol, okay?\n` + 
+        `Ahaha, from now on, I'll be in your care!* \n\n\n` + 
+        `**__Nozomi Bot Commands__**\n\n` +                        
+        `**${prefix}profile *[optional @user target]*** to obtain your / @user profile information  \n` + 
+        `**${prefix}daily** to obtain your daily gems\n` + 
+        `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
+        `**${prefix}characters *[optional page number]*** to view the characters you've obtained from gacha \n` + 
+        `**${prefix}character *[mandatory character name(no stars)]*** to view full art of a character you've obtained from gacha \n\n\n` + 
+        `**__Nozomi Bot Clan Battle Tracker__**\n\n` +
+        `Aside from minigames, Nozomi Bot can also serve as a clan battle damage tracker!\n` +
+        `To use Nozomi Bot clan track functionality, you must upload an image of the damage attempts for the day to discord.\n` +
+        `An example image is provide below, although the image you upload does not necessarily need to be identical, \n` +
+        `It is mandatory that the damage text / date of attack are positioned in the correct spots!\n\n` +
+        `The easiest way to ensure that these are aligned correctly, is to take a screenshot of the 3 attempts at the top of the list.\n` +
+        `Because they're at the top of the list, you will automatically be positioned correctly!\n\n` +
+        `Thanks for using Nozomi Bot!`);
+    
+    let ex1 = new MessageEmbed()
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setTitle(`Image 1 Example`)
+        .setDescription(`Example Screenshot For Clan Battle`)
+        .attachFiles(['./img/ex1.png'])
+        .setImage('attachment://ex1.png')
+        .setFooter(footerText, client.user.avatarURL())
+        .setTimestamp();
+
+    let ex2 = new MessageEmbed()
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setTitle(`Image 2 Example`)
+        .setDescription(`Example Screenshot For Clan Battle`)
+        .attachFiles(['./img/ex2.png'])
+        .setImage('attachment://ex2.png')
+        .setFooter(footerText, client.user.avatarURL())
+        .setTimestamp();
+
+    let ex3 = new MessageEmbed()
+        .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+        .setAuthor(client.user.username, client.user.avatarURL())
+        .setTitle(`Image 3 Example`)
+        .setDescription(`Example Screenshot For Clan Battle`)
+        .attachFiles(['./img/ex3.png'])
+        .setImage('attachment://ex3.png')
+        .setFooter(footerText, client.user.avatarURL())
+        .setTimestamp();
+    
+    message.author.send(ex1);
+    message.author.send(ex2);
+    message.author.send(ex3);
+}
 
 
 
