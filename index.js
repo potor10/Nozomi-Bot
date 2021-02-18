@@ -729,41 +729,41 @@ const rollgacha = async (message) => {
                 await updateStatsDB(message.author.id, profile.level, profile.exp, profile.lastmessage, 
                     profile.jewels, profile.tears + tearsObtained);
                 
-                let sizX = 121;
-                let sizY = 121;
+                let sizThumb = 121;
+                let sizOverlay = 30;
 
                 let tearSRC = await loadImage(
-                    `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizX}&height=${sizY}`);
+                    `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
                 
-                var canvas = new Canvas(sizX * 5, sizY * 2);
+                var canvas = new Canvas(sizThumb * 5, sizThumb * 2);
                 var ctx = canvas.getContext('2d');
                 
                 let x = 0;
                 let y = 0;
                 
                 for (let i = 0; i < obtainedImages.length; i++) {
-                    ctx.drawImage(obtainedImages[i], x, y, sizX, sizY);
+                    ctx.drawImage(obtainedImages[i], x, y, sizThumb, sizThumb);
 
-                    x+= sizX;
+                    x+= sizThumb;
                     if (i == 4) {
                         x = 0;
-                        y += sizY;
+                        y += sizThumb;
                     }
                 }
 
-                x = 0;
+                x = sizThumb - sizOverlay;
                 y = 0;
-                ctx.globalAlpha = 0.6;
+                ctx.globalAlpha = 0.8;
 
                 for (let i = 0; i < isDupe.length; i++) {
                     if (isDupe[i]) {
-                        ctx.drawImage(tearSRC, x, y, sizX, sizY);
+                        ctx.drawImage(tearSRC, x, y, sizOverlay, sizOverlay);
                     }
 
-                    x+= sizX;
+                    x+= sizThumb;
                     if (i == 4) {
                         x = 0;
-                        y += sizY;
+                        y += sizThumb;
                     }
                 }
 
