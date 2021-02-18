@@ -850,7 +850,7 @@ const getattacks = async (message, args) => {
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
             .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                ` on clan battle #${attackClanBattleId}`)
+                ` : clan battle #${attackClanBattleId}`)
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
         
