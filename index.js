@@ -24,7 +24,7 @@ const fs = require('fs');
 //const { parse } = require("path");
 
 // Initialize Discord Client
-const client = new Client({disableMentions: 'everyone'});
+const client = new discord.Client({disableMentions: 'everyone'});
 
 client.player = new Player(client);
 client.config = require('./config/config');
