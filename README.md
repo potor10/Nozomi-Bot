@@ -1,9 +1,9 @@
 # Nozomi Bot
 ![Alt](https://media.discordapp.net/attachments/802247690729160704/811168254525046784/My_Post_1.png)
 
-###Nozomi Bot can be added to your discord server via this [link](https://discord.com/api/oauth2/authorize?client_id=811178273848557610&permissions=519232&scope=bot). 
+### Nozomi Bot can be added to your discord server via this [link](https://discord.com/api/oauth2/authorize?client_id=811178273848557610&permissions=519232&scope=bot). 
 
-##About Nozomi Bot
+## About Nozomi Bot
 
 Nozomi is a character from the mobile game Princess Connect : Redive. 
 Princess Connect : Redive is developed by the company Cygames and has its own Anime adaptation. 
@@ -11,7 +11,7 @@ Princess Connect : Redive is developed by the company Cygames and has its own An
 This bot aims to a assist Princess Connect : Redive players with tracking clan battle information. 
 It is written in JavaScript using Node.js and is synced to a Postgre SQL database hosted on Heroku.
 
-##Features
+## Features
 Nozomi Bot has:
 * Clan battle image parser
     * Store + track clan battle damage over the current month
@@ -30,7 +30,7 @@ Nozomi Bot has:
     * This gacha does not account for seasonal units and will group all units on a certain rarity together.
         * This means you can pull every possible unit in Priconne R
     
-##Dependencies
+## Dependencies
 * Discord.js 
     * Necessary to interact with discord
 * tesseract.js 
@@ -46,7 +46,7 @@ Nozomi Bot has:
 * canvas
     * Join images together to create final gacha pull
     
-##Final
+## Final
 Thank you for using Nozomi Bot. 
 Potor10
 
