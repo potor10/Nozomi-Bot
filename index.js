@@ -42,6 +42,11 @@ let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()
 const JEWEL_EMOJI = client.emotes.jewelEmoji.slice(client.emotes.jewelEmoji.lastIndexOf(':')+1, client.emotes.jewelEmoji.length-1);
 const NOZOMI_BLUSH_EMOJI = client.emotes.nozomiBlushEmoji.slice(client.emotes.nozomiBlushEmoji.lastIndexOf(':')+1, client.emotes.nozomiBlushEmoji.length-1);
 
+let given = 981847;
+console.log(`start test ${given}`);
+let run = require('./test');
+run();
+console.log(given);
 
 client.player = new Player(client);
 client.config = require('./config/config');
