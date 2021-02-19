@@ -25,9 +25,9 @@ let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
 dbConfig.ssl = { rejectUnauthorized: false };
 
 // Objects Used To Store Realtime Changes - Obtained Once On Startup
-let userData;
-let gachaData;
-let collectionData;
+var userData;
+var gachaData;
+var collectionData;
 
 const cbStart = new Date('Feb 10 2021');
 let currentClanBattleId;
@@ -38,7 +38,7 @@ let isResetGacha = false;
 // Footer text
 let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
 
-var given = 981847;
+window.given = 981847;
 console.log(`start test ${given}`);
 let run = require('./test');
 run();
