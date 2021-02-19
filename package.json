@@ -1,10 +1,10 @@
 {
-    "name": "music-bot",
+    "name": "nozomi-bot",
     "main": "index.js",
-    "author": "ZerioDev",
-    "version": "5.0.0",
-    "repository": "https://github.com/ZerioDev/Music-bot.git",
-    "description": "A complete code to download for a music bot. Using a module (discord-player).",
+    "author": "potor10",
+    "version": "1.0.0",
+    "repository": "https://github.com/potor10/Nozomi-Bot/tree/indextoolong",
+    "description": "bot for loser.",
     "scripts": {
       "start": "node index.js"
     },
@@ -12,6 +12,37 @@
       "@discordjs/opus": "^0.3.3",
       "discord-player": "^3.2.0",
       "discord.js": "^12.5.1",
-      "ffmpeg-static": "^4.2.7"
+      "ffmpeg-static": "^4.2.7",
+      "file-system": "^2.2.2",
+      "tesseract.js": "^2.1.4",
+      "pg": "^8.5.1",
+      "parse-database-url": "*",
+      "cheerio": "^1.0.0-rc.5",
+      "got": "^11.7.0",
+      "canvas": "^2.6.1"
     }
   }
+
+  {
+    "name": "Nozomi Bot",
+    "description": "Bot For Losers",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+  
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+  
+    "dependencies": {
+      "discord.js": "^12.5.1",
+      
+      "discord-player": "3.2.1",
+  
+     
+    }
+    
+}
+  
