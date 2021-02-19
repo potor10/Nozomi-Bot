@@ -4,7 +4,7 @@ module.exports = {
     category: 'Core',
     utilisation: '{prefix}say',
 
-    execute(client, message, args) {
+    async execute(client, message, args) {
         const sayMessage = args.join(" ");
         message.deletable ? message.delete() : console.log(`Looks like I can't delete ` + 
                                                            `message in ${message.channel.name}`);
