@@ -22,6 +22,8 @@ module.exports = async () => {
         pgdb.end();
     }
 
+    console.log("POGGGGGGGJHkasdksahdsjkhakdkhsds");
+
     for (let user in userArr) {
         if (userArr.hasOwnProperty(user)) {
             let objectKey = userArr[user].uid;
