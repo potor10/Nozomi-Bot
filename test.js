@@ -1,5 +1,5 @@
-module.exports = () => {
+module.exports = (given) => {
     console.log(given);
-    given = 2;
+    given.hello = "bebg";
     console.log(given);
 }
