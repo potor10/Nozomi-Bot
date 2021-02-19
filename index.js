@@ -39,8 +39,8 @@ let isResetGacha = false;
 let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
 
 // Emoji IDs
-const JEWEL_EMOJI = jewelEmoji.slice(jewelEmoji.lastIndexOf(':')+1, jewelEmoji.length-1);
-const NOZOMI_BLUSH_EMOJI = nozomiBlushEmoji.slice(nozomiBlushEmoji.lastIndexOf(':')+1, nozomiBlushEmoji.length-1);
+const JEWEL_EMOJI = client.emotes.jewelEmoji.slice(client.emotes.jewelEmoji.lastIndexOf(':')+1, client.emotes.jewelEmoji.length-1);
+const NOZOMI_BLUSH_EMOJI = client.emotes.nozomiBlushEmoji.slice(client.emotes.nozomiBlushEmoji.lastIndexOf(':')+1, client.emotes.nozomiBlushEmoji.length-1);
 
 
 client.player = new Player(client);
