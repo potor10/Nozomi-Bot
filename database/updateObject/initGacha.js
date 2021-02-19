@@ -1,3 +1,4 @@
-module.exports = async () => {
-    gachaData = await initGachaDataObj();
+module.exports = async (data) => {
+    let gachaData = await initGachaDataObj();
+    data.gachaData = gachaData;
 }

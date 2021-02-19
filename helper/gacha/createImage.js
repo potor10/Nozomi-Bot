@@ -1,4 +1,6 @@
 module.exports = async (message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults) => {
+    const { Canvas, Image } = require('canvas');
+    
     let sizThumb = 121;
     let sizOverlay = 40;
 

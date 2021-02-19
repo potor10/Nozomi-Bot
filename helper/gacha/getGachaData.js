@@ -1,4 +1,7 @@
 module.exports = async (href, thumbnailurl, findImg, characterName) => {
+    const cheerio = require('cheerio');
+    const got = require("got");
+    
     try {
 		const response = await got(href);
         let innerPage = cheerio.load(response.body);

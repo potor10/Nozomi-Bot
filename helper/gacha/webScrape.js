@@ -1,4 +1,7 @@
 module.exports = async (url, findTable, findImg) => {
+    const cheerio = require('cheerio');
+    const got = require("got");
+    
     let returnArray = [];
 
     try {

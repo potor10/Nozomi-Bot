@@ -1,4 +1,6 @@
 module.exports = (url) => {
+    const { Canvas, Image } = require('canvas');
+    
     return new Promise((resolve, reject) => {
         const img = new Image();
   

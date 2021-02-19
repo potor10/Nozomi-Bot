@@ -1,4 +1,9 @@
-module.exports = async (id, date, attempt1, attempt2, attempt3, cbid) => {    
+module.exports = async (id, date, attempt1, attempt2, attempt3, cbid) => {
+    // Initialize PG SQL DB Client
+    const PGdb = require('pg').Client;
+    const parseDbUrl = require("parse-database-url");
+    let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
+    dbConfig.ssl = { rejectUnauthorized: false };
 
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();

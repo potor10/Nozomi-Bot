@@ -5,57 +5,29 @@
  */
 
 const { Client, Attachment, MessageEmbed } = require("discord.js");
-const { createWorker } = require('tesseract.js');
-const PGdb = require('pg').Client;
-const parseDbUrl = require("parse-database-url");
 
-const cheerio = require('cheerio');
-const got = require("got");
-
-const { Canvas, Image } = require('canvas');
 const fs = require('fs');
+//const { parse } = require("path");
 
-const { parse } = require("path");
+// Objects Used To Store Realtime Changes - Obtained Once On Startup
+let data = {
+    userData : {},
+    gachaData : {},
+    collectionData : {},
+    currentClanBattleId : 0,
+
+    // Used at the end to determine if we need to resend query
+    isResetGacha : false
+}
 
 // Initialize Discord Client
 const client = new Client({disableMentions: 'everyone'});
-
-// Initialize PG SQL DB Client
-let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
-dbConfig.ssl = { rejectUnauthorized: false };
-
-// Objects Used To Store Realtime Changes - Obtained Once On Startup
-let userData;
-let gachaData;
-let collectionData;
-
-const cbStart = new Date('Feb 10 2021');
-let currentClanBattleId;
-
-// Used at the end to determine if we need to resend query
-let isResetGacha = false;
-
-// Footer text
-let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
-
-let given = {
-    brown : "kmsIdie"
-};
-console.log(`start test ${given}`);
-let run = require('./test');
-run(given);
-console.log(given);
 
 client.player = new Player(client);
 client.config = require('./config/config');
 client.emotes = client.config.emojis;
 client.filters = client.config.filters;
 client.commands = new discord.Collection();
-
-// Emoji IDs
-const JEWEL_EMOJI = client.emotes.jewelEmoji.slice(client.emotes.jewelEmoji.lastIndexOf(':')+1, client.emotes.jewelEmoji.length-1);
-const NOZOMI_BLUSH_EMOJI = client.emotes.nozomiBlushEmoji.slice(client.emotes.nozomiBlushEmoji.lastIndexOf(':')+1, client.emotes.nozomiBlushEmoji.length-1);
-
 
 fs.readdirSync('./commands').forEach(dirs => {
     const commands = fs.readdirSync(`./commands/${dirs}`).filter(files => files.endsWith('.js'));
@@ -89,8 +61,13 @@ process.on("SIGINT", async () => (await updateAll(), process.exit(0)));
 process.on("SIGTERM", async () => (await updateAll(), process.exit(0)));
 
 //Initialize
-initAll();
-initGacha();
+let initAll = require('./database/updateObject/initAll');
+initAll(data);
+
+let initGacha = require('./database/updateObject/initGacha');
+initGacha(data);
+
+console.log(data);
 
 // Log In
 console.log("LOG: Logging In To Princonne Bot");

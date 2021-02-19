@@ -1,4 +1,6 @@
 module.exports = async (message, attempts, maxAttempts) => {
+    const { createWorker } = require('tesseract.js');
+    
     message.attachments.forEach(async attachment => {
         const worker = createWorker({
             //logger: m => console.log(m), // Add logger here
