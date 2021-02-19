@@ -6,6 +6,8 @@
 
 const { Client, Attachment, MessageEmbed } = require("discord.js");
 
+const { Player } = require('discord-player');
+
 const fs = require('fs');
 //const { parse } = require("path");
 
