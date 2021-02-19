@@ -60,6 +60,8 @@ for (const file of player) {
 // Catch the AUTISM
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
+
+let updateAll = require('./database/updateDatabase/updateAll');
 process.on("SIGINT", async () => (await updateAll(), process.exit(0)));
 process.on("SIGTERM", async () => (await updateAll(), process.exit(0)));
 
