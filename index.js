@@ -21,7 +21,8 @@ let { prefix, oneStarRate, twoStarRate, threeStarRate,
     nozomiCoolEmoji, nozomiBlushEmoji,
     threeStarEmoji, twoStarEmoji, oneStarEmoji,
     starLevelEmoji, swordSmallAttackEmoji, swordBigAttackEmoji, swordEmoji,
-    blueSwordEmoji, greenSwordEmoji } = require("./config.json");
+    blueSwordEmoji, greenSwordEmoji, 
+    defaultResponseChannelName } = require("./config.json");
 const { parse } = require("path");
 prefix = prefix || ".";
 
@@ -576,7 +577,7 @@ const addXp = async message => {
 
             let nozomiIdx = Math.floor(Math.random() * 5);
 
-            await message.channel.send(new MessageEmbed()
+            let levelUpMessage = new MessageEmbed()
                 .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setThumbnail(randomNozomi[nozomiIdx])
@@ -584,7 +585,14 @@ const addXp = async message => {
                 .setDescription(`You've leveled up to level **${curLevel}**! \n\n` +
                     `Congrats, you've earned ${earnedJewels} ${jewelEmoji}`)
                 .setFooter(footerText, client.user.avatarURL())
-                .setTimestamp());
+                .setTimestamp();
+
+            if (message.guild.channels.cache.exists('name', defaultResponseChannelName)) { 
+                let channel = await message.guild.channels.cache.find(channel => channel.name === defaultResponseChannelName);
+                await channel.send(levelUpMessage);
+            } else {
+                await message.channel.send(levelUpMessage);
+            }
 
             console.log(`LOG: ${message.author.username} (${id}) has leveled up to ${curLevel}`);
         }

@@ -21,5 +21,7 @@
   "swordBigAttackEmoji" : "<:critdamage:811495998463148102>",
   "swordEmoji" : "<:patk:811495998156439563>",
   "blueSwordEmoji" : "<:bluesword:811495998479925268>",
-  "greenSwordEmoji" : "<:greensword:811495998374805514>"
+  "greenSwordEmoji" : "<:greensword:811495998374805514>",
+
+  "defaultResponseChannelName" : "bot-spam"
 }
