@@ -38,10 +38,6 @@ let isResetGacha = false;
 // Footer text
 let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
 
-// Emoji IDs
-const JEWEL_EMOJI = client.emotes.jewelEmoji.slice(client.emotes.jewelEmoji.lastIndexOf(':')+1, client.emotes.jewelEmoji.length-1);
-const NOZOMI_BLUSH_EMOJI = client.emotes.nozomiBlushEmoji.slice(client.emotes.nozomiBlushEmoji.lastIndexOf(':')+1, client.emotes.nozomiBlushEmoji.length-1);
-
 let given = 981847;
 console.log(`start test ${given}`);
 let run = require('./test');
@@ -53,6 +49,11 @@ client.config = require('./config/config');
 client.emotes = client.config.emojis;
 client.filters = client.config.filters;
 client.commands = new discord.Collection();
+
+// Emoji IDs
+const JEWEL_EMOJI = client.emotes.jewelEmoji.slice(client.emotes.jewelEmoji.lastIndexOf(':')+1, client.emotes.jewelEmoji.length-1);
+const NOZOMI_BLUSH_EMOJI = client.emotes.nozomiBlushEmoji.slice(client.emotes.nozomiBlushEmoji.lastIndexOf(':')+1, client.emotes.nozomiBlushEmoji.length-1);
+
 
 fs.readdirSync('./commands').forEach(dirs => {
     const commands = fs.readdirSync(`./commands/${dirs}`).filter(files => files.endsWith('.js'));
