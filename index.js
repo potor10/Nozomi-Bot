@@ -588,9 +588,8 @@ const addXp = async message => {
                 .setFooter(footerText, client.user.avatarURL())
                 .setTimestamp();
 
-            if (message.guild.channels.exists('name', defaultResponseChannelName)) { 
-                let channel = await message.guild.channels.cache.find(channel => channel.name === defaultResponseChannelName);
-                await channel.send(levelUpMessage);
+            if (message.guild.channels.cache.find(channel => channel.name === defaultResponseChannelName)) { 
+                await message.guild.channels.cache.find(channel => channel.name === defaultResponseChannelName).send(levelUpMessage);
             } else {
                 await message.channel.send(levelUpMessage);
             }
