@@ -379,7 +379,7 @@ const retrieveDamageFromClanId = async (id, clanId) => {
         console.log(`LOG: Obtained Damage Values For ${id}`);
         
         damage.push(res[0].rows[0].total);
-        danage.push(res[1].rows);
+        damage.push(res[1].rows);
     } catch (err) {
         console.log(err.stack);
     } finally {
