@@ -22,27 +22,3 @@
       "canvas": "^2.6.1"
     }
   }
-
-  {
-    "name": "Nozomi Bot",
-    "description": "Bot For Losers",
-    "version": "1.0.0",
-    "main": "index.js",
-    "scripts": {
-      "start": "node index.js"
-    },
-  
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-  
-    "dependencies": {
-      "discord.js": "^12.5.1",
-      
-      "discord-player": "3.2.1",
-  
-     
-    }
-    
-}
-  
