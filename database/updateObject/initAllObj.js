@@ -1,4 +1,4 @@
-module.exports = async (data) => {
+module.exports = async (client, data) => {
     let initUserDataObj = require('./initUserDataObj');
     let userData = await initUserDataObj();
 
@@ -6,7 +6,7 @@ module.exports = async (data) => {
     let collectionData = await initCollectionDataObj();
 
     let initCbid = require('./initCbidObj');
-    let cbid = await initCbid();
+    let cbid = await initCbid(client);
 
     console.log(userData);
     console.log(collectionData);

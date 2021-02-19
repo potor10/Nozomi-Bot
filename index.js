@@ -65,10 +65,10 @@ process.on("SIGTERM", async () => (await updateAll(), process.exit(0)));
 
 //Initialize
 let initAll = require('./database/updateObject/initAllObj');
-initAll(data);
+initAll(client, data);
 
 let initGacha = require('./database/updateObject/initGachaObj');
-initGacha(data);
+initGacha(client, data);
 
 console.log(data);
 
