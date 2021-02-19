@@ -755,11 +755,11 @@ const getclanbattle = async (message, args) => {
 
     let obtainedAttempts = damageValues[1];
     obtainedAttempts.sort(function(x, y) {
-        if (obtainedAttempts[x].attackdate < obtainedAttempts[y].attackdate) {
+        if (x.attackdate < y.attackdate) {
             return -1;
         }
-        if (obtainedAttempts[x].attackdate < obtainedAttempts[y].attackdate) {
-            return -1;
+        if (x.attackdate < y.attackdate) {
+            return 1;
         }
         return 0;
     });
