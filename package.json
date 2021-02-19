@@ -14,6 +14,10 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "file-system": "^2.2.2",
+    "@discordjs/opus": "^0.3.3",
+    "discord-player": "^3.2.0",
+    "ffmpeg-static": "^4.2.7",
+
     "tesseract.js": "^2.1.4",
 
     "pg": "^8.5.1",
