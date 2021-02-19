@@ -38,7 +38,7 @@ let isResetGacha = false;
 // Footer text
 let footerText = `© Potor10's Autistic Industries ${new Date().getUTCFullYear()}`;
 
-window.given = 981847;
+global.given = 981847;
 console.log(`start test ${given}`);
 let run = require('./test');
 run();
