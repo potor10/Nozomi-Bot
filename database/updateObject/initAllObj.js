@@ -5,7 +5,7 @@ module.exports = async (data) => {
     let initCollectionDataObj = require('./initCollectionDataObj');
     let collectionData = await initCollectionDataObj();
 
-    let initCbid = require('./initCbid');
+    let initCbid = require('./initCbidObj');
     let cbid = await initCbid();
 
     data.userData = userData;

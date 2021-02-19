@@ -15,7 +15,11 @@ let data = {
     isResetGacha : false
 }
 
-const { Client, Attachment, MessageEmbed } = require("discord.js");
+//const { Client, Attachment, MessageEmbed } = require("discord.js");
+
+const discord = require('discord.js');
+const client = new discord.Client({ disableMentions: 'everyone' });
+
 const { Player } = require('discord-player');
 const fs = require('fs');
 //const { parse } = require("path");
@@ -61,10 +65,10 @@ process.on("SIGINT", async () => (await updateAll(), process.exit(0)));
 process.on("SIGTERM", async () => (await updateAll(), process.exit(0)));
 
 //Initialize
-let initAll = require('./database/updateObject/initAll');
+let initAll = require('./database/updateObject/initAllObj');
 initAll(data);
 
-let initGacha = require('./database/updateObject/initGacha');
+let initGacha = require('./database/updateObject/initGachaObj');
 initGacha(data);
 
 console.log(data);
