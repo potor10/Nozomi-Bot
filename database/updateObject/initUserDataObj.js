@@ -4,9 +4,6 @@ module.exports = async () => {
     const parseDbUrl = require("parse-database-url");
     let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
     dbConfig.ssl = { rejectUnauthorized: false };
-
-    console.log(dbConfig);
-    console.log(process.env["DATABASE_URL"]);
     
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
@@ -25,8 +22,6 @@ module.exports = async () => {
         pgdb.end();
     }
 
-    console.log("POGGGGGGGJHkasdksahdsjkhakdkhsds");
-
     for (let user in userArr) {
         if (userArr.hasOwnProperty(user)) {
             let objectKey = userArr[user].uid;
@@ -44,6 +39,8 @@ module.exports = async () => {
             output[objectKey] = userStats;
         }
     }
+
+    console.log(output);
 
     return output
 }
