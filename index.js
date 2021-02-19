@@ -4,13 +4,6 @@
  * @summary An Autistic Discord Bot For Princess Connect
  */
 
-const { Client, Attachment, MessageEmbed } = require("discord.js");
-
-const { Player } = require('discord-player');
-
-const fs = require('fs');
-//const { parse } = require("path");
-
 // Objects Used To Store Realtime Changes - Obtained Once On Startup
 let data = {
     userData : {},
@@ -21,6 +14,11 @@ let data = {
     // Used at the end to determine if we need to resend query
     isResetGacha : false
 }
+
+const { Client, Attachment, MessageEmbed } = require("discord.js");
+const { Player } = require('discord-player');
+const fs = require('fs');
+//const { parse } = require("path");
 
 // Initialize Discord Client
 const client = new Client({disableMentions: 'everyone'});
