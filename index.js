@@ -1659,8 +1659,9 @@ client
         client.user.setActivity(`${prefix}help : Nozomi Bot On ${client.guilds.cache.size} Servers`);
     })
     .on("message", async message => {
-        // Ignore Bot
+        // Ignore Bot and user DMs
         if(message.author.bot) return;
+        if(message.channel.type == "dm") return;
 
         await addXp(message);
 
