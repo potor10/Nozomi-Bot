@@ -369,14 +369,17 @@ const retrieveDamageFromClanId = async (id, clanId) => {
     const query = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
             FROM ATTACKS WHERE cbid = ${clanId} AND uid = '${id}';
+        
+        SELECT * FROM ATTACKS WHERE cbid = ${clanId} AND uid = '${id}';
     `;
 
-    let damage;
+    let damage = [];
     try {
         const res = await pgdb.query(query);
         console.log(`LOG: Obtained Damage Values For ${id}`);
         
-        damage = res.rows[0].total;
+        damage.push(res[0].rows[0].total);
+        danage.push(res[1].rows);
     } catch (err) {
         console.log(err.stack);
     } finally {
@@ -738,7 +741,7 @@ const getclanbattle = async (message, args) => {
     createUserIfNotExist(parseUser.id);
 
     console.log(`LOG: Retrieving Clan Battle #${searchCBid} from ${parseUser.id}`)
-    let totalDamage = await retrieveDamageFromClanId(parseUser.id, searchCBid);
+    let damageValues = await retrieveDamageFromClanId(parseUser.id, searchCBid);
 
     let damageMessage = new MessageEmbed()
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -746,9 +749,32 @@ const getclanbattle = async (message, args) => {
         .setThumbnail(avatarUser)
         .setTitle(`${parseUser.displayName||parseUser.username}'s damage on Clan Battle #${searchCBid}`)
         .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
-        .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage)
+        .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, damageValues[0])
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp();
+
+    let obtainedAttempts = damageValues[1];
+    obtainedAttempts.sort(function(x, y) {
+        if (obtainedAttempts[x].attackdate < obtainedAttempts[y].attackdate) {
+            return -1;
+        }
+        if (obtainedAttempts[x].attackdate < obtainedAttempts[y].attackdate) {
+            return -1;
+        }
+        return 0;
+    });
+
+    for (let i in obtainedAttempts) {
+        let parseDate = obtainedAttempts[i].attackdate;
+        date = Date.parse(parseDate);
+
+        damageMessage.addField(`Attack On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`, 
+            `From Clan Battle #${searchCBid}`);
+        damageMessage.addField(`Attempt 1 ${swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt1damage}`, true);
+        damageMessage.addField(`Attempt 2 ${swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt2damage}`, true);
+        damageMessage.addField(`Attempt 3 ${swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt3damage}`, true);
+    }
+    
 
     await message.channel.send(damageMessage);
 }
