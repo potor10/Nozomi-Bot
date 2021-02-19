@@ -1,4 +1,4 @@
-module.exports = (client, message) => {
+module.exports = async (client, message) => {
     if (message.author.bot || message.channel.type === 'dm') return;
 
     await addXp(message);
