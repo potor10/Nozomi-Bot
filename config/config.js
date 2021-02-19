@@ -7,12 +7,15 @@ module.exports = {
         success: ':white_check_mark:',
 
         jewelEmoji : "<:jewel:811495998194450454>",
+        jewelEmojiId : "811495998194450454",
+        
         amuletEmoji : "<:tears:811495998450565140>",
         manaEmoji : "<:mana:811498063515353149>",
         staminaEmoji : "<:stamina:811495998328930314>",
 
         nozomiCoolEmoji : "<:coolnozomi:811498063527936031>",
         nozomiBlushEmoji : "<:nozomiblush:811498063918137375>",
+        nozomiBlushEmojiId : "811498063918137375",
 
         threeStarEmoji : "<:poggerona:811498063578529792>",
         twoStarEmoji : "<:bitconnect:811498063641837578>",

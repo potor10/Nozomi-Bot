@@ -1,5 +1,5 @@
 module.exports = async (client) => {
-    console.log(`Ready on ${client.guilds.cache.size} servers, for a total of ${client.users.cache.size} users`);
+    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
 
     client.user.setActivity(`${client.config.discord.prefix}help : Nozomi Bot On ${client.guilds.cache.size} Servers`);
 };

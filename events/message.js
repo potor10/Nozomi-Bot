@@ -1,6 +1,8 @@
 module.exports = (client, message) => {
     if (message.author.bot || message.channel.type === 'dm') return;
 
+    await addXp(message);
+
     const prefix = client.config.discord.prefix;
 
     if (message.content.indexOf(prefix) !== 0) return;
