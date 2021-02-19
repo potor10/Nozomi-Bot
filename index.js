@@ -558,8 +558,7 @@ const addXp = async message => {
 
         userData[id].lastmessage = currentTime;
 
-        //let curLevel = 1 + Math.floor(Math.pow(userData[id].exp, 0.8) / 10);
-        let curLevel = 1 + userData[id].exp;
+        let curLevel = 1 + Math.floor(Math.pow(userData[id].exp, 0.8) / 10);
 
         if (curLevel > userData[id].level) {
             // Level up!
