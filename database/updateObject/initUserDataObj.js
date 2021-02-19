@@ -4,6 +4,9 @@ module.exports = async () => {
     const parseDbUrl = require("parse-database-url");
     let dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
     dbConfig.ssl = { rejectUnauthorized: false };
+
+    console.log(dbConfig);
+    console.log(process.env["DATABASE_URL"]);
     
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
