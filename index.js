@@ -18,7 +18,6 @@ let data = {
 //const { Client, Attachment, MessageEmbed } = require("discord.js");
 
 const discord = require('discord.js');
-const client = new discord.Client({ disableMentions: 'everyone' });
 
 const { Player } = require('discord-player');
 const fs = require('fs');
