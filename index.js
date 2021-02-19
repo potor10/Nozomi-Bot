@@ -1513,7 +1513,7 @@ const help = message => {
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
         .setAuthor(client.user.username, client.user.avatarURL())
         .setTitle(`Setting Nozomi Bot To Only Search For 2 Attempts`)
-        .setDescription(`Example Screenshot For Clan Battle`)
+        .setDescription(`How To Upload Screenshot`)
         .attachFiles(['./img/ex4.png'])
         .setImage('attachment://ex4.png')
         .setFooter(footerText, client.user.avatarURL())
