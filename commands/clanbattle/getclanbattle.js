@@ -9,7 +9,6 @@ module.exports = {
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
 
-        const fs = require('fs');
         let cbData = require('../../config/clanbattle.json');
 
         let cbKeys = Object.keys(cbData);
@@ -35,6 +34,8 @@ module.exports = {
                 setTimeout(() => { reminder.delete();}, 5000);
                 return;
             }
+
+            print(cbData);
 
             startDate = new Date(cbData[searchCBid].start);
             endDate = new Date(cbData[searchCBid].end);

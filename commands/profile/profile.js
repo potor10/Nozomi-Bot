@@ -47,10 +47,10 @@ module.exports = {
         let todayDmgValue = profileDamage[1];
 
         if (currentCB == -1) {
-            cbDmgTitle = `Currently Not In Battle ${client.emotes.blueSwordEmoji}`;
+            cbDmgTitle = `Not In Battle ${client.emotes.blueSwordEmoji}`;
             cbDmgValue = `N/A`;
 
-            todayDmgTitle = `Currently Not In Battle ${client.emotes.greenSwordEmoji}`;
+            todayDmgTitle = `Not In Battle ${client.emotes.greenSwordEmoji}`;
             todayDmgValue = `N/A`;
         }
 

@@ -7,7 +7,6 @@ module.exports = {
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
         
-        const fs = require('fs');
         let cbData = require('../../config/clanbattle.json');
 
         let cbKeys = Object.keys(cbData);
