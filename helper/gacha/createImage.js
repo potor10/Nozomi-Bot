@@ -6,6 +6,7 @@ module.exports = async (message, obtainedImages, amuletsObtained, newUnits, isDu
     let sizThumb = 121;
     let sizOverlay = 40;
 
+    let loadImage = require('./loadImage');
     let amuletSRC = await loadImage(
         `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
     

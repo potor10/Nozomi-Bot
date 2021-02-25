@@ -45,8 +45,8 @@ module.exports = async (client, message) => {
                 .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
 
-            if (message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultResponseChannelName)) { 
-                await message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultResponseChannelName).send(levelUpMessage);
+            if (message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultLevelUpResponseChannel)) { 
+                await message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultLevelUpResponseChannel).send(levelUpMessage);
             } else {
                 await message.channel.send(levelUpMessage);
             }
