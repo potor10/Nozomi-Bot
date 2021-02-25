@@ -36,31 +36,31 @@ module.exports = {
 
             let description_text = 'Find information on the command provided.\nMandatory arguments `[]`, optional arguments `<>`.\n\n';
             switch (command) {
-                case 'profile':
+                case message.client.commands.get('profile'):
                     description_text += `Obtain your / @user's profile information.`;
                     break;
-                case 'getattacks':
+                case message.client.commands.get('getattacks'):
                     description_text += `Obtain your / @user's attack information on a specific date.`;
                     break;
-                case 'getclanbattle':
+                case message.client.commands.get('getclanbattle'):
                     description_text += `Obtain your / @user's Clan Battle information on a specific month.`;
                     break;
-                case 'clanbattletimeline':
+                case message.client.commands.get('clanbattletimeline'):
                     description_text += `Obtain a directory of all available Clan Battles and when they occured.`;
                     break;
-                case 'daily':
+                case message.client.commands.get('daily'):
                     description_text += `Grants you gems daily.`;
                     break;
-                case 'rollgacha':
+                case message.client.commands.get('rollgacha'):
                     description_text += `Plays the Gacha.`;
                     break;
-                case 'characters':
+                case message.client.commands.get('characters'):
                     description_text += `View the characters you've obtained from gacha.`;
                     break;
-                case 'character':
+                case message.client.commands.get('character'):
                     description_text += `View full art of a character you've obtained from gacha.`;
                     break;
-                case 'scanimage':
+                case message.client.commands.get('scanimage'):
                     description_text += `Make sure to upload a screenshot of the game as an attachment. \n`;
                     description_text += `Example images provided below.`;
                     break;
@@ -82,7 +82,7 @@ module.exports = {
                 }
             });
 
-            if (command == 'scanimage') {
+            if (command == message.client.commands.get('scanimage')) {
                 const { MessageEmbed } = require("discord.js");
 
                 let ex1 = new MessageEmbed()
