@@ -1,5 +1,4 @@
 module.exports = async (client) => {
-    let updateCBID = require('./updateCbid');
     await updateCBID(client.currentClanBattleId);
 
     for(let id in client.userData) {

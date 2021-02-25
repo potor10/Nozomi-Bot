@@ -8,8 +8,7 @@ module.exports = {
         const { MessageEmbed } = require("discord.js");
         
         const fs = require('fs');
-        let cbDataRaw = fs.readFileSync('../../config/clanbattle.json');
-        let cbData = JSON.parse(cbDataRaw);
+        let cbData = require('../../config/clanbattle.json');
 
         let cbKeys = Object.keys(cbData);
 

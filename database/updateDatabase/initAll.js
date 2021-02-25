@@ -37,13 +37,6 @@ module.exports = async () => {
             charname varchar NOT NULL,
             starlevel int NOT NULL
         );
-
-        CREATE TABLE CB (
-            cbid int DEFAULT 0
-        );
-
-        INSERT INTO CB (cbid)
-            VALUES (0);
     `;
 
     try {
