@@ -56,7 +56,7 @@ module.exports = {
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
-                emojiText.edit(embedRoll);
+                await emojiText.edit(embedRoll);
                 
                 let silverCount = 0;
                 let amuletsObtained = 0;
@@ -111,7 +111,7 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     }
                     embedRoll.setDescription(`${rollString}`);
-                    emojiText.edit(embedRoll);
+                    await emojiText.edit(embedRoll);
                     
                 }
 
@@ -128,7 +128,7 @@ module.exports = {
                         .setDescription(`Please Wait Until The Roll Is Finished Before Trying Again`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp();
-                    emojiText.edit(reminder);
+                    await emojiText.edit(reminder);
                 } else {
                     let reminder = new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -137,7 +137,7 @@ module.exports = {
                         .setDescription(`You Are Missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp();
-                    emojiText.edit(reminder);
+                    await emojiText.edit(reminder);
                 }
                 setTimeout(() => { emojiText.delete();}, 5000);
             }
