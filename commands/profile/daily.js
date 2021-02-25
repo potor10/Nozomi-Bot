@@ -11,7 +11,7 @@ module.exports = {
         createUserIfNotExist(client, message.author.id);
 
         let bonusGems = (client.userData[message.author.id].level - 1) * Math.floor((Math.random() * 5) + 1) * 10;
-        let dailyGems = 500 + bonusGems;
+        let dailyGems = 1500 + bonusGems;
 
         let startofDay = new Date();
         startofDay.setUTCHours(0,0,0,0);
