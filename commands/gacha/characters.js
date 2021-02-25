@@ -5,19 +5,19 @@ module.exports = {
     utilisation: '{prefix}characters',
 
     async execute(client, message, args) {
-        if (!(message.author.id in collectionData)) {
-            collectionData[message.author.id] = {};
+        if (!(message.author.id in client.collectionData)) {
+            client.collectionData[message.author.id] = {};
         }
     
         let displayPerPage = 5;
         let startPage = await parseFirstArgAsInt(args, 1);
-        let characters = Object.keys(collectionData[message.author.id]);
+        let characters = Object.keys(client.collectionData[message.author.id]);
     
         characters.sort(function(x, y) {
-            if (collectionData[message.author.id][x] < collectionData[message.author.id][y]) {
+            if (client.collectionData[message.author.id][x] < client.collectionData[message.author.id][y]) {
               return 1;
             }
-            if (collectionData[message.author.id][x] > collectionData[message.author.id][y]) {
+            if (client.collectionData[message.author.id][x] > client.collectionData[message.author.id][y]) {
               return -1;
             }
             return 0;
@@ -39,7 +39,7 @@ module.exports = {
     
         for (let i = (startPage - 1) * displayPerPage; 
             i < characters.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
-            let starlevel = '★'.repeat(collectionData[message.author.id][characters[i]]);
+            let starlevel = '★'.repeat(client.collectionData[message.author.id][characters[i]]);
             let charstr = `\`\`\`${starlevel} ${characters[i]}\`\`\``;
     
             messageDisplay.addField('\u200b', charstr);

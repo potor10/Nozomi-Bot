@@ -5,7 +5,8 @@ module.exports = {
     utilisation: '{prefix}rollgacha',
 
     async execute(client, message) {
-        createUserIfNotExist(message.author.id);
+        let createUserIfNotExist = require('../../helper/profile/createUserIfNotExist');
+        createUserIfNotExist(client, message.author.id);
         let id = message.author.id;
 
         const jewelCost = 1500;
@@ -18,6 +19,7 @@ module.exports = {
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
 
+        let awaitEmoji = require('../../helper/discord/awaitEmoji');
         let collected = await awaitEmoji(message, pullGacha,
             JEWEL_EMOJI, { max: 1, time: 20000, errors: ['time'] }, 
             'The Roll Has Been Cancelled.');
@@ -26,10 +28,10 @@ module.exports = {
         let reaction = collected.first();
 
         if (reaction.emoji.id === JEWEL_EMOJI) {
-            if (userData[id].jewels >= jewelCost && !userData[id].inroll) {
+            if (client.userData[id].jewels >= jewelCost && !client.userData[id].inroll) {
                 // Deduct the jewels immediately
-                userData[id].jewels -= jewelCost;
-                userData[id].inroll = true;
+                client.userData[id].jewels -= jewelCost;
+                client.userData[id].inroll = true;
 
                 const pulledChars = [];
                 let rollString = '';
@@ -50,6 +52,8 @@ module.exports = {
 
                 let obtainedImages = [];
                 let isDupe = [];
+
+                let getRolledCharData = require('../../helper/gacha/getRolledCharData');
 
                 for (let i = 0; i < 10; i++) {
                     const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
@@ -98,12 +102,13 @@ module.exports = {
                     
                 }
 
-                userData[id].amulets += amuletsObtained;
+                client.userData[id].amulets += amuletsObtained;
 
+                let createImage = require('../../helper/gacha/createImage');
                 createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
             } else {
                 let reminder;
-                if (userData[id].inroll) {
+                if (client.userData[id].inroll) {
                     reminder = await message.channel.send(new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
@@ -116,7 +121,7 @@ module.exports = {
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
                         .setTitle(`You need at least ${jewelCost} ${jewelEmoji} to roll!`)
-                        .setDescription(`You are missing ${jewelCost-userData[id].jewels} ${jewelEmoji}`)
+                        .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${jewelEmoji}`)
                         .setFooter(footerText, client.user.avatarURL())
                         .setTimestamp());
                 }

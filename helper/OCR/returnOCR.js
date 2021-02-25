@@ -1,4 +1,4 @@
-module.exports = async (message, attempts, maxAttempts) => {
+module.exports = async (client, message, attempts, maxAttempts) => {
     const { createWorker } = require('tesseract.js');
     
     message.attachments.forEach(async attachment => {
@@ -77,7 +77,8 @@ module.exports = async (message, attempts, maxAttempts) => {
         }
 
         if (isClan) {
-            await updateOCRValues(message, values, rectangles);
+            let updateOCRValues = require('./updateOCRValues');
+            await updateOCRValues(client, message, values, rectangles);
         }
         await worker.terminate();
     });

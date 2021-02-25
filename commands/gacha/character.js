@@ -6,7 +6,7 @@ module.exports = {
 
     async execute(client, message, args) {
         if (!(message.author.id in collectionData)) {
-            collectionData[message.author.id] = {};
+            client.collectionData[message.author.id] = {};
         }
     
         if (!Array.isArray(args)) {
@@ -15,9 +15,9 @@ module.exports = {
         if (args.length) {
             let character = args.shift().trim();
             
-            if (character in collectionData[message.author.id]) {
-                let starlevel = collectionData[message.author.id][character];
-                let charFullImg = gachaData[starlevel][character].fullimageurl;
+            if (character in client.collectionData[message.author.id]) {
+                let starlevel = client.collectionData[message.author.id][character];
+                let charFullImg = client.gachaData[starlevel][character].fullimageurl;
     
                 let starstr = '★'.repeat(starlevel);
     

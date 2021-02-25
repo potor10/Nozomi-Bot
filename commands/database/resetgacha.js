@@ -6,11 +6,15 @@ module.exports = {
 
     async execute(client, message) {
         if (message.author.id == 154775062178824192) {
-            await initCharDB();
+            let initChar = require('../../database/updateDatabase/initChar');
+            await initChar();
 
             // Initialize
-            await initGacha();
-            await updateGacha();
+            let initGachaObj = require('../../database/updateObject/initGachaObj');
+            await initGachaObj();
+
+            let updateGacha = require('../../helper/gacha/updateGacha');
+            await updateGacha(client);
 
             isResetGacha = true;
             console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);

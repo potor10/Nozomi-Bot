@@ -6,10 +6,13 @@ module.exports = {
 
     async execute(client, message) {
         if (message.author.id == 154775062178824192) {
-            await initDB();
+
+            let initAll = require('../../database/updateDatabase/initAll');
+            await initAll();
 
             // Initialize
-            await initAll();
+            let initAllObj = require('../../database/updateObject/initAllObj');
+            await initAllObj();
 
             console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
         } else {

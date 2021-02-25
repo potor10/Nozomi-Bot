@@ -1,4 +1,4 @@
-module.exports = async (message, values, rectangles) => {
+module.exports = async (client, message, values, rectangles) => {
     const intAttacks = [];
 
     for (let i = 2; i < rectangles.length; i++) {
@@ -16,6 +16,7 @@ module.exports = async (message, values, rectangles) => {
     let date;
     const let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     let idxDate = -1;
+
     for (i = 0; i < let3Month.length; i++) {
         if (values[1].indexOf(let3Month[i]) != -1) {
             idxDate = values[1].indexOf(let3Month[i]);
@@ -29,7 +30,9 @@ module.exports = async (message, values, rectangles) => {
         
         let newdate = new Date(date);
         let attackCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
-        currentClanBattleId = await initCbid();
+
+        let initCbidObj = require('../../database/updateObject/initCbidObj');
+        client.currentClanBattleId = await initCbidObj();
 
         if ((attackCBid > currentClanBattleId) || (attackCBid < 0)) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
@@ -46,7 +49,8 @@ module.exports = async (message, values, rectangles) => {
 
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 
-        await updateAttackDB(message.author.id, newdate, intAttacks[0], intAttacks[1], intAttacks[2], attackCBid);
+        let updateAttack = require('../../database/updateDatabase/updateAttack');
+        await updateAttack(message.author.id, newdate, intAttacks[0], intAttacks[1], intAttacks[2], attackCBid);
 
         await message.channel.send(new MessageEmbed()
         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
