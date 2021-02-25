@@ -139,7 +139,7 @@ module.exports = {
                         .setTimestamp();
                     emojiText.edit(reminder);
                 }
-                setTimeout(() => { pullGacha.delete();}, 5000);
+                setTimeout(() => { emojiText.delete();}, 5000);
             }
         }
     },
