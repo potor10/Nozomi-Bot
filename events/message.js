@@ -5,6 +5,8 @@ module.exports = async (client, message) => {
 
     await addXp(client, message);
 
+    console.log(client.userData);
+
     const prefix = client.config.discord.prefix;
 
     if (message.content.indexOf(prefix) !== 0) return;
