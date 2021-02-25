@@ -1,6 +1,5 @@
 module.exports = async (client, id) => {
-    let userData = client.getUserData();
-    if (!(id in userData)) {
+    if (!(id in client.userData)) {
         let userStats = {
             level : 1,
             exp : 0,
@@ -10,8 +9,6 @@ module.exports = async (client, id) => {
             inroll : false,
             lastclaim : 0
         }
-        userData[id] = userStats;
+        client.userData[id] = userStats;
     }
-
-    client.setUserData(userData);
 }

@@ -1,27 +1,26 @@
 module.exports = async (client, message) => {
     let currentTime = Date.now();
     let id = message.author.id;
-    let userData = client.getUserData();
 
     let createUserIfNotExist = require('./createUserIfNotExist');
     createUserIfNotExist(id);
 
-    if (currentTime - userData[id].lastmessage > 30000) {
+    if (currentTime - client.userData[id].lastmessage > 30000) {
         let newXP = Math.floor(Math.random() * 5) + 1;
-        userData[id].exp += newXP;
+        client.userData[id].exp += newXP;
 
         //console.log(`LOG: ${newXP} XP has been granted to ${message.author.username} (${id}) they have ${userData[id].exp} XP now`);
 
-        userData[id].lastmessage = currentTime;
+        client.userData[id].lastmessage = currentTime;
 
-        let curLevel = 1 + Math.floor(Math.pow(userData[id].exp, 0.8) / 10);
+        let curLevel = 1 + Math.floor(Math.pow(client.userData[id].exp, 0.8) / 10);
 
-        if (curLevel > userData[id].level) {
+        if (curLevel > client.userData[id].level) {
             // Level up!
-            userData[id].level = curLevel;
+            client.userData[id].level = curLevel;
 
             let earnedJewels = curLevel * 10 * (Math.floor(Math.random() * 50) + 1);
-            userData[id].jewels += earnedJewels;
+            client.userData[id].jewels += earnedJewels;
 
             let randomNozomi = [
                 'https://static.wikia.nocookie.net/princess-connect/images/4/45/Cute-human-longsword-sakurai_nozomi_rare_gacha001-0-normal.png',
@@ -52,6 +51,4 @@ module.exports = async (client, message) => {
             console.log(`LOG: ${message.author.username} (${id}) has leveled up to ${curLevel}`);
         }
     }
-
-    client.setUserData(userData);
 };

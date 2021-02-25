@@ -12,5 +12,7 @@ module.exports = async (client) => {
     console.log(collectionData);
     console.log(cbid);
 
-    client.updateAll(userData, collectionData, cbid);
+    client.userData = userData;
+    client.collectionData = collectionData
+    client.currentClanBattleId = cbid;
 }

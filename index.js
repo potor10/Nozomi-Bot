@@ -13,71 +13,17 @@ const discord = require('discord.js');
 const { Player } = require('discord-player');
 const fs = require('fs');
 
-// Initialize Discord Client
-class nozomiBot extends discord.Client {
-    userData = {};
-    gachaData = {};
-    collectionData = {};
-    currentClanBattleId = 0;
-    isResetGacha = false;
-
-    updateAll = (userData, collectionData, currentClanBattleId) => {
-        this.userData = userData;
-        this.collectionData = collectionData;
-        this.currentClanBattleId = currentClanBattleId;
-    }
-
-    setUserData = (userData) => {
-        this.userData = userData;
-    }
-
-    getUserData = () => {
-        return this.userData;
-    }
-
-    setCollectionData = (collectionData) => {
-        this.collectionData = collectionData;
-    }
-
-
-    getCollectionData = () => {
-        return this.collectionData;
-    }
-
-    setCurrentClanBattleId = (currentClanBattleId) => {
-        this.currentClanBattleId = currentClanBattleId;
-    }
-
-    getCurrentClanBattleId = () => {
-        return this.currentClanBattleId;
-    }
-
-    updateGachaData = (gachaData) => {
-        this.gachaData = gachaData;
-    }
-
-    getGachaData = () => {
-        return this.gachaData;
-    }
-
-    setResetGacha = (isResetGacha) => {
-        this.isResetGacha = isResetGacha;
-    }
-
-    getResetGacha = () => {
-        return this.isResetGacha;
-    }
-
-}
-const client = new nozomiBot({disableMentions: 'everyone'});
-console.log(client.getUserData());
-console.log("lol");
-
 client.player = new Player(client);
 client.config = require('./config/config');
 client.emotes = client.config.emojis;
 client.filters = client.config.filters;
 client.commands = new discord.Collection();
+
+client.userData = {};
+client.gachaData = {};
+client.collectionData = {};
+client.currentClanBattleId = 0;
+client.isResetGacha = false;
 
 fs.readdirSync('./commands').forEach(dirs => {
     const commands = fs.readdirSync(`./commands/${dirs}`).filter(files => files.endsWith('.js'));
