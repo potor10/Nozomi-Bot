@@ -16,7 +16,7 @@ module.exports = {
             let updateGacha = require('../../helper/gacha/updateGacha');
             await updateGacha(client);
 
-            isResetGacha = true;
+            client.isResetGacha = true;
             console.log(`LOG: CharDB have been reset by ${message.author.username} (${message.author.id})`);
         } else {
             console.log(`LOG: Failed attempt to reset CharDB by ${message.author.username} (${message.author.id})`);
