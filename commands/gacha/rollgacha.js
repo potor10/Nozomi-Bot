@@ -58,9 +58,10 @@ module.exports = {
                 let getRolledCharData = require('../../helper/gacha/getRolledCharData');
 
                 for (let i = 0; i < 10; i++) {
-                    const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
+                    const rarityRolled = Math.floor(Math.random() * 
+                        (client.gacha.oneStarRate + client.gacha.twoStarRate + client.gacha.threeStarRate));
 
-                    if (rarityRolled < threeStarRate) {
+                    if (rarityRolled < client.gacha.threeStarRate) {
                         rollString += client.emotes.threeStarEmoji;
                         let rollImgData = await getRolledCharData(id, 3);
 
@@ -72,7 +73,7 @@ module.exports = {
                         }
 
                         amuletsObtained += rollImgData[2];
-                    } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
+                    } else if (rarityRolled < (client.gacha.threeStarRate + client.gacha.twoStarRate) || silverCount == 9) {
                         rollString += client.emotes.twoStarEmoji;
                         let rollImgData = await getRolledCharData(id, 2);
 

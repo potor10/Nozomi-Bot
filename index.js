@@ -20,6 +20,7 @@ client.config = require('./config/config');
 client.emotes = client.config.emojis;
 client.filters = client.config.filters;
 client.commands = new discord.Collection();
+client.gacha = client.config.gacha;
 
 // Objects Used To Store Realtime Changes - Obtained Once On Startup
 client.userData = {};
