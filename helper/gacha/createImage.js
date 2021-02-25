@@ -67,7 +67,7 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
             setTimeout(() => { 
                 rollResults.delete();
                 message.channel.send(combinedRoll);
-                userData[message.author.id].inroll = false
+                client.userData[message.author.id].inroll = false
             }, 3000);
     });
 }
