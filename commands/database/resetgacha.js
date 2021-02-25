@@ -2,7 +2,7 @@ module.exports = {
     name: 'resetgacha',
     aliases: [],
     category: 'Database',
-    utilisation: '{prefix}reset',
+    utilisation: '{prefix}resetgacha',
 
     async execute(client, message) {
         if (message.author.id == 154775062178824192) {
@@ -11,7 +11,7 @@ module.exports = {
 
             // Initialize
             let initGachaObj = require('../../database/updateObject/initGachaObj');
-            await initGachaObj();
+            await initGachaObj(client);
 
             let updateGacha = require('../../helper/gacha/updateGacha');
             await updateGacha(client);

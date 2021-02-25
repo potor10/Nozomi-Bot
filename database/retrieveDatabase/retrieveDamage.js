@@ -1,4 +1,4 @@
-module.exports = async (id, date) => {
+module.exports = async (client, id, date) => {
     // Initialize PG SQL DB Client
     const PGdb = require('pg').Client;
     const parseDbUrl = require("parse-database-url");
@@ -9,7 +9,7 @@ module.exports = async (id, date) => {
     pgdb.connect();
 
     let initCbidObj = require('../updateObject/initCbidObj');
-    currentClanBattleId = await initCbidObj();
+    currentClanBattleId = await initCbidObj(client);
 
     const query = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total

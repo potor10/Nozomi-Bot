@@ -12,7 +12,7 @@ module.exports = {
 
             // Initialize
             let initAllObj = require('../../database/updateObject/initAllObj');
-            await initAllObj();
+            await initAllObj(client);
 
             console.log(`LOG: Users have been reset by ${message.author.username} (${message.author.id})`);
         } else {

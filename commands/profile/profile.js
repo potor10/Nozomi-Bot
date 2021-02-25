@@ -27,7 +27,7 @@ module.exports = {
         date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
 
         let retrieveDamage = require('../../database/retrieveDatabase/retrieveDamage');
-        let profileDamage = await retrieveDamage(id, date);
+        let profileDamage = await retrieveDamage(client, id, date);
 
         const randomStatus = Math.floor(Math.random() * 5);
         const statusStrings = [
