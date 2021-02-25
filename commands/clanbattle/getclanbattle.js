@@ -27,7 +27,7 @@ module.exports = {
                 searchCBid = client.currentClanBattleId;
             }
 
-            let startDate = new Date(cbStart);
+            let startDate = new Date(client.config.clanbattle.cbStart);
             startDate.setUTCMonth(searchCBid + startDate.getUTCMonth());
             cbDate = new Date(startDate);
         } else if (args.length >= 3) {
@@ -42,12 +42,12 @@ module.exports = {
                 return;
             } 
             
-            if (cbDate < cbStart) {
+            if (cbDate < client.config.clanbattle.cbStart) {
                 cbDate = new Date(client.config.clanbattle.cbStart);
             } else if (cbDate > new Date()) {
                 cbDate = new Date();
             }
-            searchCBid = (cbDate.getUTCMonth() - cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+            searchCBid = (cbDate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
         }
 
         console.log(`LOG: Searching Clan Battle ${searchCBid}`);

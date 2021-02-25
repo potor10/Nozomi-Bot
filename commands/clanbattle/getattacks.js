@@ -22,7 +22,7 @@ module.exports = {
         };
 
         let newdate = new Date(date);
-        let attackClanBattleId = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        let attackClanBattleId = (newdate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
 
         let initCbidObj = require('../../database/updateObject/initCbidObj');
         currentClanBattleId = await initCbidObj(client);

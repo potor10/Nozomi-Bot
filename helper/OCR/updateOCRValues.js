@@ -34,7 +34,7 @@ module.exports = async (client, message, values, rectangles) => {
         let attackCBid = (newdate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
 
         let initCbidObj = require('../../database/updateObject/initCbidObj');
-        client.currentClanBattleId = await initCbidObj();
+        client.currentClanBattleId = await initCbidObj(client);
 
         if ((attackCBid > currentClanBattleId) || (attackCBid < 0)) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +

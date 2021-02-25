@@ -28,7 +28,7 @@ module.exports = async (client) => {
                 for(let charname in client.gachaData[starlevel]) {
                     if (client.gachaData[starlevel].hasOwnProperty(charname)) {
                         let updateChar = require('./updateChar');
-                        await updateChar(charname, gachaData[starlevel][charname].thumbnailurl, gachaData[starlevel][charname].fullimageurl, starlevel);
+                        await updateChar(charname, client.gachaData[starlevel][charname].thumbnailurl, client.gachaData[starlevel][charname].fullimageurl, starlevel);
                     }
                 }
             } 
