@@ -52,7 +52,7 @@ module.exports = {
                 { name: `Jewels ${client.emotes.jewelEmoji} `, value: client.userData[id].jewels, inline: true },
                 { name: `Amulets ${client.emotes.amuletEmoji}`, value: client.userData[id].amulets, inline: true },
             )
-            .setFooter(footerText, client.user.avatarURL())
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp());
     },
 };

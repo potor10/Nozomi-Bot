@@ -28,7 +28,7 @@ module.exports = {
                     .setTitle(`${starstr} ${character}`)
                     .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
                     .setImage(`${charFullImg}`)
-                    .setFooter(footerText, client.user.avatarURL())
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
                 
                 await message.channel.send(messageDisplay);

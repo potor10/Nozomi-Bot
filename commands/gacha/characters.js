@@ -36,7 +36,7 @@ module.exports = {
             .setThumbnail(message.author.avatarURL())
             .setTitle(`${message.author.displayName||message.author.username}'s character list`)
             .setDescription(`page ${startPage} / ${totalPages}`)
-            .setFooter(footerText, client.user.avatarURL())
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
     
         for (let i = (startPage - 1) * displayPerPage; 

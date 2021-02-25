@@ -69,7 +69,7 @@ module.exports = {
             .setTitle(`${parseUser.displayName||parseUser.username}'s damage on Clan Battle #${searchCBid}`)
             .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
             .addField(`Total Damage Dealt ${client.emotes.swordBigAttackEmoji}`, damageValues[0])
-            .setFooter(footerText, client.user.avatarURL())
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
 
         let obtainedAttempts = damageValues[1];

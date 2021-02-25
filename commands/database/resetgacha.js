@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'reset',
+    name: 'resetgacha',
     aliases: [],
     category: 'Database',
     utilisation: '{prefix}reset',

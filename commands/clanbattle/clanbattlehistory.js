@@ -39,7 +39,7 @@ module.exports = {
             .setThumbnail("https://static.wikia.nocookie.net/princess-connect/images/5/5b/11-25-20CB.jpg")
             .setTitle(`Clan Battle History`)
             .setDescription(`page ${startPage} / ${totalPages}`)
-            .setFooter(footerText, client.user.avatarURL())
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
 
         for (let i = (startPage - 1) * displayPerPage; 

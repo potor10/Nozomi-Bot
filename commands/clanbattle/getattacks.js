@@ -62,7 +62,7 @@ module.exports = {
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
             .setDescription(`On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
                 ` : Clan Battle #${attackClanBattleId}`)
-            .setFooter(footerText, client.user.avatarURL())
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
         
         let totalDamage = obtainedAttacks.attempt1damage + obtainedAttacks.attempt2damage + obtainedAttacks.attempt3damage;

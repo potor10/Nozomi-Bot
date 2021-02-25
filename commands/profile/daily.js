@@ -35,7 +35,7 @@ module.exports = {
                 .setTitle(`Success! You Have Claimed ${dailyGems} ${client.emotes.jewelEmoji} Today`)
                 .setDescription(`(${bonusGems} ${client.emotes.jewelEmoji} bonus for being level ${client.userData[message.author.id].level})`)
                 .addField(`\u200B`, `Come Back In ${timeBefore} Hours To Claim Again`)
-                .setFooter(footerText, client.user.avatarURL())
+                .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp());
         } else {
             await message.channel.send(new MessageEmbed()
@@ -44,7 +44,7 @@ module.exports = {
                 .setTitle(`Oof out of ${client.emotes.staminaEmoji}`)
                 .setDescription(`You Have Already Claimed Today`)
                 .addField(`\u200B`, `Come Back In ${timeBefore} Hours To Claim Again`)
-                .setFooter(footerText, client.user.avatarURL())
+                .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp());
         }
 

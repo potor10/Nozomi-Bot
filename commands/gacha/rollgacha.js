@@ -18,7 +18,7 @@ module.exports = {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${jewelEmoji}`)
             .setDescription(`React To Confirm`)
-            .setFooter(footerText, client.user.avatarURL())
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
 
         let awaitEmoji = require('../../helper/discord/awaitEmoji');
@@ -43,7 +43,7 @@ module.exports = {
                     .setAuthor(client.user.username, client.user.avatarURL())
                     .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                     .setDescription(`${rollString}`)
-                    .setFooter(footerText, client.user.avatarURL())
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
                 let rollResults = await message.channel.send(embedRoll);
@@ -116,7 +116,7 @@ module.exports = {
                         .setAuthor(client.user.username, client.user.avatarURL())
                         .setTitle(`You are currently doing an x10 roll!`)
                         .setDescription(`Please wait until the roll is finished before trying again`)
-                        .setFooter(footerText, client.user.avatarURL())
+                        .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp());
                 } else {
                     reminder = await message.channel.send(new MessageEmbed()
@@ -124,7 +124,7 @@ module.exports = {
                         .setAuthor(client.user.username, client.user.avatarURL())
                         .setTitle(`You need at least ${jewelCost} ${client.emotes.jewelEmoji} to roll!`)
                         .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
-                        .setFooter(footerText, client.user.avatarURL())
+                        .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp());
                 }
                 setTimeout(() => { reminder.delete();}, 5000);

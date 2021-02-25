@@ -67,7 +67,7 @@ module.exports = async (client, message, values, rectangles) => {
             { name: `Attempt 3 ${client.emotes.swordSmallAttackEmoji}`, value: intAttacks[2], inline: true },
         )
         .addField(`Total Damage Dealt For This Day ${client.emotes.swordBigAttackEmoji}`, intAttacks[0] + intAttacks[1] + intAttacks[2])
-        .setFooter(footerText, client.user.avatarURL())
+        .setFooter(client.config.discord.footerText, client.user.avatarURL())
         .setTimestamp());
     }
 }

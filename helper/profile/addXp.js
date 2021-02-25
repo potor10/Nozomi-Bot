@@ -40,8 +40,8 @@ module.exports = async (client, message) => {
                 .setThumbnail(randomNozomi[nozomiIdx])
                 .setTitle(`${message.author.displayName||message.author.username}'s Level Up!`)
                 .setDescription(`You've leveled up to level **${curLevel}**! \n\n` +
-                    `Congrats, you've earned ${earnedJewels} ${jewelEmoji}`)
-                .setFooter(footerText, client.user.avatarURL())
+                    `Congrats, you've earned ${earnedJewels} ${client.emotes.jewelEmoji}`)
+                .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
 
             if (message.guild.channels.cache.find(channel => channel.name === defaultResponseChannelName)) { 
