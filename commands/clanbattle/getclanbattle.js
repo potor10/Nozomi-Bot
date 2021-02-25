@@ -35,8 +35,6 @@ module.exports = {
                 return;
             }
 
-            print(cbData);
-
             startDate = new Date(cbData[cbKeys[searchCBid-1]].start);
             endDate = new Date(cbData[cbKeys[searchCBid-1]].end);
             
