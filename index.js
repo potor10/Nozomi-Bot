@@ -70,6 +70,8 @@ class nozomiBot extends discord.Client {
 
 }
 const client = new nozomiBot({disableMentions: 'everyone'});
+console.log(client.getUserData());
+console.log("lol");
 
 client.player = new Player(client);
 client.config = require('./config/config');
