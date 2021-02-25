@@ -15,7 +15,7 @@ module.exports = {
                     author: { name: 'Help pannel' },
                     footer: { text: 'This bot uses a Github project made by Zerio (ZerioDev/Music-bot)' },
                     fields: [
-                        { name: 'Bot', value: infos },
+                        { name: 'Bot', value: "lol" },
                         { name: 'Music', value: music },
                         { name: 'Filters', value: client.filters.map((x) => '`' + x + '`').join(', ') },
                     ],
