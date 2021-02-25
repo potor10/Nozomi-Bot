@@ -56,7 +56,7 @@ module.exports = {
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
-                let rollResults = await message.channel.send(embedRoll);
+                emojiText.edit(embedRoll);
                 
                 let silverCount = 0;
                 let amuletsObtained = 0;
@@ -111,14 +111,14 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     }
                     embedRoll.setDescription(`${rollString}`);
-                    rollResults.edit(embedRoll);
+                    emojiText.edit(embedRoll);
                     
                 }
 
                 client.userData[id].amulets += amuletsObtained;
 
                 let createImage = require('../../helper/gacha/createImage');
-                createImage(client, message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
+                createImage(client, message, obtainedImages, amuletsObtained, newUnits, isDupe, emojiText);
             } else {
                 if (client.userData[id].inroll) {
                     let reminder = new MessageEmbed()

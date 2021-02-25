@@ -4,5 +4,6 @@ module.exports = async (client, message, emojiText, emoji, option, cancelText) =
     return await emojiText.awaitReactions((reaction, user) => 
                         reactionFilter(client, message.author, reaction, user), option)
              .catch(() => { emojiText.edit(cancelText); 
-                emojiText.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error)); });
+                emojiText.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+                setTimeout(() => { emojiText.delete();}, 5000); });
 };
