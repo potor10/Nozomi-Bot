@@ -1,5 +1,5 @@
-module.exports = async (data) => {
-    let collectionData = data.collectionData;
+module.exports = async (client) => {
+    let collectionData = client.getCollectionData();
     for(let id in collectionData) {
         if (collectionData.hasOwnProperty(id)) {
             for(let charname in collectionData[id]) {
@@ -12,8 +12,8 @@ module.exports = async (data) => {
         }
     }
 
-    let isResetGacha = data.isResetGacha;
-    let gachaData = data.gachaData;
+    let isResetGacha = client.getResetGacha();
+    let gachaData = client.getGachaData();
     if (isResetGacha) {
         for (let starlevel in gachaData) {
             if (gachaData.hasOwnProperty(starlevel)) {

@@ -107,8 +107,8 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
 let updateAll = require('./database/updateDatabase/updateAll');
-process.on("SIGINT", async () => (await updateAll(data), process.exit(0)));
-process.on("SIGTERM", async () => (await updateAll(data), process.exit(0)));
+process.on("SIGINT", async () => (await updateAll(client), process.exit(0)));
+process.on("SIGTERM", async () => (await updateAll(client), process.exit(0)));
 
 //Initialize
 let initAll = require('./database/updateObject/initAllObj');
