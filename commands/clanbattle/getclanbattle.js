@@ -104,7 +104,7 @@ module.exports = {
 
         for (let i in obtainedAttempts) {
             let parseDate = obtainedAttempts[i].attackdate;
-            date = Date.parse(parseDate);
+            let date = Date.parse(parseDate);
 
             damageMessage.addField(`Attack On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`, 
                 `From Clan Battle #${searchCBid}`);

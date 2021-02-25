@@ -60,7 +60,7 @@ module.exports = {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s attacks`)
-            .setDescription(`On ${parseDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+            .setDescription(`On ${new Date(parseDate).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
                 ` : Clan Battle #${attackClanBattleId}`)
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
