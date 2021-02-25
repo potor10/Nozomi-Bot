@@ -6,9 +6,9 @@ module.exports = {
 
     execute(client, message, args) {
         if (!args[0]) {
-            const profile = message.client.commands.filter(x => x.category == 'music').map((x) => '`' + x.name + '`').join(', ');
+            const profile = message.client.commands.filter(x => x.category == 'profile').map((x) => '`' + x.name + '`').join(', ');
             const clanbattle = message.client.commands.filter(x => x.category == 'clanbattle').map((x) => '`' + x.name + '`').join(', ');
-            const ocr = message.client.commands.filter(x => x.category == 'ocr').map((x) => '`' + x.name + '`').join(', ');
+            const ocr = message.client.commands.filter(x => x.category == 'OCR').map((x) => '`' + x.name + '`').join(', ');
             const core = message.client.commands.filter(x => x.category == 'core').map((x) => '`' + x.name + '`').join(', ');
             const music = message.client.commands.filter(x => x.category == 'music').map((x) => '`' + x.name + '`').join(', ');
 
@@ -84,7 +84,7 @@ module.exports = {
 
             if (command == 'scanimage') {
                 const { MessageEmbed } = require("discord.js");
-                
+
                 let ex1 = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                     .setAuthor(client.user.username, client.user.avatarURL())

@@ -29,6 +29,7 @@ Nozomi Bot has:
     * Duplicate characters will be converted into amulets
     * This gacha does not account for seasonal units and will group all units on a certain rarity together.
         * This means you can pull every possible unit in Priconne R
+* Music Bot
     
 ## Dependencies
 * Discord.js 
@@ -45,6 +46,8 @@ Nozomi Bot has:
     * Send request for website
 * canvas
     * Join images together to create final gacha pull
+* discord-player
+    * Discord music bot functionality
     
 ## Final
 Thank you for using Nozomi Bot. 
