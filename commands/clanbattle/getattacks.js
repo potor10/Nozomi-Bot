@@ -66,10 +66,10 @@ module.exports = {
             .setTimestamp();
         
         let totalDamage = obtainedAttacks.attempt1damage + obtainedAttacks.attempt2damage + obtainedAttacks.attempt3damage;
-        damageMessage.addField(`Total Damage Dealt ${swordBigAttackEmoji}`, totalDamage);
-        damageMessage.addField(`Attempt 1 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage, true);
-        damageMessage.addField(`Attempt 2 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage, true);
-        damageMessage.addField(`Attempt 3 Dealt ${swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage, true);
+        damageMessage.addField(`Total Damage Dealt ${client.emotes.swordBigAttackEmoji}`, totalDamage);
+        damageMessage.addField(`Attempt 1 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage, true);
+        damageMessage.addField(`Attempt 2 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage, true);
+        damageMessage.addField(`Attempt 3 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage, true);
 
         await message.channel.send(damageMessage);
         

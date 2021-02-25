@@ -62,11 +62,11 @@ module.exports = async (client, message, values, rectangles) => {
             `${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} ` +
             `: Clan Battle #${attackCBid}`)
         .addFields(
-            { name: `Attempt 1 ${swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
-            { name: `Attempt 2 ${swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
-            { name: `Attempt 3 ${swordSmallAttackEmoji}`, value: intAttacks[2], inline: true },
+            { name: `Attempt 1 ${client.emotes.swordSmallAttackEmoji}`, value: intAttacks[0], inline: true },
+            { name: `Attempt 2 ${client.emotes.swordSmallAttackEmoji}`, value: intAttacks[1], inline: true },
+            { name: `Attempt 3 ${client.emotes.swordSmallAttackEmoji}`, value: intAttacks[2], inline: true },
         )
-        .addField(`Total Damage Dealt For This Day ${swordBigAttackEmoji}`, intAttacks[0] + intAttacks[1] + intAttacks[2])
+        .addField(`Total Damage Dealt For This Day ${client.emotes.swordBigAttackEmoji}`, intAttacks[0] + intAttacks[1] + intAttacks[2])
         .setFooter(footerText, client.user.avatarURL())
         .setTimestamp());
     }

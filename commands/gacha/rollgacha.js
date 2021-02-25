@@ -23,13 +23,13 @@ module.exports = {
 
         let awaitEmoji = require('../../helper/discord/awaitEmoji');
         let collected = await awaitEmoji(message, pullGacha,
-            JEWEL_EMOJI, { max: 1, time: 20000, errors: ['time'] }, 
+            client.emotes.jewelEmojiId, { max: 1, time: 20000, errors: ['time'] }, 
             'The Roll Has Been Cancelled.');
 
         if (!collected) return;
         let reaction = collected.first();
 
-        if (reaction.emoji.id === JEWEL_EMOJI) {
+        if (reaction.emoji.id === client.emotes.jewelEmojiId) {
             if (client.userData[id].jewels >= jewelCost && !client.userData[id].inroll) {
                 // Deduct the jewels immediately
                 client.userData[id].jewels -= jewelCost;
@@ -61,7 +61,7 @@ module.exports = {
                     const rarityRolled = Math.floor(Math.random() * (oneStarRate + twoStarRate + threeStarRate));
 
                     if (rarityRolled < threeStarRate) {
-                        rollString += threeStarEmoji;
+                        rollString += client.emotes.threeStarEmoji;
                         let rollImgData = await getRolledCharData(id, 3);
 
                         obtainedImages.push(rollImgData[0]);
@@ -73,7 +73,7 @@ module.exports = {
 
                         amuletsObtained += rollImgData[2];
                     } else if (rarityRolled < (threeStarRate + twoStarRate) || silverCount == 9) {
-                        rollString += twoStarEmoji;
+                        rollString += client.emotes.twoStarEmoji;
                         let rollImgData = await getRolledCharData(id, 2);
 
                         obtainedImages.push(rollImgData[0]);
@@ -87,7 +87,7 @@ module.exports = {
                     } else {
                         silverCount++;
 
-                        rollString += oneStarEmoji;
+                        rollString += client.emotes.oneStarEmoji;
                         let rollImgData = await getRolledCharData(id, 1);
 
                         obtainedImages.push(rollImgData[0]);
@@ -122,8 +122,8 @@ module.exports = {
                     reminder = await message.channel.send(new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
-                        .setTitle(`You need at least ${jewelCost} ${jewelEmoji} to roll!`)
-                        .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${jewelEmoji}`)
+                        .setTitle(`You need at least ${jewelCost} ${client.emotes.jewelEmoji} to roll!`)
+                        .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
                         .setFooter(footerText, client.user.avatarURL())
                         .setTimestamp());
                 }

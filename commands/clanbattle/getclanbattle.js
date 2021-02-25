@@ -68,7 +68,7 @@ module.exports = {
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s damage on Clan Battle #${searchCBid}`)
             .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
-            .addField(`Total Damage Dealt ${swordBigAttackEmoji}`, damageValues[0])
+            .addField(`Total Damage Dealt ${client.emotes.swordBigAttackEmoji}`, damageValues[0])
             .setFooter(footerText, client.user.avatarURL())
             .setTimestamp();
 
@@ -89,9 +89,9 @@ module.exports = {
 
             damageMessage.addField(`Attack On ${new Date(date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`, 
                 `From Clan Battle #${searchCBid}`);
-            damageMessage.addField(`Attempt 1 ${swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt1damage}`, true);
-            damageMessage.addField(`Attempt 2 ${swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt2damage}`, true);
-            damageMessage.addField(`Attempt 3 ${swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt3damage}`, true);
+            damageMessage.addField(`Attempt 1 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt1damage}`, true);
+            damageMessage.addField(`Attempt 2 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt2damage}`, true);
+            damageMessage.addField(`Attempt 3 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt3damage}`, true);
         }
         
 

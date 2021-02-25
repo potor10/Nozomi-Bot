@@ -71,7 +71,7 @@ module.exports = async (client, message, attempts, maxAttempts) => {
                 console.log(`LOG: Image was not detected as clan war image`);
                 break;
             } else if (i==0) {
-                message.react(client.emojis.cache.get(NOZOMI_BLUSH_EMOJI));
+                message.react(client.emojis.cache.get(client.emotes.nozomiBlushEmojiId));
             }
             values.push(text);
         }
