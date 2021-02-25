@@ -1,6 +1,7 @@
-module.exports = async message => {
+module.exports = async (client, message) => {
     let currentTime = Date.now();
     let id = message.author.id;
+    let userData = client.getUserData();
 
     let createUserIfNotExist = require('./createUserIfNotExist');
     createUserIfNotExist(id);
@@ -51,4 +52,6 @@ module.exports = async message => {
             console.log(`LOG: ${message.author.username} (${id}) has leveled up to ${curLevel}`);
         }
     }
+
+    client.setUserData(userData);
 };

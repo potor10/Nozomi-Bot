@@ -27,12 +27,25 @@ class nozomiBot extends discord.Client {
         this.currentClanBattleId = currentClanBattleId;
     }
 
+    setUserData = (userData) => {
+        this.userData = userData;
+    }
+
     getUserData = () => {
         return this.userData;
     }
 
+    setCollectionData = (collectionData) => {
+        this.collectionData = collectionData;
+    }
+
+
     getCollectionData = () => {
         return this.collectionData;
+    }
+
+    setCurrentClanBattleId = (currentClanBattleId) => {
+        this.currentClanBattleId = currentClanBattleId;
     }
 
     getCurrentClanBattleId = () => {

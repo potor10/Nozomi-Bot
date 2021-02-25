@@ -1,4 +1,5 @@
-module.exports = async (id) => {
+module.exports = async (client, id) => {
+    let userData = client.getUserData();
     if (!(id in userData)) {
         let userStats = {
             level : 1,
@@ -11,4 +12,6 @@ module.exports = async (id) => {
         }
         userData[id] = userStats;
     }
+
+    client.setUserData(userData);
 }
