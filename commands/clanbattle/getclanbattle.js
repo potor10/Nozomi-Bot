@@ -5,6 +5,8 @@ module.exports = {
     utilisation: '{prefix}getclanbattle',
 
     async execute(client, message, args) {
+        const { MessageEmbed } = require("discord.js");
+        
         currentClanBattleId = await initCbid();
         let searchCBid = currentClanBattleId;
         

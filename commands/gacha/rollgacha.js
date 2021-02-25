@@ -5,6 +5,8 @@ module.exports = {
     utilisation: '{prefix}rollgacha',
 
     async execute(client, message) {
+        const { MessageEmbed } = require("discord.js");
+        
         let createUserIfNotExist = require('../../helper/profile/createUserIfNotExist');
         createUserIfNotExist(client, message.author.id);
         let id = message.author.id;

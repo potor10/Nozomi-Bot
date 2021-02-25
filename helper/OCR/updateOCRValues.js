@@ -1,4 +1,6 @@
 module.exports = async (client, message, values, rectangles) => {
+    const { MessageEmbed } = require("discord.js");
+    
     const intAttacks = [];
 
     for (let i = 2; i < rectangles.length; i++) {

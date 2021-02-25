@@ -5,6 +5,8 @@ module.exports = {
     utilisation: '{prefix}getattacks',
 
     async execute(client, message, args) {
+        const { MessageEmbed } = require("discord.js");
+        
         if (!Array.isArray(args)) {
             message.channel.send("Error parsing arguments");
             return;

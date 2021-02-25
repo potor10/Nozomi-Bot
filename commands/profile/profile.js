@@ -5,6 +5,8 @@ module.exports = {
     utilisation: '{prefix}profile',
 
     async execute(client, message) {
+        const { MessageEmbed } = require("discord.js");
+        
         let profileUser = message.author;
         let avatarUser = profileUser.avatarURL();
 

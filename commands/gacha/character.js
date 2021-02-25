@@ -5,6 +5,8 @@ module.exports = {
     utilisation: '{prefix}character',
 
     async execute(client, message, args) {
+        const { MessageEmbed } = require("discord.js");
+        
         if (!(message.author.id in collectionData)) {
             client.collectionData[message.author.id] = {};
         }
