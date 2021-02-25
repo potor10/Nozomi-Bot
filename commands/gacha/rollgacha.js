@@ -22,7 +22,7 @@ module.exports = {
             .setTimestamp();
 
         let awaitEmoji = require('../../helper/discord/awaitEmoji');
-        let collected = await awaitEmoji(message, pullGacha,
+        let collected = await awaitEmoji(client, message, pullGacha,
             client.emotes.jewelEmojiId, { max: 1, time: 20000, errors: ['time'] }, 
             'The Roll Has Been Cancelled.');
 
