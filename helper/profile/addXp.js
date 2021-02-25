@@ -3,7 +3,7 @@ module.exports = async (client, message) => {
     let id = message.author.id;
 
     let createUserIfNotExist = require('./createUserIfNotExist');
-    createUserIfNotExist(id);
+    createUserIfNotExist(client, id);
 
     if (currentTime - client.userData[id].lastmessage > 30000) {
         let newXP = Math.floor(Math.random() * 5) + 1;

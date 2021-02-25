@@ -2,7 +2,7 @@ module.exports = async (client, message) => {
     if (message.author.bot || message.channel.type === 'dm') return;
 
     let addXp = require('../helper/profile/addXp');
-    console.log(client.userData);
+    console.log(client.userdata);
     await addXp(client, message);
 
     const prefix = client.config.discord.prefix;
