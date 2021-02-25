@@ -6,11 +6,12 @@ module.exports = {
 
     execute(client, message, args) {
         if (!args[0]) {
-            const profile = message.client.commands.filter(x => x.category == 'profile').map((x) => '`' + x.name + '`').join(', ');
-            const clanbattle = message.client.commands.filter(x => x.category == 'clanbattle').map((x) => '`' + x.name + '`').join(', ');
+            const profile = message.client.commands.filter(x => x.category == 'Profile').map((x) => '`' + x.name + '`').join(', ');
+            const clanbattle = message.client.commands.filter(x => x.category == 'Clan Battle').map((x) => '`' + x.name + '`').join(', ');
+            const gacha = message.client.commands.filter(x => x.category == 'Gacha').map((x) => '`' + x.name + '`').join(', ');
             const ocr = message.client.commands.filter(x => x.category == 'OCR').map((x) => '`' + x.name + '`').join(', ');
-            const core = message.client.commands.filter(x => x.category == 'core').map((x) => '`' + x.name + '`').join(', ');
-            const music = message.client.commands.filter(x => x.category == 'music').map((x) => '`' + x.name + '`').join(', ');
+            const core = message.client.commands.filter(x => x.category == 'Core').map((x) => '`' + x.name + '`').join(', ');
+            const music = message.client.commands.filter(x => x.category == 'Music').map((x) => '`' + x.name + '`').join(', ');
 
             message.channel.send({
                 embed: {
@@ -20,6 +21,7 @@ module.exports = {
                     fields: [
                         { name: 'Profile', value: profile },
                         { name: 'Clan Battle', value: clanbattle },
+                        { name: 'Gacha', value: gacha },
                         { name: 'Image Detection', value: ocr },
                         { name: 'General', value: core },
                         { name: 'Music', value: music },
@@ -92,7 +94,7 @@ module.exports = {
                     .setDescription(`Example Screenshot For Clan Battle`)
                     .attachFiles(['./img/ex1.png'])
                     .setImage('attachment://ex1.png')
-                    .setFooter(footerText, client.user.avatarURL())
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
             
                 let ex2 = new MessageEmbed()
@@ -102,7 +104,7 @@ module.exports = {
                     .setDescription(`Example Screenshot For Clan Battle`)
                     .attachFiles(['./img/ex2.png'])
                     .setImage('attachment://ex2.png')
-                    .setFooter(footerText, client.user.avatarURL())
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
             
                 let ex3 = new MessageEmbed()
@@ -112,7 +114,7 @@ module.exports = {
                     .setDescription(`Example Screenshot For Clan Battle`)
                     .attachFiles(['./img/ex3.png'])
                     .setImage('attachment://ex3.png')
-                    .setFooter(footerText, client.user.avatarURL())
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
             
                 let ex4 = new MessageEmbed()
@@ -122,7 +124,7 @@ module.exports = {
                     .setDescription(`How To Upload Screenshot`)
                     .attachFiles(['./img/ex4.png'])
                     .setImage('attachment://ex4.png')
-                    .setFooter(footerText, client.user.avatarURL())
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
                 
                 message.channel.send(ex1);
