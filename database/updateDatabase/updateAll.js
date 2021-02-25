@@ -1,10 +1,11 @@
 module.exports = async (client) => {
     let updateCBID = require('./updateCbid');
     await updateCBID(client.currentClanBattleId);
-    
+
     for(let id in client.userData) {
         if (client.userData.hasOwnProperty(id)) {
-            await updateStatsDB(id, client.userData[id].level, client.userData[id].exp, client.userData[id].lastmessage, 
+            let updateStats = require('./updateStats');
+            await updateStats(id, client.userData[id].level, client.userData[id].exp, client.userData[id].lastmessage, 
                 client.userData[id].jewels, client.userData[id].amulets);
         }
     } 
