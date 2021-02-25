@@ -4,7 +4,7 @@ module.exports = {
     name: 'getclanbattle',
     aliases: [],
     category: 'Clan Battle',
-    utilisation: '{prefix}getclanbattle',
+    utilisation: '{prefix}getclanbattle [clan battle number] <@user>\n' + `{prefix}getclanbattle [month] [date] [year] <@user>`,
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");

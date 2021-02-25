@@ -2,7 +2,7 @@ module.exports = {
     name: 'scanimage',
     aliases: [],
     category: 'OCR',
-    utilisation: '{prefix}scanimage',
+    utilisation: '{prefix}scanimage <# of visible attempts> [image attachment]',
 
     async execute(client, message, args) {
         const maxAttempts = 3;

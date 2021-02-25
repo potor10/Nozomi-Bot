@@ -6,16 +6,22 @@ module.exports = {
 
     execute(client, message, args) {
         if (!args[0]) {
-            const infos = message.client.commands.filter(x => x.category == 'Infos').map((x) => '`' + x.name + '`').join(', ');
-            const music = message.client.commands.filter(x => x.category == 'Music').map((x) => '`' + x.name + '`').join(', ');
+            const profile = message.client.commands.filter(x => x.category == 'music').map((x) => '`' + x.name + '`').join(', ');
+            const clanbattle = message.client.commands.filter(x => x.category == 'clanbattle').map((x) => '`' + x.name + '`').join(', ');
+            const ocr = message.client.commands.filter(x => x.category == 'ocr').map((x) => '`' + x.name + '`').join(', ');
+            const core = message.client.commands.filter(x => x.category == 'core').map((x) => '`' + x.name + '`').join(', ');
+            const music = message.client.commands.filter(x => x.category == 'music').map((x) => '`' + x.name + '`').join(', ');
 
             message.channel.send({
                 embed: {
-                    color: 'ORANGE',
-                    author: { name: 'Help pannel' },
-                    footer: { text: 'This bot uses a Github project made by Zerio (ZerioDev/Music-bot)' },
+                    color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+                    author: { name: 'Bot Help' },
+                    footer: { text: client.config.discord.footerText },
                     fields: [
-                        { name: 'Bot', value: "lol" },
+                        { name: 'Profile', value: profile },
+                        { name: 'Clan Battle', value: clanbattle },
+                        { name: 'Image Detection', value: ocr },
+                        { name: 'General', value: core },
                         { name: 'Music', value: music },
                         { name: 'Filters', value: client.filters.map((x) => '`' + x + '`').join(', ') },
                     ],
@@ -28,11 +34,43 @@ module.exports = {
 
             if (!command) return message.channel.send(`${client.emotes.error} - I did not find this command !`);
 
+            let description_text = 'Find information on the command provided.\nMandatory arguments `[]`, optional arguments `<>`.\n\n';
+            switch (command) {
+                case 'profile':
+                    description_text += `Obtain your / @user's profile information.`;
+                    break;
+                case 'getattacks':
+                    description_text += `Obtain your / @user's attack information on a specific date.`;
+                    break;
+                case 'getclanbattle':
+                    description_text += `Obtain your / @user's Clan Battle information on a specific month.`;
+                    break;
+                case 'clanbattletimeline':
+                    description_text += `Obtain a directory of all available Clan Battles and when they occured.`;
+                    break;
+                case 'daily':
+                    description_text += `Grants you gems daily.`;
+                    break;
+                case 'rollgacha':
+                    description_text += `Plays the Gacha.`;
+                    break;
+                case 'characters':
+                    description_text += `View the characters you've obtained from gacha.`;
+                    break;
+                case 'character':
+                    description_text += `View full art of a character you've obtained from gacha.`;
+                    break;
+                case 'scanimage':
+                    description_text += `Make sure to upload a screenshot of the game as an attachment. \n`;
+                    description_text += `Example images provided below.`;
+                    break;
+            }
+
             message.channel.send({
                 embed: {
-                    color: 'ORANGE',
-                    author: { name: 'Help pannel' },
-                    footer: { text: 'This bot uses a Github project made by Zerio (ZerioDev/Music-bot)' },
+                    color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+                    author: { name: 'Detailed Help' },
+                    footer: { text: client.config.discord.footerText },
                     fields: [
                         { name: 'Name', value: command.name, inline: true },
                         { name: 'Category', value: command.category, inline: true },
@@ -40,82 +78,58 @@ module.exports = {
                         { name: 'Utilisation', value: command.utilisation.replace('{prefix}', client.config.discord.prefix), inline: true },
                     ],
                     timestamp: new Date(),
-                    description: 'Find information on the command provided.\nMandatory arguments `[]`, optional arguments `<>`.',
+                    description: description_text,
                 }
             });
-        };
-        
-        /*
 
-        message.author.send(
-            `*I'll be counting on you, so let's work together until I can become a top idol, okay?\n` + 
-            `Ahaha, from now on, I'll be in your care!* \n\n\n` + 
-            `**__Nozomi Bot Commands__**\n\n` +                        
-            `**${prefix}profile** *[optional @user target]* to obtain your / @user profile information  \n` + 
-            `**${prefix}getattacks** *[month] [date] [year] [optional @user target]* to obtain attack information on a specific date  \n` + 
-            `**${prefix}getclanbattle** *[Clan Battle number] [optional @user target]* to obtain Clan Battle information on a specific month  \n` +
-            `**${prefix}getclanbattle** *[month] [date] [year] [optional @user target]* to obtain Clan Battle information on a specific month  \n` + 
-            `**${prefix}clanbattlehistory** *[optional page number]* to obtain a directory of all previous Clan Battles and when they occured \n` + 
-            `**${prefix}daily** to obtain your daily gems\n` + 
-            `**${prefix}rollgacha** to play on the bot's gacha system\n` + 
-            `**${prefix}characters** *[optional page number]* to view the characters you've obtained from gacha \n` + 
-            `**${prefix}character** *[mandatory character name(no stars)]* to view full art of a character you've obtained from gacha \n\n\n` + 
-            `**__Nozomi Bot Clan Battle Tracker__**\n\n` +
-            `**${prefix}scanimage** *[optional single digit 1-3 (default 3)]* as a comment. Make sure to upload a screenshot of the game as an attachment. \n` +
-            `This optional parameter will be used to specify how many attempts are visible (Top > Down) on the screenshot\n\n` +
-            `Aside from minigames, Nozomi Bot can also serve as a Clan Battle damage tracker!\n` +
-            `To use Nozomi Bot clan track functionality, you must upload an image of the damage attempts for the day to discord.\n` +
-            `An example image is provide below, although the image you upload does not necessarily need to be identical, \n` +
-            `It is mandatory that the damage text / date of attack are positioned in the correct spots!\n\n` +
-            `The easiest way to ensure that these are aligned correctly, is to take a screenshot of the 3 attempts at the top of the list.\n` +
-            `Because they're at the top of the list, you will automatically be positioned correctly!\n\n` +
-            `Thanks for using Nozomi Bot!`)
-            .catch(() => message.reply("Your DM is disabled, I can't send help"));;
-        
-        let ex1 = new MessageEmbed()
-            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-            .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`Image 1 Example`)
-            .setDescription(`Example Screenshot For Clan Battle`)
-            .attachFiles(['./img/ex1.png'])
-            .setImage('attachment://ex1.png')
-            .setFooter(footerText, client.user.avatarURL())
-            .setTimestamp();
-    
-        let ex2 = new MessageEmbed()
-            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-            .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`Image 2 Example`)
-            .setDescription(`Example Screenshot For Clan Battle`)
-            .attachFiles(['./img/ex2.png'])
-            .setImage('attachment://ex2.png')
-            .setFooter(footerText, client.user.avatarURL())
-            .setTimestamp();
-    
-        let ex3 = new MessageEmbed()
-            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-            .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`Image 3 Example`)
-            .setDescription(`Example Screenshot For Clan Battle`)
-            .attachFiles(['./img/ex3.png'])
-            .setImage('attachment://ex3.png')
-            .setFooter(footerText, client.user.avatarURL())
-            .setTimestamp();
-    
-        let ex4 = new MessageEmbed()
-            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-            .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`Setting Nozomi Bot To Only Search For 2 Attempts`)
-            .setDescription(`How To Upload Screenshot`)
-            .attachFiles(['./img/ex4.png'])
-            .setImage('attachment://ex4.png')
-            .setFooter(footerText, client.user.avatarURL())
-            .setTimestamp();
-        
-        message.author.send(ex1);
-        message.author.send(ex2);
-        message.author.send(ex3);
-        message.author.send(ex4);
-         */
+            if (command == 'scanimage') {
+                const { MessageEmbed } = require("discord.js");
+                
+                let ex1 = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`Image 1 Example`)
+                    .setDescription(`Example Screenshot For Clan Battle`)
+                    .attachFiles(['./img/ex1.png'])
+                    .setImage('attachment://ex1.png')
+                    .setFooter(footerText, client.user.avatarURL())
+                    .setTimestamp();
+            
+                let ex2 = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`Image 2 Example`)
+                    .setDescription(`Example Screenshot For Clan Battle`)
+                    .attachFiles(['./img/ex2.png'])
+                    .setImage('attachment://ex2.png')
+                    .setFooter(footerText, client.user.avatarURL())
+                    .setTimestamp();
+            
+                let ex3 = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`Image 3 Example`)
+                    .setDescription(`Example Screenshot For Clan Battle`)
+                    .attachFiles(['./img/ex3.png'])
+                    .setImage('attachment://ex3.png')
+                    .setFooter(footerText, client.user.avatarURL())
+                    .setTimestamp();
+            
+                let ex4 = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`Setting Nozomi Bot To Only Search For 2 Attempts`)
+                    .setDescription(`How To Upload Screenshot`)
+                    .attachFiles(['./img/ex4.png'])
+                    .setImage('attachment://ex4.png')
+                    .setFooter(footerText, client.user.avatarURL())
+                    .setTimestamp();
+                
+                message.channel.send(ex1);
+                message.channel.send(ex2);
+                message.channel.send(ex3);
+                message.channel.send(ex4);
+            }
+        };
     },
 };

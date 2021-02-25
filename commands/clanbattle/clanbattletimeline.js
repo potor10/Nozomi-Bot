@@ -2,7 +2,7 @@ module.exports = {
     name: 'clanbattletimeline',
     aliases: [],
     category: 'Clan Battle',
-    utilisation: '{prefix}clanbattlehistory',
+    utilisation: '{prefix}clanbattletimeline <page number>',
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");

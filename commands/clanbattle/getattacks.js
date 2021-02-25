@@ -2,7 +2,7 @@ module.exports = {
     name: 'getattacks',
     aliases: [],
     category: 'Clan Battle',
-    utilisation: '{prefix}getattacks',
+    utilisation: '{prefix}getattacks [month] [date] [year] <@user>',
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");

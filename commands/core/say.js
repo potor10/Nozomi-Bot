@@ -2,7 +2,7 @@ module.exports = {
     name: 'say',
     aliases: [],
     category: 'Core',
-    utilisation: '{prefix}say',
+    utilisation: '{prefix}say [words]',
 
     async execute(client, message, args) {
         const sayMessage = args.join(" ");

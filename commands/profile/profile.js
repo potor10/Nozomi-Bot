@@ -2,7 +2,7 @@ module.exports = {
     name: 'profile',
     aliases: [],
     category: 'Profile',
-    utilisation: '{prefix}profile',
+    utilisation: '{prefix}profile <@user>',
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");
