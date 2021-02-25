@@ -1,4 +1,4 @@
-module.exports = async (message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults) => {
+module.exports = async (client, message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults) => {
     const { Canvas, Image } = require('canvas');
     const { MessageEmbed } = require("discord.js");
     const fs = require('fs');
@@ -48,7 +48,7 @@ module.exports = async (message, obtainedImages, amuletsObtained, newUnits, isDu
     out.on('finish', () =>  {
             console.log('LOG: The PNG agregate file was created.');
 
-            let amuletStr = `You have earned ${amuletsObtained} ${amuletEmoji}`;
+            let amuletStr = `You have earned ${amuletsObtained} ${client.emotes.amuletEmoji}`;
 
             if (newUnits > 0) {
                 amuletStr += ` and have obtained ${newUnits} new characters!`
@@ -61,7 +61,7 @@ module.exports = async (message, obtainedImages, amuletsObtained, newUnits, isDu
                 .setDescription(amuletStr)
                 .attachFiles(['./test.png'])
                 .setImage('attachment://test.png')
-                .setFooter(footerText, client.user.avatarURL())
+                .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
             
             setTimeout(() => { 

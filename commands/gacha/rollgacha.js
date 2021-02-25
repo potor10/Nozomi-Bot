@@ -108,7 +108,7 @@ module.exports = {
                 client.userData[id].amulets += amuletsObtained;
 
                 let createImage = require('../../helper/gacha/createImage');
-                createImage(message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
+                createImage(client, message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
             } else {
                 let reminder;
                 if (client.userData[id].inroll) {
