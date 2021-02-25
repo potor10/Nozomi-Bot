@@ -63,7 +63,7 @@ module.exports = {
 
                     if (rarityRolled < client.gacha.threeStarRate) {
                         rollString += client.emotes.threeStarEmoji;
-                        let rollImgData = await getRolledCharData(id, 3);
+                        let rollImgData = await getRolledCharData(client, id, 3);
 
                         obtainedImages.push(rollImgData[0]);
                         isDupe[i] = rollImgData[1];
@@ -75,7 +75,7 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     } else if (rarityRolled < (client.gacha.threeStarRate + client.gacha.twoStarRate) || silverCount == 9) {
                         rollString += client.emotes.twoStarEmoji;
-                        let rollImgData = await getRolledCharData(id, 2);
+                        let rollImgData = await getRolledCharData(client, id, 2);
 
                         obtainedImages.push(rollImgData[0]);
                         isDupe[i] = rollImgData[1];
@@ -89,7 +89,7 @@ module.exports = {
                         silverCount++;
 
                         rollString += client.emotes.oneStarEmoji;
-                        let rollImgData = await getRolledCharData(id, 1);
+                        let rollImgData = await getRolledCharData(client, id, 1);
 
                         obtainedImages.push(rollImgData[0]);
                         isDupe[i] = rollImgData[1];

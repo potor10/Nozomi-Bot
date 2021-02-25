@@ -15,7 +15,8 @@ module.exports = async (client, message) => {
 
         client.userData[id].lastmessage = currentTime;
 
-        let curLevel = 1 + Math.floor(Math.pow(client.userData[id].exp, 0.8) / 10);
+        //let curLevel = 1 + Math.floor(Math.pow(client.userData[id].exp, 0.8) / 10);
+        let curLevel = 1 + Math.floor(client.userData[id].exp);
 
         if (curLevel > client.userData[id].level) {
             // Level up!
