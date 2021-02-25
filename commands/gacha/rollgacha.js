@@ -20,11 +20,19 @@ module.exports = {
             .setDescription(`React To Confirm`)
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
+        
+        let cancelGacha = new MessageEmbed()
+            .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+            .setAuthor(client.user.username, client.user.avatarURL())
+            .setTitle(`The Roll Has Been Cancelled.`)
+            .setDescription(`You Have Timed Out`)
+            .setFooter(client.config.discord.footerText, client.user.avatarURL())
+            .setTimestamp();
 
         let awaitEmoji = require('../../helper/discord/awaitEmoji');
         let collected = await awaitEmoji(client, message, pullGacha,
             client.emotes.jewelEmojiId, { max: 1, time: 20000, errors: ['time'] }, 
-            'The Roll Has Been Cancelled.');
+            cancelGacha);
 
         if (!collected) return;
         let reaction = collected.first();
@@ -110,25 +118,26 @@ module.exports = {
                 let createImage = require('../../helper/gacha/createImage');
                 createImage(client, message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults);
             } else {
-                let reminder;
                 if (client.userData[id].inroll) {
-                    reminder = await message.channel.send(new MessageEmbed()
+                    let reminder = new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
                         .setTitle(`You are currently doing an x10 roll!`)
                         .setDescription(`Please wait until the roll is finished before trying again`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
-                        .setTimestamp());
+                        .setTimestamp();
+                    pullGacha.edit(reminder);
                 } else {
-                    reminder = await message.channel.send(new MessageEmbed()
+                    let reminder = new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
                         .setTitle(`You need at least ${jewelCost} ${client.emotes.jewelEmoji} to roll!`)
                         .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
-                        .setTimestamp());
+                        .setTimestamp();
+                    pullGacha.edit(reminder);
                 }
-                setTimeout(() => { reminder.delete();}, 5000);
+                setTimeout(() => { pullGacha.delete();}, 5000);
             }
         }
     },

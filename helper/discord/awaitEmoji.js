@@ -4,5 +4,6 @@ module.exports = async (client, message, text, emoji, option, cancelText) => {
     let reactionFilter = require('./reactionFilter');
     return await emojiText.awaitReactions((reaction, user) => 
                         reactionFilter(client, message.author, reaction, user), option)
-             .catch(() => { message.channel.send(cancelText); });
+             .catch(() => { emojiText.edit(cancelText); 
+                emojiText.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error)); });
 };
