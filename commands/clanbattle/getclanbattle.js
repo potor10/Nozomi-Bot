@@ -37,8 +37,8 @@ module.exports = {
 
             print(cbData);
 
-            startDate = new Date(cbData[searchCBid].start);
-            endDate = new Date(cbData[searchCBid].end);
+            startDate = new Date(cbData[cbKeys[searchCBid-1]].start);
+            endDate = new Date(cbData[cbKeys[searchCBid-1]].end);
             
         } else if (args.length >= 3) {
             let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
@@ -62,8 +62,8 @@ module.exports = {
                 return;
             }
             
-            startDate = new Date(cbData[searchCBid].start);
-            endDate = new Date(cbData[searchCBid].end);
+            startDate = new Date(cbData[cbKeys[searchCBid-1]].start);
+            endDate = new Date(cbData[cbKeys[searchCBid-1]].end);
         }
 
         console.log(`LOG: Searching Clan Battle ${searchCBid}`);

@@ -42,6 +42,7 @@ module.exports = {
         for (let i = (startPage - 1) * displayPerPage; 
             i < cbKeys.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
             let clanBattleId = cbData[cbKeys[i]].id;
+            
             let startDate = new Date(cbData[cbKeys[i]].start);
             let endDate = new Date(cbData[cbKeys[i]].end);
 

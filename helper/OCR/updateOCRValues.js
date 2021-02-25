@@ -40,8 +40,6 @@ module.exports = async (client, message, values, rectangles) => {
 
         let getClanBattleId = require('../clanbattle/getClanBattleId');
         let attackCBid = getClanBattleId(newdate);
- 
-        client.currentClanBattleId = await initCbidObj(client);
 
         if (attackCBid == -1) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
