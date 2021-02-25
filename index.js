@@ -5,15 +5,6 @@
  */
 
 // Objects Used To Store Realtime Changes - Obtained Once On Startup
-let data = {
-    userData : {},
-    gachaData : {},
-    collectionData : {},
-    currentClanBattleId : 0,
-
-    // Used at the end to determine if we need to resend query
-    isResetGacha : false
-}
 
 //const { Client, Attachment, MessageEmbed } = require("discord.js");
 
@@ -21,10 +12,51 @@ const discord = require('discord.js');
 
 const { Player } = require('discord-player');
 const fs = require('fs');
-//const { parse } = require("path");
 
 // Initialize Discord Client
-const client = new discord.Client({disableMentions: 'everyone'});
+class nozomiBot extends discord.Client {
+    userData = {};
+    gachaData = {};
+    collectionData = {};
+    currentClanBattleId = 0;
+    isResetGacha = false;
+
+    updateAll = (userData, collectionData, currentClanBattleId) => {
+        this.userData = userData;
+        this.collectionData = collectionData;
+        this.currentClanBattleId = currentClanBattleId;
+    }
+
+    getUserData = () => {
+        return this.userData;
+    }
+
+    getCollectionData = () => {
+        return this.collectionData;
+    }
+
+    getCurrentClanBattleId = () => {
+        return this.currentClanBattleId;
+    }
+
+    updateGachaData = (gachaData) => {
+        this.gachaData = gachaData;
+    }
+
+    getGachaData = () => {
+        return this.gachaData;
+    }
+
+    setResetGacha = (isResetGacha) => {
+        this.isResetGacha = isResetGacha;
+    }
+
+    getResetGacha = () => {
+        return this.isResetGacha;
+    }
+
+}
+const client = new nozomiBot({disableMentions: 'everyone'});
 
 client.player = new Player(client);
 client.config = require('./config/config');
@@ -67,12 +99,10 @@ process.on("SIGTERM", async () => (await updateAll(data), process.exit(0)));
 
 //Initialize
 let initAll = require('./database/updateObject/initAllObj');
-initAll(client, data);
+initAll(client);
 
 let initGacha = require('./database/updateObject/initGachaObj');
-initGacha(client, data);
-
-console.log(data);
+initGacha(client);
 
 // Log In
 console.log("LOG: Logging In To Princonne Bot");

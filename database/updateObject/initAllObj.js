@@ -1,4 +1,4 @@
-module.exports = async (client, data) => {
+module.exports = async (client) => {
     let initUserDataObj = require('./initUserDataObj');
     let userData = await initUserDataObj();
 
@@ -12,7 +12,5 @@ module.exports = async (client, data) => {
     console.log(collectionData);
     console.log(cbid);
 
-    data.userData = userData;
-    data.collectionData = collectionData;
-    data.currentClanBattleId = cbid;
+    client.updateAll(userData, collectionData, cbid);
 }

@@ -26,7 +26,6 @@ module.exports = async () => {
     for (let user in userArr) {
         if (userArr.hasOwnProperty(user)) {
             let objectKey = userArr[user].uid;
-            console.log("oKE!!!" + objectKey);
 
             const userStats = {
                 level : userArr[user].level,
@@ -41,8 +40,6 @@ module.exports = async () => {
             output[objectKey] = userStats;
         }
     }
-
-    console.log(output);
 
     return output
 }

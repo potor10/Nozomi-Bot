@@ -1,7 +1,8 @@
 module.exports = async (client, message) => {
     if (message.author.bot || message.channel.type === 'dm') return;
 
-    await addXp(message);
+    let addXp = require('../helper/profile/addXp');
+    await addXp(message, data);
 
     const prefix = client.config.discord.prefix;
 
@@ -12,5 +13,5 @@ module.exports = async (client, message) => {
 
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
-    if (cmd) cmd.execute(client, message, args);
+    if (cmd) cmd.execute(client, message, args, data);
 };

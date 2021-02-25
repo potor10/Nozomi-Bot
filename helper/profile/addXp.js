@@ -2,6 +2,7 @@ module.exports = async message => {
     let currentTime = Date.now();
     let id = message.author.id;
 
+    let createUserIfNotExist = require('./createUserIfNotExist');
     createUserIfNotExist(id);
 
     if (currentTime - userData[id].lastmessage > 30000) {

@@ -1,5 +1,5 @@
-module.exports = async (data) => {
+module.exports = async (client) => {
     let initGachaDataObj = require('./initGachaDataObj');
     let gachaData = await initGachaDataObj();
-    data.gachaData = gachaData;
+    client.updateGachaData(gachaData);
 }
