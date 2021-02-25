@@ -7,27 +7,25 @@ module.exports = {
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
         
-        let initCbidObj = require('../../database/updateObject/initCbidObj');
-        currentClanBattleId = await initCbidObj(client);
+        const fs = require('fs');
+        let cbDataRaw = fs.readFileSync('../../config/clanbattle.json');
+        let cbData = JSON.parse(cbDataRaw);
+
+        let cbKeys = Object.keys(cbData);
+
+        let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
+        let currentClanBattleId = getClanBattleId(new Date());
     
         if (!Array.isArray(args)) {
             message.channel.send("Error parsing arguments");
             return;
-        }
-
-        let cbArray = [];
-        for (let i = 0; i <= currentClanBattleId; i++) {
-            let curDate = new Date(client.config.clanbattle.cbStart);
-            curDate.setUTCMonth(i + curDate.getUTCMonth());
-            let cbDate = curDate;
-            cbArray.push(cbDate);
         }
         
         let parseFirstArgAsInt = require('../../helper/discord/parseFirstArgAsInt');
         let startPage = await parseFirstArgAsInt(args, 1);
         let displayPerPage = 10;
 
-        let totalPages = Math.ceil(cbArray.length / displayPerPage);
+        let totalPages = Math.ceil(cbKeys.length / displayPerPage);
         if (totalPages <= 0) { totalPages = 1; }
         if (startPage < 1 || startPage > totalPages ) {
             startPage = 1;
@@ -44,13 +42,18 @@ module.exports = {
             .setTimestamp();
 
         for (let i = (startPage - 1) * displayPerPage; 
-            i < cbArray.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
-            let clanBattleStr = `Clan Battle #${i}`;
-            if (i == currentClanBattleId) { 
+            i < cbKeys.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
+            let clanBattleId = cbData[cbKeys[i]].id;
+            let startDate = new Date(cbData[cbKeys[i]].start);
+            let endDate = new Date(cbData[cbKeys[i]].end);
+
+            let clanBattleStr = `Clan Battle #${clanBattleId}`;
+            if (clanBattleId == currentClanBattleId) { 
                 clanBattleStr += ` (Current)`
             }
             messageDisplay.addField(clanBattleStr, 
-                `Occured on the month of ${cbArray[i].toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`);
+                `From ${startDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                ` to ${endDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`);
         }
 
         await message.channel.send(messageDisplay);

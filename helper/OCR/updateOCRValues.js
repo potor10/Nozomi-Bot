@@ -31,23 +31,24 @@ module.exports = async (client, message, values, rectangles) => {
         console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
         
         let newdate = new Date(date);
-        let attackCBid = (newdate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
-
-        let initCbidObj = require('../../database/updateObject/initCbidObj');
-        client.currentClanBattleId = await initCbidObj(client);
-
-        if ((attackCBid > currentClanBattleId) || (attackCBid < 0)) {
-            let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
-                ` is out of range of the Clan Battle period`);
-            setTimeout(() => { reminder.delete();}, 5000);
-            return;
-        }
 
         if (isNaN(newdate.getTime())) {  
             let reminder = await message.reply(`Error: Invalid Date!`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         } 
+
+        let getClanBattleId = require('../clanbattle/getClanBattleId');
+        let attackCBid = getClanBattleId(newdate);
+ 
+        client.currentClanBattleId = await initCbidObj(client);
+
+        if (attackCBid == -1) {
+            let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                ` is out of range of the Clan Battle period`);
+            setTimeout(() => { reminder.delete();}, 5000);
+            return;
+        }
 
         newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
 

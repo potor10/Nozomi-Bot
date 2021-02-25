@@ -26,7 +26,6 @@ client.gacha = client.config.gacha;
 client.userData = {};
 client.gachaData = {};
 client.collectionData = {};
-client.currentClanBattleId = 0;
 client.isResetGacha = false;
 
 fs.readdirSync('./commands').forEach(dirs => {

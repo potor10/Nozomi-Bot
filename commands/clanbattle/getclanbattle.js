@@ -1,3 +1,5 @@
+const { start } = require("repl");
+
 module.exports = {
     name: 'getclanbattle',
     aliases: [],
@@ -6,48 +8,62 @@ module.exports = {
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
-        
-        let initCbidObj = require('../../database/updateObject/initCbidObj');
-        client.currentClanBattleId = await initCbidObj(client);
 
-        let searchCBid = client.currentClanBattleId;
+        const fs = require('fs');
+        let cbDataRaw = fs.readFileSync('../../config/clanbattle.json');
+        let cbData = JSON.parse(cbDataRaw);
+
+        let cbKeys = Object.keys(cbData);
+        let minCbid = cbData[cbKeys[0]].id;
+        let maxCbid = cbData[cbKeys[cbKeys.length - 1]].id;
+
+        let startDate;
+        let endDate;
+
+        let searchCBid;
         
         if (!Array.isArray(args)) {
             message.channel.send("Error parsing arguments");
             return;
         }
-
-        let cbDate = new Date(client.config.clanbattle.cbStart);
         
         if (args.length < 3) {
             let parseFirstArgAsInt = require('../../helper/discord/parseFirstArgAsInt');
             searchCBid = parseFirstArgAsInt(args, client.currentClanBattleId);
 
-            if (searchCBid > client.currentClanBattleId) {
-                searchCBid = client.currentClanBattleId;
+            if (searchCBid > maxCbid || searchCBid < minCbid) {
+                let reminder = await message.reply(`CB #${searchCBid} is not a valid Clan Battle`);
+                setTimeout(() => { reminder.delete();}, 5000);
+                return;
             }
 
-            let startDate = new Date(client.config.clanbattle.cbStart);
-            startDate.setUTCMonth(searchCBid + startDate.getUTCMonth());
-            cbDate = new Date(startDate);
+            startDate = new Date(cbData[searchCBid].start);
+            endDate = new Date(cbData[searchCBid].end);
+            
         } else if (args.length >= 3) {
             let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
             date = Date.parse(parseDate);
             
-            cbDate = new Date(date);
+            let cbDate = new Date(date);
 
             if (isNaN(cbDate.getTime())) {  
                 let reminder = await message.reply(`Error: Invalid Date!`);
                 setTimeout(() => { reminder.delete();}, 5000);
                 return;
             } 
+
+            let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
+            searchCBid = getClanBattleId(cbDate);
             
-            if (cbDate < client.config.clanbattle.cbStart) {
-                cbDate = new Date(client.config.clanbattle.cbStart);
-            } else if (cbDate > new Date()) {
-                cbDate = new Date();
+            if (searchCBid == -1) {
+                let reminder = await message.reply(`${cbDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                ` is out of range of the Clan Battle period`);
+                setTimeout(() => { reminder.delete();}, 5000);
+                return;
             }
-            searchCBid = (cbDate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((cbDate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
+            
+            startDate = new Date(cbData[searchCBid].start);
+            endDate = new Date(cbData[searchCBid].end);
         }
 
         console.log(`LOG: Searching Clan Battle ${searchCBid}`);
@@ -73,7 +89,8 @@ module.exports = {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setThumbnail(avatarUser)
             .setTitle(`${parseUser.displayName||parseUser.username}'s damage on Clan Battle #${searchCBid}`)
-            .setDescription(`Battle occured on the month of ${cbDate.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC'})}`)
+            .setDescription(`Clan Battle occured from ${startDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+                ` to ${endDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}`)
             .addField(`Total Damage Dealt ${client.emotes.swordBigAttackEmoji}`, damageValues[0])
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();

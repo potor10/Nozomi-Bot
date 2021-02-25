@@ -15,34 +15,29 @@ module.exports = {
         if (args.length < 3) return;
 
         let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
-        date = Date.parse(parseDate);
+        let inputDate = new Date(Date.parse(parseDate));
         
         const pad = (num) => { 
             return ('00'+num).slice(-2) 
         };
 
-        let newdate = new Date(date);
-        let attackClanBattleId = (newdate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
+        let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
+        let attackClanBattleId = getClanBattleId(inputDate);
 
-        let initCbidObj = require('../../database/updateObject/initCbidObj');
-        currentClanBattleId = await initCbidObj(client);
-
-        if ((attackClanBattleId > currentClanBattleId) || (attackClanBattleId < 0)) {
-            let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
+        if (attackClanBattleId == -1) {
+            let reminder = await message.reply(`${inputDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
                 ` is out of range of the Clan Battle period`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         }
 
-        if (isNaN(newdate.getTime())) {  
+        if (isNaN(inputDate.getTime())) {  
             let reminder = await message.reply(`Error: Invalid Date!`);
             setTimeout(() => { reminder.delete();}, 5000);
             return;
         } 
 
-        newdate = newdate.getUTCFullYear() + '-' + pad(newdate.getUTCMonth() + 1)  + '-' + pad(newdate.getUTCDate());
-
-        console.log(`LOG: Date Parsed From Args, Found ${date}, Converted To ${newdate}`);
+        inputDate = inputDate.getUTCFullYear() + '-' + pad(inputDate.getUTCMonth() + 1)  + '-' + pad(inputDate.getUTCDate());
 
         let parseUser = message.author;
         let avatarUser = message.author.avatarURL();
@@ -58,7 +53,7 @@ module.exports = {
         console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`);
 
         let retrieveAttack = require('../../database/retrieveDatabase/retrieveAttack');
-        let obtainedAttacks = await retrieveAttack(parseUser.id, newdate);
+        let obtainedAttacks = await retrieveAttack(parseUser.id, inputDate);
 
         let damageMessage = new MessageEmbed()
             .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)

@@ -41,9 +41,5 @@ module.exports = {
         threeStarRate : 25,
     },
 
-    clanbattle: {
-        cbStart : new Date('Feb 10 2021')
-    },
-
     filters: ['8D', 'gate', 'haas', 'phaser', 'treble', 'tremolo', 'vibrato', 'reverse', 'karaoke', 'flanger', 'mcompand', 'pulsator', 'subboost', 'bassboost', 'vaporwave', 'nightcore', 'normalizer', 'surrounding'],
 };

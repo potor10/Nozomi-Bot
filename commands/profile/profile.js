@@ -38,6 +38,22 @@ module.exports = {
             `Out Of Shape ${client.emotes.staminaEmoji}`
         ];
 
+        let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
+        let currentCB = getClanBattleId(new Date());
+        let cbDmgTitle = `This Clan Battle ${client.emotes.blueSwordEmoji} `;
+        let cbDmgValue = profileDamage[0];
+
+        let todayDmgTitle = `Dealt Today ${client.emotes.greenSwordEmoji} `
+        let todayDmgValue = profileDamage[1];
+
+        if (currentCB == -1) {
+            cbDmgTitle = `Currently Not In Battle ${client.emotes.blueSwordEmoji}`;
+            cbDmgValue = `N/A`;
+
+            todayDmgTitle = `Currently Not In Battle ${client.emotes.greenSwordEmoji}`;
+            todayDmgValue = `N/A`;
+        }
+
         await message.channel.send(new MessageEmbed()
             .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
             .setAuthor(client.user.username, client.user.avatarURL())
@@ -46,8 +62,8 @@ module.exports = {
             .setDescription(statusStrings[randomStatus])
             .addField(`Level ${client.emotes.starLevelEmoji}`, client.userData[id].level)
             .addFields(
-                { name: `Dealt This Month ${client.emotes.blueSwordEmoji} `, value: profileDamage[0], inline: true },
-                { name: `Dealt Today ${client.emotes.greenSwordEmoji} `, value: profileDamage[1], inline: true },
+                { name: cbDmgTitle, value: cbDmgValue, inline: true },
+                { name: todayDmgTitle, value: todayDmgValue, inline: true },
                 { name: `Total Dealt ${client.emotes.swordEmoji}`, value: profileDamage[2], inline: true },
                 { name: `Jewels ${client.emotes.jewelEmoji} `, value: client.userData[id].jewels, inline: true },
                 { name: `Amulets ${client.emotes.amuletEmoji}`, value: client.userData[id].amulets, inline: true },
