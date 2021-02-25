@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'clanbattlehistory',
+    name: 'clanbattletimeline',
     aliases: [],
     category: 'Clan Battle',
     utilisation: '{prefix}clanbattlehistory',
@@ -34,7 +34,7 @@ module.exports = {
         let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
             .setAuthor(client.user.username, client.user.avatarURL())
             .setThumbnail("https://static.wikia.nocookie.net/princess-connect/images/5/5b/11-25-20CB.jpg")
-            .setTitle(`Clan Battle History`)
+            .setTitle(`Clan Battle Timeline`)
             .setDescription(`page ${startPage} / ${totalPages}`)
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();

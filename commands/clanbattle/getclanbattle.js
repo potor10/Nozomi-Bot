@@ -40,10 +40,8 @@ module.exports = {
             
         } else if (args.length >= 3) {
             let parseDate = `${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()} ${args.shift().toLowerCase().trim()}`;
-            date = Date.parse(parseDate);
+            let cbDate = new Date(Date.parse(parseDate));
             
-            let cbDate = new Date(date);
-
             if (isNaN(cbDate.getTime())) {  
                 let reminder = await message.reply(`Error: Invalid Date!`);
                 setTimeout(() => { reminder.delete();}, 5000);
