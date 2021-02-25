@@ -1,6 +1,5 @@
 module.exports = async (client, message, text, emoji, option, cancelText) => {
-    const { MessageEmbed } = require("discord.js");
-    
+    console.log(message);
     let emojiText = await message.channel.send(text);
     emojiText.react(emoji);
     let reactionFilter = require('./reactionFilter');
