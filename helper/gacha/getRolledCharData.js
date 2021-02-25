@@ -1,17 +1,17 @@
-module.exports = async (id, rarity) => {
-    const keys = Object.keys(gachaData[rarity]);
+module.exports = async (client, id, rarity) => {
+    const keys = Object.keys(client.gachaData[rarity]);
     const randomUnit = keys[Math.floor(Math.random() * keys.length)];
     
-    const rolledThumb = gachaData[rarity][randomUnit].thumbnailurl;
+    const rolledThumb = client.gachaData[rarity][randomUnit].thumbnailurl;
 
     let isDupe = 0;
     let amulets = 0;
 
-    if (!(id in collectionData)) {
-        collectionData[id] = {};
+    if (!(id in client.collectionData)) {
+        client.collectionData[id] = {};
     }
 
-    if (randomUnit in collectionData[id]) {
+    if (randomUnit in client.collectionData[id]) {
         if (rarity == 3) {
             amulets = 50;
         } else if (rarity == 2) {
@@ -21,9 +21,10 @@ module.exports = async (id, rarity) => {
         }
         isDupe = 1;
     } else {
-        collectionData[id][randomUnit] = rarity;
+        client.collectionData[id][randomUnit] = rarity;
     }
 
+    let loadImage = require('./loadImage');
     const obtainedImage = await loadImage(rolledThumb);
 
     let outputData = [obtainedImage, isDupe, amulets]

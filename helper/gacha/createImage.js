@@ -1,5 +1,7 @@
 module.exports = async (message, obtainedImages, amuletsObtained, newUnits, isDupe, rollResults) => {
     const { Canvas, Image } = require('canvas');
+    const { MessageEmbed } = require("discord.js");
+    const fs = require('fs');
     
     let sizThumb = 121;
     let sizOverlay = 40;
