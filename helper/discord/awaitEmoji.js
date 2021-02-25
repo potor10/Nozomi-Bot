@@ -1,5 +1,4 @@
-module.exports = async (client, message, text, emoji, option, cancelText) => {
-    let emojiText = await message.channel.send(text);
+module.exports = async (client, message, emojiText, emoji, option, cancelText) => {
     emojiText.react(emoji);
     let reactionFilter = require('./reactionFilter');
     return await emojiText.awaitReactions((reaction, user) => 

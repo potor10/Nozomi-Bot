@@ -29,8 +29,10 @@ module.exports = {
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
 
+        let emojiText = await message.channel.send(pullGacha);
+
         let awaitEmoji = require('../../helper/discord/awaitEmoji');
-        let collected = await awaitEmoji(client, message, pullGacha,
+        let collected = await awaitEmoji(client, message, emojiText,
             client.emotes.jewelEmojiId, { max: 1, time: 20000, errors: ['time'] }, 
             cancelGacha);
 
@@ -126,7 +128,7 @@ module.exports = {
                         .setDescription(`Please wait until the roll is finished before trying again`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp();
-                    pullGacha.edit(reminder);
+                    emojiText.edit(reminder);
                 } else {
                     let reminder = new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -135,7 +137,7 @@ module.exports = {
                         .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp();
-                    pullGacha.edit(reminder);
+                    emojiText.edit(reminder);
                 }
                 setTimeout(() => { pullGacha.delete();}, 5000);
             }
