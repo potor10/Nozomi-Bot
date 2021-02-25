@@ -124,8 +124,8 @@ module.exports = {
                     let reminder = new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
-                        .setTitle(`You are currently doing an x10 roll!`)
-                        .setDescription(`Please wait until the roll is finished before trying again`)
+                        .setTitle(`You Are Currently Doing A x10 Roll!`)
+                        .setDescription(`Please Wait Until The Roll Is Finished Before Trying Again`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp();
                     emojiText.edit(reminder);
@@ -133,8 +133,8 @@ module.exports = {
                     let reminder = new MessageEmbed()
                         .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                         .setAuthor(client.user.username, client.user.avatarURL())
-                        .setTitle(`You need at least ${jewelCost} ${client.emotes.jewelEmoji} to roll!`)
-                        .setDescription(`You are missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
+                        .setTitle(`You Need At Least ${jewelCost} ${client.emotes.jewelEmoji} To Roll!`)
+                        .setDescription(`You Are Missing ${jewelCost-client.userData[id].jewels} ${client.emotes.jewelEmoji}`)
                         .setFooter(client.config.discord.footerText, client.user.avatarURL())
                         .setTimestamp();
                     emojiText.edit(reminder);
