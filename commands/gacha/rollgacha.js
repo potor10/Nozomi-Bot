@@ -16,7 +16,7 @@ module.exports = {
         let pullGacha = new MessageEmbed()
             .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
             .setAuthor(client.user.username, client.user.avatarURL())
-            .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${jewelEmoji}`)
+            .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${client.emotes.jewelEmoji}`)
             .setDescription(`React To Confirm`)
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();

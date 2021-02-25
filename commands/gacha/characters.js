@@ -12,6 +12,8 @@ module.exports = {
         }
     
         let displayPerPage = 5;
+
+        let parseFirstArgAsInt = require('../../helper/discord/parseFirstArgAsInt');
         let startPage = await parseFirstArgAsInt(args, 1);
         let characters = Object.keys(client.collectionData[message.author.id]);
     

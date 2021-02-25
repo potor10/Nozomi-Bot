@@ -7,7 +7,7 @@ module.exports = {
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
         
-        if (!(message.author.id in collectionData)) {
+        if (!(message.author.id in client.collectionData)) {
             client.collectionData[message.author.id] = {};
         }
     
