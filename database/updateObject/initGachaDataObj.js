@@ -1,4 +1,4 @@
-module.exports = async () => {
+module.exports = async (client) => {
     // Initialize PG SQL DB Client
     const PGdb = require('pg').Client;
     const parseDbUrl = require("parse-database-url");

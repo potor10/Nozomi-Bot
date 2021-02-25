@@ -4,7 +4,7 @@
  * @summary An Autistic Discord Bot For Princess Connect
  */
 
-// Objects Used To Store Realtime Changes - Obtained Once On Startup
+
 
 //const { Client, Attachment, MessageEmbed } = require("discord.js");
 
@@ -21,6 +21,7 @@ client.emotes = client.config.emojis;
 client.filters = client.config.filters;
 client.commands = new discord.Collection();
 
+// Objects Used To Store Realtime Changes - Obtained Once On Startup
 client.userData = {};
 client.gachaData = {};
 client.collectionData = {};

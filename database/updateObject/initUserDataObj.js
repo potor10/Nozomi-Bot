@@ -15,7 +15,7 @@ module.exports = async () => {
 
     try {
         const res = await pgdb.query(query);
-        console.log(res);
+        console.log(pgdb.query(query));
         userArr = res.rows;
     } catch (err) {
         console.log(err.stack);
