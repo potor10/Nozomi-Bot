@@ -8,8 +8,8 @@ module.exports = async (client, id, date) => {
     const pgdb = new PGdb(dbConfig);
     pgdb.connect();
 
-    let initCbidObj = require('../updateObject/initCbidObj');
-    currentClanBattleId = await initCbidObj(client);
+    let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
+    let currentClanBattleId = await getClanBattleId(new Date());
 
     const query = `
         SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
