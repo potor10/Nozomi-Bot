@@ -31,7 +31,7 @@ module.exports = async (client, message, values, rectangles) => {
         console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, 6)} ${new Date().getUTCFullYear()}`);
         
         let newdate = new Date(date);
-        let attackCBid = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
+        let attackCBid = (newdate.getUTCMonth() - client.config.clanbattle.cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - client.config.clanbattle.cbStart.getUTCFullYear()) * 12);
 
         let initCbidObj = require('../../database/updateObject/initCbidObj');
         client.currentClanBattleId = await initCbidObj();

@@ -7,21 +7,24 @@ module.exports = {
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
         
-        currentClanBattleId = await initCbid();
-        let searchCBid = currentClanBattleId;
+        let initCbidObj = require('../../database/updateObject/initCbidObj');
+        client.currentClanBattleId = await initCbidObj(client);
+
+        let searchCBid = client.currentClanBattleId;
         
         if (!Array.isArray(args)) {
             message.channel.send("Error parsing arguments");
             return;
         }
 
-        let cbDate = new Date(cbStart);
+        let cbDate = new Date(client.config.clanbattle.cbStart);
         
         if (args.length < 3) {
-            searchCBid = parseFirstArgAsInt(args, currentClanBattleId);
+            let parseFirstArgAsInt = require('../../helper/discord/parseFirstArgAsInt');
+            searchCBid = parseFirstArgAsInt(args, client.currentClanBattleId);
 
-            if (searchCBid > currentClanBattleId) {
-                searchCBid = currentClanBattleId;
+            if (searchCBid > client.currentClanBattleId) {
+                searchCBid = client.currentClanBattleId;
             }
 
             let startDate = new Date(cbStart);
@@ -40,7 +43,7 @@ module.exports = {
             } 
             
             if (cbDate < cbStart) {
-                cbDate = new Date(cbStart);
+                cbDate = new Date(client.config.clanbattle.cbStart);
             } else if (cbDate > new Date()) {
                 cbDate = new Date();
             }
@@ -57,9 +60,12 @@ module.exports = {
             avatarUser = message.mentions.members.first().user.avatarURL();
         }
 
-        createUserIfNotExist(parseUser.id);
+        let createUserIfNotExist = require('../../helper/profile/createUserIfNotExist');
+        createUserIfNotExist(client, parseUser.id);
 
-        console.log(`LOG: Retrieving Clan Battle #${searchCBid} from ${parseUser.id}`)
+        console.log(`LOG: Retrieving Clan Battle #${searchCBid} from ${parseUser.id}`);
+
+        let retrieveDamageFromClanId = require('../../database/retrieveDatabase/retrieveDamageFromClanId');
         let damageValues = await retrieveDamageFromClanId(parseUser.id, searchCBid);
 
         let damageMessage = new MessageEmbed()

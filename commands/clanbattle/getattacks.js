@@ -23,7 +23,9 @@ module.exports = {
 
         let newdate = new Date(date);
         let attackClanBattleId = (newdate.getUTCMonth() - cbStart.getUTCMonth()) + ((newdate.getUTCFullYear() - cbStart.getUTCFullYear()) * 12);
-        currentClanBattleId = await initCbid();
+
+        let initCbidObj = require('../../database/updateObject/initCbidObj');
+        currentClanBattleId = await initCbidObj(client);
 
         if ((attackClanBattleId > currentClanBattleId) || (attackClanBattleId < 0)) {
             let reminder = await message.reply(`${newdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}` +
@@ -50,9 +52,12 @@ module.exports = {
             avatarUser = message.mentions.members.first().user.avatarURL();
         }
     
-        createUserIfNotExist(parseUser.id);
+        let createUserIfNotExist = require('../../helper/profile/createUserIfNotExist');
+        createUserIfNotExist(client, parseUser.id);
 
-        console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`)
+        console.log(`LOG: Retrieving attack on ${parseDate} from ${parseUser.id}`);
+
+        let retrieveAttack = require('../../database/retrieveDatabase/retrieveAttack');
         let obtainedAttacks = await retrieveAttack(parseUser.id, newdate);
 
         let damageMessage = new MessageEmbed()

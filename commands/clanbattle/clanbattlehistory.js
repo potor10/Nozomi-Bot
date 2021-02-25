@@ -1,13 +1,14 @@
 module.exports = {
-    name: 'getclanbattle',
+    name: 'clanbattlehistory',
     aliases: [],
     category: 'Clan Battle',
-    utilisation: '{prefix}getclanbattle',
+    utilisation: '{prefix}clanbattlehistory',
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
         
-        currentClanBattleId = await initCbid();
+        let initCbidObj = require('../../database/updateObject/initCbidObj');
+        currentClanBattleId = await initCbidObj(client);
     
         if (!Array.isArray(args)) {
             message.channel.send("Error parsing arguments");
@@ -16,13 +17,13 @@ module.exports = {
 
         let cbArray = [];
         for (let i = 0; i <= currentClanBattleId; i++) {
-            let curDate = new Date(cbStart);
+            let curDate = new Date(client.config.clanbattle.cbStart);
             curDate.setUTCMonth(i + curDate.getUTCMonth());
             let cbDate = curDate;
             cbArray.push(cbDate);
         }
         
-
+        let parseFirstArgAsInt = require('../../helper/discord/parseFirstArgAsInt');
         let startPage = await parseFirstArgAsInt(args, 1);
         let displayPerPage = 10;
 
