@@ -13,6 +13,9 @@ const discord = require('discord.js');
 const { Player } = require('discord-player');
 const fs = require('fs');
 
+
+const client = new discord.Client({disableMentions: 'everyone'});
+
 client.player = new Player(client);
 client.config = require('./config/config');
 client.emotes = client.config.emojis;
