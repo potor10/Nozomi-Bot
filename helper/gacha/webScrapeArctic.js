@@ -14,8 +14,8 @@ module.exports = async (client, url) => {
         for (let i = 0; i < rows.length; i++) {
             let bcells = $('.bcell th', rows[i]);
             
-            let charurl = $('a', bcells[0]).attr('src');
-            console.log(bcells[0]);
+            let charurl = $('a', bcells.first()).attr('src');
+            console.log(bcells.first());
 
             if (charurl) {
                 let getGachaDataArctic = require('./getGachaDataArctic');
