@@ -8,7 +8,7 @@ module.exports = async (href, thumbnailurl, findImg, characterName) => {
 
         let fullimageurl = innerPage(findImg).filter(() => {
             return this.rowSpan == 11;
-          }).first().attr('src');
+          }).first().has('.style_td img').attr('src');
 
         console.log(innerPage(findImg));
         // .style_td img

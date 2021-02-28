@@ -15,7 +15,11 @@ module.exports = async () => {
             charname varchar NOT NULL,
             thumbnailurl varchar NOT NULL,
             fullimageurl varchar NOT NULL,
-            starlevel int NOT NULL
+            starlevel int NOT NULL,
+            ubskill varchar NOT NULL,
+            skill1 varchar NOT NULL,
+            skill2 varchar NOT NULL,
+            exskill varchar NOT NULL
         );
     `
 
