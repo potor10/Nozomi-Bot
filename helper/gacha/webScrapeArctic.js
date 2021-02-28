@@ -17,10 +17,12 @@ module.exports = async (client, url) => {
             let charurl = bcells.attribs.href;
             console.log(charurl);
 
+            /*
             if (charurl) {
                 let getGachaDataArctic = require('./getGachaDataArctic');
                 await getGachaDataArctic(client, charurl);
             }
+            */
             
         }
     } catch (error) {
