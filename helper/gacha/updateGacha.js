@@ -1,17 +1,21 @@
 module.exports = async (client) => {
-    const urls = [];
+
+    const arcticurl = 'https://priconne.arcticpasserine.com/characters/';
+
+    let webScrapeData = require('./webScrapeArctic'); 
+    await webScrapeData(client, arcticurl);
+    
+    const rwikiurls = [];
     urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85');
     urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85');
     urls.push('https://rwiki.jp/priconne_redive/%E3%82%AD%E3%83%A3%E3%83%A9/%E2%98%85%E2%98%85%E2%98%85');
 
-    const findTable = '.table > tbody > tr > td > a';
-    const findImg = '.ie5 > table > tbody > tr > td';
+    const findTableRwiki = '.table > tbody > tr > td > a';
+    const findImgRwiki = '.ie5 > table > tbody > tr > td';
 
-    const charArray = [];
-    
-    for (let i = 0; i < urls.length; i++) {
-        let webScrape = require('./webScrape'); 
-        charArray.push(await webScrape(urls[i], findTable, findImg));
+    for (let i = 0; i < rwikiurls.length; i++) {
+        let webScrapeImages = require('./webScrapeRwiki'); 
+        charArray.push(await webScrapeImages(rwikiurls[i], findTableRwiki, findImgRwiki));
     }
 
     for (let i = 0; i < charArray.length; i++) {

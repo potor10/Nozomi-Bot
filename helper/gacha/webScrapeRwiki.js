@@ -22,7 +22,7 @@ module.exports = async (url, findTable, findImg) => {
                 let thumbnailurl = $('img', rows[i]).attr('src');
                 let characterName = imgTitle.substr(idxName + 1);
 
-                let getGachaData = require('./getGachaData');
+                let getGachaData = require('./getGachaDataRwiki');
                 let characterInfo = await getGachaData(rows[i].attribs.href, thumbnailurl, findImg, characterName);
                 returnArray.push(characterInfo);
             }
