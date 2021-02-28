@@ -7,15 +7,14 @@ module.exports = async (client, url) => {
         let $ = cheerio.load(response.body);
         console.log(`LOG: Finding Arctic Passerine Data From Units From: ${url}`);
 
-        const findTable = '#chartable > tbody > tr';
+        const findTable = '#chartable > tbody > tr > .bcell th > a';
 
-        let rows = $(findTable);
-        console.log(rows.html());
+        let links = $(findTable);
 
-        for (let i = 0; i < rows.length; i++) {
-            let bcells = $('.bcell th > a', rows[i]);
+        for (let i = 0; i < links.length; i++) {
+            console.log(links.html());
             
-            let charurl = bcells.attr('href');;
+            let charurl = links.attr('href');;
 
             /*
             if (charurl) {
