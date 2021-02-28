@@ -9,19 +9,12 @@ module.exports = async (client, url) => {
         const findTable = '#chartable > tbody > tr > .bcell > a';
 
         let links = $(findTable);
-        console.log(links);
 
         for (let i = 0; i < links.length; i++) {
-            console.log(links.html());
-            
-            let charurl = links.attr('href');;
+            let charurl = links[i].attribs.href;
 
-            /*
-            if (charurl) {
-                let getGachaDataArctic = require('./getGachaDataArctic');
-                await getGachaDataArctic(client, charurl);
-            }
-            */
+            let getGachaDataArctic = require('./getGachaDataArctic');
+            await getGachaDataArctic(client, charurl);
             
         }
     } catch (error) {

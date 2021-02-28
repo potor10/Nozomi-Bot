@@ -35,6 +35,8 @@ module.exports = async (client, href) => {
         const stats2 = $('.splitsection > .rhalf');
 
         console.log(stats1).text();
+        
+        console.log(currentChar);
 
     } catch (error) {
         console.log(error.response.body);
