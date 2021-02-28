@@ -10,7 +10,7 @@ module.exports = async (client, url) => {
         const findTable = '#chartable > tbody > tr';
 
         let rows = $(findTable);
-        console.log(rows[1]);
+        console.log(rows.html());
 
         for (let i = 0; i < rows.length; i++) {
             let bcells = $('.bcell th > a', rows[i]);
