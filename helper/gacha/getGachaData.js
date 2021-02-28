@@ -6,7 +6,12 @@ module.exports = async (href, thumbnailurl, findImg, characterName) => {
 		const response = await got(href);
         let innerPage = cheerio.load(response.body);
 
-        let fullimageurl = innerPage(findImg).first().attr('src');
+        let fullimageurl = innerPage(findImg).filter(() => {
+            return this.rowSpan == 11;
+          }).first().attr('src');
+
+        console.log(innerPage(findImg));
+        // .style_td img
 
         let characterInfo = {
             name: characterName,
