@@ -14,7 +14,8 @@ module.exports = async (client, url) => {
         for (let i = 0; i < links.length; i++) {
             let currentLink = url + links[i].attribs.href.substring(3);
 
-            console.log();
+            //console.log(currentLink);
+            let getGachaDataArctic = require('./getGachaDataArctic');
             await getGachaDataArctic(client, currentLink);
         }
     } catch (error) {
