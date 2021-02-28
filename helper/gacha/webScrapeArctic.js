@@ -12,11 +12,10 @@ module.exports = async (client, url) => {
         let links = $(findTable);
 
         for (let i = 0; i < links.length; i++) {
-            console.log(links[i].attribs.href);
-            //console.log(links[i].attr('href'));
-            //console.log(links[i].attribs.href);
-            //let getGachaDataArctic = require('./getGachaDataArctic');
-            //await getGachaDataArctic(client, links[i].attr('href'));
+            let currentLink = url + links[i].attribs.href.substring(3);
+
+            console.log();
+            await getGachaDataArctic(client, currentLink);
         }
     } catch (error) {
         console.log(error.response.body);
