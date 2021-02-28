@@ -6,7 +6,7 @@ module.exports = async (client, url) => {
         const response = await got(url);
         let $ = cheerio.load(response.body);
         console.log(`LOG: Finding Arctic Passerine Data From Units From: ${url}`);
-
+        console.log($.html());
         const findTable = '#chartable > tbody > tr > .bcell th > a';
 
         let links = $(findTable);
