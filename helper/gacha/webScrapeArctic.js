@@ -14,8 +14,8 @@ module.exports = async (client, url) => {
         for (let i = 0; i < rows.length; i++) {
             let bcells = $('.bcell th > a', rows[i]);
             
-            let charurl = bcells;
-            console.log(bcells);
+            let charurl = bcells.attr('href');;
+            console.log(rows[1]);
 
             /*
             if (charurl) {
