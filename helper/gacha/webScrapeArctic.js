@@ -12,9 +12,9 @@ module.exports = async (client, url) => {
         let rows = $(findTable);
 
         for (let i = 0; i < rows.length; i++) {
-            let bcells = $('.bcell', rows[i]);
+            let bcells = $('.bcell th', rows[i]);
             
-            let charurl = $('a', bcells.first()).attr('src');
+            let charurl = $('a', bcells.first()).attr('href');
             console.log(charurl);
 
             if (charurl) {
