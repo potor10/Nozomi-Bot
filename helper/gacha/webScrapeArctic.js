@@ -12,7 +12,7 @@ module.exports = async (client, url) => {
         let links = $(findTable);
 
         for (let i = 0; i < links.length; i++) {
-            let currentLink = url + links[i].attribs.href.substring(3);
+            let currentLink = url.substring + links[i].attribs.href.substring(14);
 
             //console.log(currentLink);
             let getGachaDataArctic = require('./getGachaDataArctic');
