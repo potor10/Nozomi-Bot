@@ -11,11 +11,9 @@ module.exports = async (client, url) => {
         let links = $(findTable);
 
         for (let i = 0; i < links.length; i++) {
-            let charurl = links[i].attribs.href;
-
+            console.log(links[i].attr('href'));
             let getGachaDataArctic = require('./getGachaDataArctic');
-            await getGachaDataArctic(client, charurl);
-            
+            await getGachaDataArctic(client, links[i].attribs.href);
         }
     } catch (error) {
         console.log(error.response.body);
