@@ -10,12 +10,12 @@ module.exports = async (client, url) => {
         const findTable = '#chartable > tbody > tr';
 
         let rows = $(findTable);
-        console.log(rows);
 
         for (let i = 0; i < rows.length; i++) {
             let bcells = $('.bcell th', rows[i]);
             
             let charurl = $('a', bcells[0]).attr('src');
+            console.log(charurl);
             
             if (charurl) {
                 let getGachaDataArctic = require('./getGachaDataArctic');
