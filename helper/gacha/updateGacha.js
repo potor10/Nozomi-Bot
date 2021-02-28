@@ -13,6 +13,7 @@ module.exports = async (client) => {
     const findTableRwiki = '.table > tbody > tr > td > a';
     const findImgRwiki = '.ie5 > table > tbody > tr > td';
 
+    /*
     for (let i = 0; i < rwikiurls.length; i++) {
         let webScrapeImages = require('./webScrapeRwiki'); 
         charArray.push(await webScrapeImages(rwikiurls[i], findTableRwiki, findImgRwiki));
@@ -26,4 +27,5 @@ module.exports = async (client) => {
             };
         }
     }   
+    */
 }
