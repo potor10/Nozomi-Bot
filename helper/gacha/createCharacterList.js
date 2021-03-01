@@ -3,19 +3,25 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     const { MessageEmbed } = require("discord.js");
     const fs = require('fs');
     
-    let width = 400;
-    let textHeight = 50;
+    let width = 960;
+    let height = 540;
+
+    let textHeight = 88;
     
-    var canvas = new Canvas(width, width * 3);
+    var canvas = new Canvas(width, height);
     var ctx = canvas.getContext('2d');
     
-    let x = 0;
-    let y = 0;
+    let x = 600;
+    let y = 100;
+
+    let loadImage = require('../../helper/gacha/loadImage');
+    let backgroundImg = await loadImage(`../../img/hatsune_shiori.jpeg`);
+    ctx.drawImage(backgroundImg, 0 , 0, 960, 540);
     
-    ctx.font = '50px serif';
+    ctx.font = '80px serif';
 
     for (let i = 0; i < messageRows.length; i++) {
-        ctx.fillText(messageRows[i], x, y);
+        ctx.fillText(messageRows[i], x, y, 300);
         y += textHeight;
     }
 

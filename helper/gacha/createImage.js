@@ -3,37 +3,35 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
     const { MessageEmbed } = require("discord.js");
     const fs = require('fs');
     
-    let sizThumb = 121;
-    
-    var canvas = new Canvas(sizThumb * 5, sizThumb * 2);
+    var canvas = new Canvas(client.gacha.sizThumb * 5, client.gacha.sizThumb * 2);
     var ctx = canvas.getContext('2d');
     
     let x = 0;
     let y = 0;
     
     for (let i = 0; i < obtainedImages.length; i++) {
-        ctx.drawImage(obtainedImages[i], x, y, sizThumb, sizThumb);
+        ctx.drawImage(obtainedImages[i], x, y, client.gacha.sizThumb, client.gacha.sizThumb);
 
-        x+= sizThumb;
+        x+= client.gacha.sizThumb;
         if (i == 4) {
             x = 0;
-            y += sizThumb;
+            y += client.gacha.sizThumb;
         }
     }
 
-    x = sizThumb - sizOverlay;
-    y = sizThumb - sizOverlay;
+    x = client.gacha.sizThumb - client.gacha.sizOverlay;
+    y = client.gacha.sizThumb - client.gacha.sizOverlay;
     ctx.globalAlpha = 0.8;
 
     for (let i = 0; i < isDupe.length; i++) {
         if (isDupe[i]) {
-            ctx.drawImage(client.amuletSRC, x, y, sizOverlay, sizOverlay);
+            ctx.drawImage(client.amuletSRC, x, y, client.gacha.sizOverlay, client.gacha.sizOverlay);
         }
 
-        x+= sizThumb;
+        x+= client.gacha.sizThumb;
         if (i == 4) {
-            x = sizThumb - sizOverlay;
-            y += sizThumb;
+            x = client.gacha.sizThumb - client.gacha.sizOverlay;
+            y += client.gacha.sizThumb;
         }
     }
 
