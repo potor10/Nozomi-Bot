@@ -1,3 +1,5 @@
+const { delete } = require('got');
+
 module.exports = async (client, starlevel, url) => {
     const cheerio = require('cheerio');
     const got = require("got");
@@ -22,15 +24,35 @@ module.exports = async (client, starlevel, url) => {
                 let thumbnailurl = $('img', rows[i]).attr('src');
                 let characterName = imgTitle.substr(idxName + 1);
 
-                let characterKeys = Object.keys(client.gachaData[starlevel + 1]);
-                const matchingKeys = characterKeys.filter(key => key.split(/,\s?/)[1] == characterName);
+                let foundCharacter = false;
+                for (let j = 0; j < 3; j++) {
+                    let characterKeys = Object.keys(client.gachaData[j + 1]);
+                    for (let k = 0; k < characterKeys.length; k++) {
+                        if (characterKeys[k].split(/,\s?/)[1] == characterName) {
+                            // Check for incongruities;
+                            if (j != starlevel) {
+                                console.log(`LOG: Inconsistency found in star level w/ ${characterKeys[k]}`);
+                                client.gachaData[starlevel + 1][characterKeys[k]] = client.gachaData[j + 1][characterKeys[k]];
+                                
+                                delete client.gachaData[j + 1][characterKeys[k]];
+                            }
 
-                if(matchingKeys.length != 0) {
-                    client.gachaData[starlevel + 1][matchingKeys[0]].thumbnailurl = thumbnailurl;
+                            client.gachaData[starlevel + 1][characterKeys[k]].thumbnailurl = thumbnailurl;
 
-                    let getGachaDataRwiki = require('./getGachaDataRwiki');
-                    await getGachaDataRwiki(client, rows[i].attribs.href, matchingKeys[0], starlevel);
+                            let getGachaDataRwiki = require('./getGachaDataRwiki');
+                            await getGachaDataRwiki(client, rows[i].attribs.href, characterKeys[k], starlevel);
+
+                            foundCharacter = true;
+                            break;
+                        }
+                    }
+    
+                    if(foundCharacter) {
+                        break;
+                    }
                 }
+
+
             }
         }
     } catch (error) {
