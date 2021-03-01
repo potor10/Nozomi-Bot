@@ -6,7 +6,7 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     let width = 1920;
     let height = 1080;
 
-    let textHeight = 44;
+    let textHeight = 46;
     
     var canvas = new Canvas(width, height);
     var ctx = canvas.getContext('2d');
@@ -18,13 +18,12 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     let backgroundImg = await loadImage(`./img/hatsune_shiori.jpeg`);
     ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
     
-    ctx.font = '40px PT Sans';
+    ctx.font = '40px PT Sans Caption';
 
     for (let i = 0; i < messageRows.length; i++) {
-        ctx.fillStyle = `rgb(
-            ${Math.floor(Math.random() * 170) + 39},
-            ${Math.floor(Math.random() * 170) + 39},
-            ${Math.floor(Math.random() * 170) + 39})`;
+        ctx.fillStyle = `rgb(${Math.floor(Math.random() * 170) + 39}, ` +
+         `${Math.floor(Math.random() * 170) + 39}, ` + 
+         `${Math.floor(Math.random() * 170) + 39})`;
     
         ctx.fillText(messageRows[i], x, y, 600);
         y += textHeight;
