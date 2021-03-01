@@ -112,7 +112,7 @@ module.exports = {
                     }
                     embedRoll.setDescription(`${rollString}`);
 
-                    if ((i+1) % 3 == 0 || i+1 == 10) {
+                    if ((i+1) % 5 == 0 || i+1 == 10) {
                         await emojiText.edit(embedRoll);
                     }
                     
