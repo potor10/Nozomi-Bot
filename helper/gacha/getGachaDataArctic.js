@@ -11,34 +11,31 @@ module.exports = async (client, href) => {
         const jpcharname = $('.rtext > h1').text();
         
         const charname = `${encharname}, ${jpcharname}`;
-        console.log(charname);
 
         const starlevel = ($('.ltext > .centeredbox').text().match(/★/g) || []).length;
-        console.log(starlevel);
 
         let currentChar = client.gachaData[starlevel][charname] = {};
 
-        currentChar.subimage = $('#rightcolumn > img').attr('src');
-        console.log(currentChar.subimage);
+        currentChar.subimage = href + $('#rightcolumn > img').attr('src');
 
         const skills = $('.splitsection .skillbox');
 
-        currentChar.ubskillname = $('strong', skills[0]).text();
-        currentChar.ubskill = $('p', skills[0]).text();
+        currentChar.ubskillname = $(skills[0].get(1)).text().trim();
+        currentChar.ubskill = $('p', skills[0]).text().trim();
 
-        currentChar.skill1name = $('strong', skills[1]).text();
-        currentChar.skill1 = $('p', skills[1]).text();
+        currentChar.skill1name = $(skills[1].get(1)).text().trim();
+        currentChar.skill1 = $('p', skills[1]).text().trim();
 
-        currentChar.skill2name = $('strong', skills[2]).text();
-        currentChar.skill2 = $('p', skills[2]).text();
+        currentChar.skill2name = $(skills[2].get(1)).text().trim();
+        currentChar.skill2 = $('p', skills[2]).text().trim();
 
-        currentChar.exskill = $('strong', skills[3]).text();
-        currentChar.exskill = $('p', skills[3]).text();
+        currentChar.exskill = $(skills[3].get(1)).text().trim();
+        currentChar.exskill = $('p', skills[3]).text().trim();
 
         const stats1 = $('.splitsection > .lhalf');
         const stats2 = $('.splitsection > .rhalf');
 
-        console.log(stats1.text());
+        console.log(stats1[0].text().trim());
         
         console.log(currentChar);
 
