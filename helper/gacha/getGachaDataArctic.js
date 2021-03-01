@@ -14,7 +14,8 @@ module.exports = async (client, href, thumbnailurl) => {
 
         const starlevel = ($('.ltext > .centeredbox').text().match(/★/g) || []).length;
 
-        let currentChar = client.gachaData[starlevel][charname] = {};
+        client.gachaData[starlevel][charname] = {};
+        let currentChar = client.gachaData[starlevel][charname];
 
         currentChar.thumbnailurl = thumbnailurl;
         currentChar.fullimageurl = thumbnailurl;
@@ -22,6 +23,7 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.subimage = href + $('#rightcolumn > img').attr('src');
 
         const skills = $('.splitsection .skillbox');
+        console.log(skills[0].children[1].data);
         console.log((skills[0].children[1].data).replaceAll('\n', '').trim());
 
         //currentChar.ubskillname = skills[0].children[1].data.replaceAll('\n', '').trim();
