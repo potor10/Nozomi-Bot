@@ -6,14 +6,14 @@ module.exports = async (client, href, charname, starlevel) => {
 
     try {
 		const response = await got(href);
-        let innerPage = cheerio.load(response.body);
+        let $ = cheerio.load(response.body);
 
-        let fullimages = innerPage(findImg);
+        let fullimages = $(findImg);
 
         console.log(fullimages.children());
-        for (let image in fullimages) {
-            console.log($(fullimages[image]));
-            if ($(fullimages[image]).attr('title').indexOf('icon') == -1) {
+        for (let i = 0; i < fullimages.length; i++) {
+            console.log($(fullimages[i]));
+            if ($(fullimages[i]).attr('title').indexOf('icon') == -1) {
                 client.gachaData[starlevel + 1][charname].fullimageurl = fullimages[image].attr('src');
                 break;
             }
