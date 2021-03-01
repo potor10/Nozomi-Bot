@@ -39,7 +39,6 @@ module.exports = {
             if (starlevel != -1) {
                 let charFullImg = client.gachaData[starlevel][charname].fullimageurl;
                 let charSubImg = client.gachaData[starlevel][charname].subimageurl;
-                console.log(charSubImg);
 
                 let height = client.gachaData[starlevel][charname].height;
                 let birthday = client.gachaData[starlevel][charname].birthday;
@@ -71,17 +70,15 @@ module.exports = {
                     .setImage(`${charFullImg}`)
                     .addFields(
                         { name: `Height`, value: height, inline: true },
+                        { name: `Weight`, value: weight, inline: true },
+                        { name: `Species`, value: species, inline: true },
                         { name: `Birthday`, value: birthday, inline: true },
                         { name: `Age`, value: age, inline: true },
-                        { name: `Species`, value: species, inline: true },
-                        { name: `Guild`, value: guild, inline: true },
-                        { name: `Likes`, value: likes, inline: true },
-                        { name: `CV`, value: cv, inline: true },
                         { name: `Real Name`, value: realname, inline: true },
-                        { name: `Weight`, value: weight, inline: true },
+                        { name: `CV`, value: cv, inline: true },
+                        { name: `Guild`, value: guild, inline: true },
                         { name: `Blood Type`, value: bloodtype, inline: true },
-
-                        { name: '\u200b', value: '\u200b', inline: false },
+                        { name: `Likes`, value: `${likes}\n`, inline: false },
 
                         { name: `Union Burst: ${ubskillname}`, value: ubskill, inline: false },
                         { name: `Skill 1: ${skill1name} `, value: skill1, inline: false },
