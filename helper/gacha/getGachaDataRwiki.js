@@ -15,7 +15,7 @@ module.exports = async (client, href, charname, starlevel) => {
         console.log(fullimageurl);
         // .style_td img
         
-        client.gachaData[starlevel][charname].fullimageurl = fullimageurl
+        client.gachaData[starlevel + 1][charname].fullimageurl = fullimageurl
     } catch (error) {
         console.log(error);
         //=> 'Internal server error ...'
