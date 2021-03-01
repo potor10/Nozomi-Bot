@@ -8,7 +8,7 @@ module.exports = async (client, href, thumbnailurl) => {
         console.log(`LOG: Finding Arctic Passerine Data From Units From: ${href}`);
 
         const encharname = $('.ltext > h1').text();
-        const jpcharname = $('.rtext > h1').text();
+        const jpcharname = $('.rtext > h1').text().replace(/\s/g, '');
         
         const charname = `${encharname}, ${jpcharname}`;
 

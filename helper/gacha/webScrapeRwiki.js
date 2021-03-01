@@ -20,7 +20,7 @@ module.exports = async (client, starlevel, url) => {
 
             if (idxName != -1) {
                 let thumbnailurl = $('img', rows[i]).attr('src');
-                let characterName = imgTitle.substr(idxName + 1);
+                let characterName = imgTitle.substr(idxName + 1).replace(/\s/g, '');
 
                 let foundCharacter = false;
                 for (let j = 0; j < 3; j++) {
