@@ -19,11 +19,11 @@ module.exports = async (client, message, messageRows, messageDisplay, startPage,
     ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
 
     ctx.font = '60px Courier New';
-    ctx.fillStyle = `#930CA1`;
+    ctx.fillStyle = `rgb(254, 182, 247)`;
     ctx.fillText(`${message.author.username}'s Character List`, 40, 80, 880);
 
     ctx.font = '60px Courier New';
-    ctx.fillStyle = `#0C66A1`;
+    ctx.fillStyle = `rgb(182, 248, 254)`;
     ctx.fillText(`Page ${startPage} / ${totalPages}`, 40, 1040, 880);
     
     ctx.font = '40px PT Sans Caption';
