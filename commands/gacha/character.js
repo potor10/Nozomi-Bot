@@ -39,6 +39,7 @@ module.exports = {
             if (starlevel != -1) {
                 let charFullImg = client.gachaData[starlevel][charname].fullimageurl;
                 let charSubImg = client.gachaData[starlevel][charname].subimageurl;
+                console.log(charSubImg);
 
                 let height = client.gachaData[starlevel][charname].height;
                 let birthday = client.gachaData[starlevel][charname].birthday;
