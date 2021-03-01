@@ -11,7 +11,8 @@ module.exports = async (client, url) => {
 
         let links = $(findTable);
 
-        for (let i = 0; i < links.length; i++) {
+        //links.length
+        for (let i = 0; i < 2; i++) {
             let currentLink = url + links[i].attribs.href.substring(14);
 
             console.log(currentLink);
