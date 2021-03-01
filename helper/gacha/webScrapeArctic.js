@@ -16,7 +16,7 @@ module.exports = async (client, url) => {
         //links.length
         for (let i = 0; i < 2; i++) {
             let currentLink = url + links[i].attribs.href.substring(14);
-            let thumbnailurl = $('img', thumbs[i]).attr('src');
+            let thumbnailurl = url.substring(0, url.length - 12) + $('img', thumbs[i]).attr('src').substring(2);
 
             console.log(currentLink);
             let getGachaDataArctic = require('./getGachaDataArctic');
