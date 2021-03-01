@@ -23,7 +23,7 @@ module.exports = async (client, url) => {
             await getGachaDataArctic(client, currentLink, thumbnailurl);
         }
     } catch (error) {
-        console.log(error.response.body);
+        console.log(error);
         //=> 'Internal server error ...'
     }
 }
