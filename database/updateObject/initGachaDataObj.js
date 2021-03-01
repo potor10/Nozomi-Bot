@@ -30,6 +30,7 @@ module.exports = async () => {
         if (charData.hasOwnProperty(char)) {
             let loadImage = require('../../helper/gacha/loadImage');
             const obtainedImage = await loadImage(charData[char].thumbnailurl);
+            console.log(obtainedImage);
 
             let charInfo = {
                 thumbnailurl : charData[char].thumbnailurl,
@@ -65,6 +66,8 @@ module.exports = async () => {
             gachaDataObj[charData[char].starlevel][charData[char].charname] = charInfo;
         }
     }
+
+    console.log("done");
 
     return gachaDataObj;
 }
