@@ -20,17 +20,17 @@ module.exports = async (client, href) => {
 
         const skills = $('.splitsection .skillbox');
 
-        currentChar.ubskillname = skills[0][1].text().trim().sub;
-        currentChar.ubskill = $('p', skills[0]).text().trim();
+        currentChar.ubskillname = skills[0][1].text().trim().slice(0, -1);
+        currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
 
-        currentChar.skill1name = skills[1].text().trim();
-        currentChar.skill1 = $('p', skills[1]).text().trim();
+        currentChar.skill1name = skills[1].text().trim().slice(0, -1);
+        currentChar.skill1 = $('p', skills[1]).text().trim().slice(0, -1);
 
-        currentChar.skill2name = skills[2].text().trim();
-        currentChar.skill2 = $('p', skills[2]).text().trim();
+        currentChar.skill2name = skills[2].text().trim().slice(0, -1);
+        currentChar.skill2 = $('p', skills[2]).text().trim().slice(0, -1);
 
-        currentChar.exskill = skills[3].text().trim();
-        currentChar.exskill = $('p', skills[3]).text().trim();
+        currentChar.exskill = skills[3].text().trim().slice(0, -1) ;
+        currentChar.exskill = $('p', skills[3]).text().trim().slice(0, -1);
 
         const stats1 = $('.splitsection > .lhalf');
         const stats2 = $('.splitsection > .rhalf');
