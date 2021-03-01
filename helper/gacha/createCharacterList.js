@@ -6,10 +6,17 @@ module.exports = async (client, message, messageRows, messageDisplay, startPage,
     let width = 1920;
     let height = 1080;
 
-    let textHeight = 46;
+    let textHeight = 48;
     
     var canvas = new Canvas(width, height);
     var ctx = canvas.getContext('2d');
+
+    let x = 1200;
+    let y = 100;
+
+    let loadImage = require('../../helper/gacha/loadImage');
+    let backgroundImg = await loadImage(`./img/hatsune_shiori.jpeg`);
+    ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
 
     ctx.font = '80px Courier New';
     ctx.fillStyle = `rgb(254, 182, 247)`;
@@ -18,13 +25,6 @@ module.exports = async (client, message, messageRows, messageDisplay, startPage,
     ctx.font = '60px Courier New';
     ctx.fillStyle = `rgb(182, 248, 254)`;
     ctx.fillText(`Page ${startPage} / ${totalPages}`, 10, 1000, 880);
-
-    let x = 1200;
-    let y = 100;
-
-    let loadImage = require('../../helper/gacha/loadImage');
-    let backgroundImg = await loadImage(`./img/hatsune_shiori.jpeg`);
-    ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
     
     ctx.font = '40px PT Sans Caption';
 
