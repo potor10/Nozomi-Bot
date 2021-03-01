@@ -1,7 +1,9 @@
-module.exports = async (href, thumbnailurl, findImg, characterName) => {
+module.exports = async (client, href, characterName, starlevel) => {
     const cheerio = require('cheerio');
     const got = require("got");
     
+    const findImg = '.ie5 > table > tbody > tr > td';
+
     try {
 		const response = await got(href);
         let innerPage = cheerio.load(response.body);
@@ -13,13 +15,7 @@ module.exports = async (href, thumbnailurl, findImg, characterName) => {
         console.log(fullimageurl);
         // .style_td img
         
-        let characterInfo = {
-            name: characterName,
-            thumbnailurl: thumbnailurl,
-            fullimageurl: fullimageurl
-        } 
-
-        return characterInfo;
+        client.gachaData[starlevel][characterName].fullimageurl = fullimageurl
     } catch (error) {
         console.log(error);
         //=> 'Internal server error ...'

@@ -43,8 +43,9 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.birthday = stats1[2].trim().substring(stats1[2].trim().indexOf(':') + 2);
         currentChar.age = stats1[3].trim().substring(stats1[3].trim().indexOf(':') + 2);
         currentChar.species = stats1[4].trim().substring(stats1[4].trim().indexOf(':') + 2);
-        currentChar.likes = stats1[5].trim().substring(stats1[5].trim().indexOf(':') + 2);
-        currentChar.cv = stats1[6].trim().substring(stats1[6].trim().indexOf(':') + 2);
+        currentChar.guild = stats1[5].trim().substring(stats1[5].trim().indexOf(':') + 2);
+        currentChar.likes = stats1[6].trim().substring(stats1[5].trim().indexOf(':') + 2);
+        currentChar.cv = stats1[7].trim().substring(stats1[6].trim().indexOf(':') + 2);
 
         currentChar.realname = stats2[0].trim().substring(stats2[0].trim().indexOf(':') + 2);
         currentChar.weight = stats2[1].trim().substring(stats2[1].trim().indexOf(':') + 2);

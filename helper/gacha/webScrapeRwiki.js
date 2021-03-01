@@ -1,8 +1,8 @@
-module.exports = async (url, findTable, findImg) => {
+module.exports = async (client, starlevel, url) => {
     const cheerio = require('cheerio');
     const got = require("got");
-    
-    let returnArray = [];
+
+    const findTable = '.table > tbody > tr > td > a';
 
     try {
         const response = await got(url);
@@ -22,13 +22,18 @@ module.exports = async (url, findTable, findImg) => {
                 let thumbnailurl = $('img', rows[i]).attr('src');
                 let characterName = imgTitle.substr(idxName + 1);
 
-                let getGachaData = require('./getGachaDataRwiki');
-                let characterInfo = await getGachaData(rows[i].attribs.href, thumbnailurl, findImg, characterName);
-                returnArray.push(characterInfo);
+                let characterKeys = Object.keys(client.gachaData[starlevel + 1]);
+                const matchingKeys = characterKeys.filter(key => key.split(/,\s?/)[1] == characterName);
+
+                if(matchingKeys.length != 0) {
+                    console.log(`match detected! for ${characterName}`);
+                    client.gachaData[starlevel][characterName].thumbnailurl = thumbnailurl;
+
+                    let getGachaDataRwiki = require('./getGachaDataRwiki');
+                    await getGachaDataRwiki(client, rows[i].attribs.href, characterName, starlevel);
+                }
             }
         }
-
-        return returnArray;
     } catch (error) {
         console.log(error);
         //=> 'Internal server error ...'
