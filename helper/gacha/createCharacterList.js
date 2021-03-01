@@ -18,13 +18,14 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     let backgroundImg = await loadImage(`./img/hatsune_shiori.jpeg`);
     ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
     
-    ctx.font = 'bold 40px PT Sans';
-    ctx.fillStyle = `rgb(
-        ${Math.floor(Math.random() * 170) + 39},
-        ${Math.floor(Math.random() * 170) + 39},
-        ${Math.floor(Math.random() * 170) + 39})`;
+    ctx.font = '40px PT Sans';
 
     for (let i = 0; i < messageRows.length; i++) {
+        ctx.fillStyle = `rgb(
+            ${Math.floor(Math.random() * 170) + 39},
+            ${Math.floor(Math.random() * 170) + 39},
+            ${Math.floor(Math.random() * 170) + 39})`;
+    
         ctx.fillText(messageRows[i], x, y, 600);
         y += textHeight;
     }

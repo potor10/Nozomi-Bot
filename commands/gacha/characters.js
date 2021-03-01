@@ -48,7 +48,7 @@ module.exports = {
         
         for (let i = (startPage - 1) * displayPerPage; 
             i < characters.length && i < ((startPage - 1) * displayPerPage) + displayPerPage; i++) {
-            let starlevel = '★'.repeat(client.collectionData[message.author.id][characters[i]]);
+            let starlevel = '☆'.repeat(client.collectionData[message.author.id][characters[i]]);
             let charstr = `${starlevel} ${characters[i].split(/,\s?/)[0]}`;
     
             messageRows.push(charstr);
