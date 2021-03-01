@@ -27,10 +27,10 @@ module.exports = async (client, starlevel, url) => {
 
                 if(matchingKeys.length != 0) {
                     console.log(`match detected! for ${characterName}`);
-                    client.gachaData[starlevel][characterName].thumbnailurl = thumbnailurl;
+                    client.gachaData[starlevel][matchingKeys[0]].thumbnailurl = thumbnailurl;
 
                     let getGachaDataRwiki = require('./getGachaDataRwiki');
-                    await getGachaDataRwiki(client, rows[i].attribs.href, characterName, starlevel);
+                    await getGachaDataRwiki(client, rows[i].attribs.href, matchingKeys[0], starlevel);
                 }
             }
         }

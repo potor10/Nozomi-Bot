@@ -33,8 +33,11 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.skill2name = skills[2].children[1].data.trim();
         currentChar.skill2 = $('p', skills[2]).text().trim();
 
-        currentChar.exskill = skills[3].children[1].data.trim();
-        currentChar.exskill = $('p', skills[3]).text().trim();
+        currentChar.exskillname = skills[3].children[1].data.trim();
+
+        let exskillstring =  $('p', skills[3]).text().trim();
+        currentChar.exskill = exskillstring.substring(0, exskillstring.indexOf('\n') + 1) + 
+            exskillstring.substring(exskillstring.indexOf('\n') + 1).trim();
 
         const stats1 = $('.splitsection > .lhalf').text().trim().split(/\n\s?/);
         const stats2 = $('.splitsection > .rhalf').text().trim().split(/\n\s?/);
