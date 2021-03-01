@@ -22,7 +22,7 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.subimage = href + $('#rightcolumn > img').attr('src');
 
         const skills = $('.splitsection .skillbox');
-        console.log(skills[0].children[1].data.replaceAll('\n', '').trim());
+        console.log((skills[0].children[1].data).replaceAll('\n', '').trim());
 
         //currentChar.ubskillname = skills[0].children[1].data.replaceAll('\n', '').trim();
         currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
