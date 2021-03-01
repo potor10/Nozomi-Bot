@@ -30,6 +30,8 @@ module.exports = async (charname, starlevel, char) => {
             WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charname = '${char.charname}');
     `;
 
+    console.log(query);
+
     try {
         const res = await pgdb.query(query);
     } catch (err) {

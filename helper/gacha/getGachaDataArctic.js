@@ -24,14 +24,14 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.ubskillname = skills[0].children[1].data.replaceAll('\n', '').trim();
         currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
 
-        currentChar.skill1name = skills[1].children[1].data.replaceAll('\n', '').trim();
-        currentChar.skill1 = $('p', skills[1]).text().trim().slice(0, -1);
+        //currentChar.skill1name = skills[1].children[1].data.replaceAll('\n', '').trim();
+        //currentChar.skill1 = $('p', skills[1]).text().trim().slice(0, -1);
 
-        currentChar.skill2name = skills[2].children[1].data.replaceAll('\n', '').trim();
-        currentChar.skill2 = $('p', skills[2]).text().trim().slice(0, -1);
+        //currentChar.skill2name = skills[2].children[1].data.replaceAll('\n', '').trim();
+        //currentChar.skill2 = $('p', skills[2]).text().trim().slice(0, -1);
 
-        currentChar.exskill = skills[3].children[1].data.replaceAll('\n', '').trim();
-        currentChar.exskill = $('p', skills[3]).text().trim().slice(0, -1);
+        //currentChar.exskill = skills[3].children[1].data.replaceAll('\n', '').trim();
+        //currentChar.exskill = $('p', skills[3]).text().trim().slice(0, -1);
 
 
         const stats1 = $('.splitsection > .lhalf');
