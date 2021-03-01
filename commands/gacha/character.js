@@ -69,16 +69,16 @@ module.exports = {
                     .setThumbnail(charSubImg)
                     .setImage(`${charFullImg}`)
                     .addFields(
-                        { name: `Height`, value: height, inline: false },
-                        { name: `Birthday`, value: birthday, inline: false },
-                        { name: `Age`, value: age, inline: false },
-                        { name: `Species`, value: species, inline: false },
-                        { name: `Guild`, value: guild, inline: false },
-                        { name: `Likes`, value: likes, inline: false },
-                        { name: `CV`, value: cv, inline: false },
-                        { name: `Real Name`, value: realname, inline: false },
-                        { name: `Weight`, value: weight, inline: false },
-                        { name: `Blood Type`, value: bloodtype, inline: false },
+                        { name: `Height`, value: height, inline: true },
+                        { name: `Birthday`, value: birthday, inline: true },
+                        { name: `Age`, value: age, inline: true },
+                        { name: `Species`, value: species, inline: true },
+                        { name: `Guild`, value: guild, inline: true },
+                        { name: `Likes`, value: likes, inline: true },
+                        { name: `CV`, value: cv, inline: true },
+                        { name: `Real Name`, value: realname, inline: true },
+                        { name: `Weight`, value: weight, inline: true },
+                        { name: `Blood Type`, value: bloodtype, inline: true },
 
                         { name: '\u200b', value: '\u200b', inline: false },
 
