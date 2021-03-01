@@ -10,7 +10,7 @@ module.exports = async (client, href, charname, starlevel) => {
 
         let fullimages = innerPage(findImg);
 
-        console.log(fullimages);
+        console.log(fullimages.children());
         for (let image in fullimages) {
             console.log(fullimages[image]);
             if (fullimages[image].attr('title').indexOf('icon') == -1) {
