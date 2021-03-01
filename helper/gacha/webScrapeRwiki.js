@@ -38,7 +38,7 @@ module.exports = async (client, starlevel, url) => {
                             client.gachaData[starlevel + 1][characterKeys[k]].thumbnailurl = thumbnailurl;
 
                             let loadImage = require('../../helper/gacha/loadImage');
-                            console.log(`LOG: Loading Image ${thumbnailurl} Into Memory`);
+                            console.log(`LOG: Loading image ${thumbnailurl} into memory`);
                             const obtainedImage = await loadImage(thumbnailurl);
 
                             client.gachaData[starlevel + 1][characterKeys[k]].loadedimage = obtainedImage;

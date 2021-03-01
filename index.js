@@ -27,6 +27,7 @@ client.userData = {};
 client.gachaData = {};
 client.collectionData = {};
 client.isResetGacha = false;
+client.amuletSRC;
 
 fs.readdirSync('./commands').forEach(dirs => {
     const commands = fs.readdirSync(`./commands/${dirs}`).filter(files => files.endsWith('.js'));
@@ -67,8 +68,14 @@ let initGacha = require('./database/updateObject/initGachaObj');
 (async () => {
     await initAll(client);
     await initGacha(client);
+
+    let sizOverlay = 40;
+    client.amuletSRC = await loadImage(
+        `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
+
+    // Log In
+    console.log("LOG: Logging In To Princonne Bot");
+    client.login(process.env["BOT_TOKEN"]);
 })();
 
-// Log In
-console.log("LOG: Logging In To Princonne Bot");
-client.login(process.env["BOT_TOKEN"]);
+

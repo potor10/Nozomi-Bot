@@ -4,11 +4,6 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
     const fs = require('fs');
     
     let sizThumb = 121;
-    let sizOverlay = 40;
-
-    let loadImage = require('./loadImage');
-    let amuletSRC = await loadImage(
-        `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
     
     var canvas = new Canvas(sizThumb * 5, sizThumb * 2);
     var ctx = canvas.getContext('2d');
@@ -32,7 +27,7 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
 
     for (let i = 0; i < isDupe.length; i++) {
         if (isDupe[i]) {
-            ctx.drawImage(amuletSRC, x, y, sizOverlay, sizOverlay);
+            ctx.drawImage(client.amuletSRC, x, y, sizOverlay, sizOverlay);
         }
 
         x+= sizThumb;
@@ -42,7 +37,7 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
         }
     }
 
-    const out = fs.createWriteStream('./test.png');
+    const out = fs.createWriteStream('./gacharoll.png');
     const stream = canvas.createPNGStream();
     stream.pipe(out);
     out.on('finish', () =>  {
@@ -59,8 +54,8 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                 .setDescription(amuletStr)
-                .attachFiles(['./test.png'])
-                .setImage('attachment://test.png')
+                .attachFiles(['./gacharoll.png'])
+                .setImage('attachment://gacharoll.png')
                 .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
             
