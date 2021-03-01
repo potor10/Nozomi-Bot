@@ -12,8 +12,8 @@ module.exports = async (client, href, charname, starlevel) => {
 
         console.log(fullimages.children());
         for (let image in fullimages) {
-            console.log(fullimages[image]);
-            if (fullimages[image].attr('title').indexOf('icon') == -1) {
+            console.log($(fullimages[image]));
+            if ($(fullimages[image]).attr('title').indexOf('icon') == -1) {
                 client.gachaData[starlevel + 1][charname].fullimageurl = fullimages[image].attr('src');
                 break;
             }
