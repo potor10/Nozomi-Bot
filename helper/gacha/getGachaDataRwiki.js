@@ -9,6 +9,7 @@ module.exports = async (client, href, charname, starlevel) => {
         let innerPage = cheerio.load(response.body);
 
         let fullimageurl = innerPage(findImg).has('.style_td img').filter(() => {
+            console.log(this.rowspan);
             return this.rowspan == 11;
           });
         
