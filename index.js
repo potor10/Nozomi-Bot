@@ -70,6 +70,7 @@ let initGacha = require('./database/updateObject/initGachaObj');
     await initGacha(client);
 
     let sizOverlay = 40;
+    let loadImage = require('./helper/gacha/loadImage');
     client.amuletSRC = await loadImage(
         `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
 

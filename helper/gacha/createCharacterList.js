@@ -12,9 +12,10 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     let x = 0;
     let y = 0;
     
+    ctx.font = '50px serif';
+
     for (let i = 0; i < messageRows.length; i++) {
         ctx.fillText(messageRows[i], x, y);
-
         y += textHeight;
     }
 
