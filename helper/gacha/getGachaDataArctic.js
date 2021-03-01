@@ -1,6 +1,8 @@
 module.exports = async (client, href) => {
     const cheerio = require('cheerio');
     const got = require("got");
+
+    console.log("ENTERED!!!");
     
     try {
         const response = await got(href);
