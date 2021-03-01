@@ -55,6 +55,6 @@ module.exports = {
         }
 
         let createCharacterList = require('../../helper/gacha/createCharacterList');
-        await createCharacterList(client, message, messageRows, messageDisplay, startPage, totalPages);
+        await createCharacterList(client, message, messageRows, messageDisplay);
     },
 };
