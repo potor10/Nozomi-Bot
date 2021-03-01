@@ -26,8 +26,6 @@ module.exports = async (client, starlevel, url) => {
                 const matchingKeys = characterKeys.filter(key => key.split(/,\s?/)[1] == characterName);
 
                 if(matchingKeys.length != 0) {
-                    console.log(matchingKeys);
-                    console.log(`match detected! for ${characterName}`);
                     client.gachaData[starlevel + 1][matchingKeys[0]].thumbnailurl = thumbnailurl;
 
                     let getGachaDataRwiki = require('./getGachaDataRwiki');

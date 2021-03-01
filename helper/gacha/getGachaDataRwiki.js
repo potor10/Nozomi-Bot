@@ -11,9 +11,7 @@ module.exports = async (client, href, charname, starlevel) => {
         let fullimages = $(findImg);
 
         for (let i = 0; i < fullimages.length; i++) {
-            //console.log($(fullimages[i]).attr('title'));
             if ($(fullimages[i]).attr('title').indexOf('icon') == -1) {
-                console.log("POGGER");
                 client.gachaData[starlevel + 1][charname].fullimageurl = $(fullimages[i]).attr('src');
                 break;
             }

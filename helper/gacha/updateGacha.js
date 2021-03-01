@@ -16,4 +16,5 @@ module.exports = async (client) => {
         await webScrapeImages(client, i, rwikiurls[i]);
     }
     
+    console.log(client.gachaData);
 }
