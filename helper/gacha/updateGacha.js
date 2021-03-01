@@ -15,6 +15,4 @@ module.exports = async (client) => {
         let webScrapeImages = require('./webScrapeRwiki'); 
         await webScrapeImages(client, i, rwikiurls[i]);
     }
-    
-    console.log(client.gachaData);
 }

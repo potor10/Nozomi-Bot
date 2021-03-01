@@ -20,8 +20,11 @@ module.exports = {
         characters.sort(function(x, y) {
             if (client.collectionData[message.author.id][x] < client.collectionData[message.author.id][y]) {
               return 1;
-            }
-            if (client.collectionData[message.author.id][x] > client.collectionData[message.author.id][y]) {
+            } else if (client.collectionData[message.author.id][x] > client.collectionData[message.author.id][y]) {
+              return -1;
+            } else if (x > y)  {
+              return 1;
+            } else if (x < y) {
               return -1;
             }
             return 0;
