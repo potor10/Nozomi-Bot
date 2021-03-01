@@ -26,7 +26,7 @@ module.exports = {
                     if (characterKeys[j].split(/,\s?/)[0].toLowerCase() == character.toLowerCase() || 
                         characterKeys[j].split(/,\s?/)[1] == character) {
                         charname = characterKeys[j].split(/,\s?/)[0];
-                        starlevel = i + 1;
+                        starlevel = i;
                         break;
                     }
                 }
