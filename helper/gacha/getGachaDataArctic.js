@@ -1,8 +1,6 @@
 module.exports = async (client, href) => {
     const cheerio = require('cheerio');
     const got = require("got");
-
-    console.log("ENTERED!!!");
     
     try {
         const response = await got(href);
@@ -11,13 +9,17 @@ module.exports = async (client, href) => {
 
         const encharname = $('.ltext > h1').text();
         const jpcharname = $('.rtext > h1').text();
+        
         const charname = `${encharname}, ${jpcharname}`;
+        console.log(charname);
 
         const starlevel = ($('.ltext > .centeredbox').text().match(/★/g) || []).length;
+        console.log(starlevel);
 
         let currentChar = client.gachaData[starlevel][charname];
 
         currentChar.subimage = $('#rightcolumn > img').attr('src');
+        console.log(currentChar.subimage);
 
         const skills = $('.splitsection .skillbox');
 
@@ -36,7 +38,7 @@ module.exports = async (client, href) => {
         const stats1 = $('.splitsection > .lhalf');
         const stats2 = $('.splitsection > .rhalf');
 
-        console.log(stats1).text();
+        console.log(stats1.text());
         
         console.log(currentChar);
 
