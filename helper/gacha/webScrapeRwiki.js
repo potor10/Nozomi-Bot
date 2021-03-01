@@ -1,5 +1,3 @@
-const { delete } = require('got');
-
 module.exports = async (client, starlevel, url) => {
     const cheerio = require('cheerio');
     const got = require("got");
