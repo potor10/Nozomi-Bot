@@ -76,10 +76,12 @@ module.exports = {
                         { name: `Age`, value: age, inline: true },
                         { name: `Blood Type`, value: bloodtype, inline: true },
 
+                        { name: `Likes`, value: likes, inline: false },
                         { name: `Guild`, value: guild, inline: false },
                         { name: `Real Name`, value: realname, inline: false },
                         { name: `CV`, value: cv, inline: false },
-                        { name: `Likes`, value: `${likes}\n`, inline: false },
+
+                        { name: '\u200b', value: '\u200b', inline: false },
                         
                         { name: `Union Burst: ${ubskillname}`, value: ubskill, inline: false },
                         { name: `Skill 1: ${skill1name} `, value: skill1, inline: false },
