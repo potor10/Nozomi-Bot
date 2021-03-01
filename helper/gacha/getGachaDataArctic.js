@@ -54,8 +54,6 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.weight = stats2[1].trim().substring(stats2[1].trim().indexOf(':') + 2);
         currentChar.bloodtype = stats2[2].trim().substring(stats2[2].trim().indexOf(':') + 2);
 
-        console.log(currentChar);
-
     } catch (error) {
         console.log(error);
         //=> 'Internal server error ...'

@@ -10,7 +10,8 @@ module.exports = async (client, href, charname, starlevel) => {
 
         let fullimageurl = innerPage(findImg).filter(() => {
             return this.rowspan == 11;
-          }).first().has('.style_td img').attr('src');
+          });
+          //.first().has('.style_td img').attr('src');
 
         console.log(fullimageurl);
         // .style_td img
