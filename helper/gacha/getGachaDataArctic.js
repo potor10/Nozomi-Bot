@@ -22,8 +22,9 @@ module.exports = async (client, href, thumbnailurl) => {
         const skills = $('.splitsection .skillbox');
 
         console.log(skills[0]);
+        console.log(skills[0].children[1].data);
 
-        currentChar.ubskillname = $(skills[0]).text().replaceAll('\n', '').trim();
+        //currentChar.ubskillname = $(skills[0]).text().replaceAll('\n', '').trim();
         currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
 
         /*
