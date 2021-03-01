@@ -35,9 +35,9 @@ module.exports = async (charname, starlevel, char) => {
                 '${char.exskillname.replace(/'/gi, '\'\'')}', '${char.exskill.replace(/'/gi, '\'\'')}',
                 '${char.height.replace(/'/gi, '\'\'')}', '${char.birthday.replace(/'/gi, '\'\'')}', 
                 '${char.age.replace(/'/gi, '\'\'')}', '${char.species.replace(/'/gi, '\'\'')}', 
-                '${char.guild}.replace(/'/gi, '\'\'')', '${char.likes.replace(/'/gi, '\'\'')}', 
+                '${char.guild.replace(/'/gi, '\'\'')}', '${char.likes.replace(/'/gi, '\'\'')}', 
                 '${char.cv.replace(/'/gi, '\'\'')}', '${char.realname.replace(/'/gi, '\'\'')}', 
-                '${char.weight}.replace(/'/gi, '\'\'')', '${char.bloodtype}.replace(/'/gi, '\'\'')' 
+                '${char.weight.replace(/'/gi, '\'\'')}', '${char.bloodtype.replace(/'/gi, '\'\'')}' 
             WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charname = '${charname}');
     `;
 
