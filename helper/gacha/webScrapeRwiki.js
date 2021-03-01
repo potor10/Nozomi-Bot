@@ -37,6 +37,11 @@ module.exports = async (client, starlevel, url) => {
 
                             client.gachaData[starlevel + 1][characterKeys[k]].thumbnailurl = thumbnailurl;
 
+                            let loadImage = require('../../helper/gacha/loadImage');
+                            const obtainedImage = await loadImage(thumbnailurl);
+
+                            client.gachaData[starlevel + 1][characterKeys[k]].loadedimage = obtainedImage;
+
                             let getGachaDataRwiki = require('./getGachaDataRwiki');
                             await getGachaDataRwiki(client, rows[i].attribs.href, characterKeys[k], starlevel);
 

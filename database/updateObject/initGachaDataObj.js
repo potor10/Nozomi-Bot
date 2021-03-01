@@ -28,6 +28,9 @@ module.exports = async () => {
 
     for (let char in charData) {
         if (charData.hasOwnProperty(char)) {
+            let loadImage = require('../../helper/gacha/loadImage');
+            const obtainedImage = await loadImage(charData[char].thumbnailurl);
+
             let charInfo = {
                 thumbnailurl : charData[char].thumbnailurl,
                 fullimageurl : charData[char].fullimageurl,
@@ -54,7 +57,9 @@ module.exports = async () => {
                 cv : charData[char].cv,
                 realname : charData[char].realname,
                 weight : charData[char].weight,
-                bloodtype : charData[char].bloodtype
+                bloodtype : charData[char].bloodtype,
+
+                loadedimage : obtainedImage
             }
 
             gachaDataObj[charData[char].starlevel][charData[char].charname] = charInfo;

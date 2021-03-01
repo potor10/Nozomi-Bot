@@ -2,7 +2,7 @@ module.exports = async (client, id, rarity) => {
     const keys = Object.keys(client.gachaData[rarity]);
     const randomUnit = keys[Math.floor(Math.random() * keys.length)];
     
-    const rolledThumb = client.gachaData[rarity][randomUnit].thumbnailurl;
+    const obtainedImage = client.gachaData[rarity][randomUnit].loadedimage;
 
     let isDupe = 0;
     let amulets = 0;
@@ -23,9 +23,6 @@ module.exports = async (client, id, rarity) => {
     } else {
         client.collectionData[id][randomUnit] = rarity;
     }
-
-    let loadImage = require('./loadImage');
-    const obtainedImage = await loadImage(rolledThumb);
 
     let outputData = [obtainedImage, isDupe, amulets]
     return outputData;
