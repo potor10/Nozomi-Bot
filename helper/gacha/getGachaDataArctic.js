@@ -36,7 +36,7 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.exskill = skills[3].children[1].data.trim();
         currentChar.exskill = $('p', skills[3]).text().trim();
 
-        console.log($('.splitsection > .lhalf > :not(strong):not(br)'));
+        console.log($('.splitsection > .lhalf > :not(strong):not(br)').text());
         const stats1 = $('.splitsection > .lhalf > :not(strong):not(br)').text().trim().split(/\n\s?/);
         const stats2 = $('.splitsection > .lhalf > :not(strong):not(br)').text().trim().split(/\n\s?/);
 
