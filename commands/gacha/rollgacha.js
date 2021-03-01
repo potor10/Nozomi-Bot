@@ -70,7 +70,7 @@ module.exports = {
                 for (let i = 0; i < 10; i++) {
                     const rarityRolled = Math.floor(Math.random() * 
                         (client.gacha.oneStarRate + client.gacha.twoStarRate + client.gacha.threeStarRate));
-                        
+
                     if (rarityRolled < client.gacha.threeStarRate) {
                         rollString += client.emotes.threeStarEmoji;
                         let rollImgData = await getRolledCharData(client, id, 3);
@@ -111,7 +111,10 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     }
                     embedRoll.setDescription(`${rollString}`);
-                    await emojiText.edit(embedRoll);
+
+                    if ((i+1) % 3 == 0 || i+1 == 10) {
+                        await emojiText.edit(embedRoll);
+                    }
                     
                 }
 
