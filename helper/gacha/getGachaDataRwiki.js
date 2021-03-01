@@ -8,10 +8,11 @@ module.exports = async (client, href, charname, starlevel) => {
 		const response = await got(href);
         let innerPage = cheerio.load(response.body);
 
-        let fullimageurl = innerPage(findImg).filter(() => {
+        let fullimageurl = innerPage(findImg).has('.style_td img').filter(() => {
             return this.rowspan == 11;
           });
-          //.first().has('.style_td img').attr('src');
+        
+        //.attr('src');
 
         console.log(fullimageurl);
         // .style_td img

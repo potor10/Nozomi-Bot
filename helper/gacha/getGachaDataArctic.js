@@ -20,7 +20,7 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.thumbnailurl = thumbnailurl;
         currentChar.fullimageurl = thumbnailurl;
 
-        currentChar.subimage = href + $('#rightcolumn > img').attr('src');
+        currentChar.subimageurl = href + $('#rightcolumn > img').attr('src');
 
         const skills = $('.splitsection .skillbox');
 
