@@ -63,10 +63,11 @@ process.on("SIGTERM", async () => (await updateAll(client), process.exit(0)));
 
 //Initialize
 let initAll = require('./database/updateObject/initAllObj');
-initAll(client);
-
 let initGacha = require('./database/updateObject/initGachaObj');
-initGacha(client);
+(async () => {
+    await initAll(client);
+    await initGacha(client);
+})();
 
 // Log In
 console.log("LOG: Logging In To Princonne Bot");
