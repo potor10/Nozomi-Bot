@@ -14,8 +14,8 @@ module.exports = async (charname, starlevel, char) => {
         UPDATE CHARDB SET thumbnailurl = '${char.thumbnailurl}', fullimageurl = '${char.fullimageurl}', subimageurl = '${char.subimageurl}', 
             starlevel = ${starlevel}, 
             ubskillname = '${char.ubskillname}', ubskill = '${char.ubskill}', skill1name = '${char.skill1name}', skill1 = '${char.skill1}', 
-            skill2name =' ${char.skill2name}', skill2 = '${char.skill2}', exskillname = '${char.exskillname}', 'exskill = ${char.exskill}',
-            height = '${char.height}', birthday = '${char.birthday}', age = '${char.age}', species = '${char.species}', 'guild = ${char.guild}',
+            skill2name =' ${char.skill2name}', skill2 = '${char.skill2}', exskillname = '${char.exskillname}', exskill = '${char.exskill}',
+            height = '${char.height}', birthday = '${char.birthday}', age = '${char.age}', species = '${char.species}', guild = '${char.guild}',
             likes = '${char.likes}', cv = '${char.cv}', realname = '${char.realname}', weight = '${char.weight}', bloodtype = '${char.bloodtype}'
             WHERE charname = '${charname}';
 

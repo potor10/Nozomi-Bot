@@ -36,11 +36,20 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.exskill = skills[3].children[1].data.trim();
         currentChar.exskill = $('p', skills[3]).text().trim();
 
-        const stats1 = $('.splitsection > .lhalf');
-        const stats2 = $('.splitsection > .rhalf');
+        const stats1 = $('.splitsection > .lhalf').text().trim().split(/\n\s?/);
+        const stats2 = $('.splitsection > .rhalf').text().trim().split(/\n\s?/);
 
-        console.log(stats1.get(1));
-        
+        currentChar.height = stats1[0].trim();
+        currentChar.birthday = stats1[1].trim();
+        currentChar.age = stats1[2].trim();
+        currentChar.species = stats1[3].trim();
+        currentChar.likes = stats1[4].trim();
+        currentChar.cv = stats1[5].trim();
+
+        currentChar.realname = stats2[0].trim();
+        currentChar.weight = stats2[1].trim();
+        currentChar.bloodtype = stats2[2].trim();
+
         console.log(currentChar);
 
     } catch (error) {
