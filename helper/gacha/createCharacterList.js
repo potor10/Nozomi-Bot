@@ -1,4 +1,4 @@
-module.exports = async (client, message, messageRows, messageDisplay) => {
+module.exports = async (client, message, messageRows, messageDisplay, startPage, totalPages) => {
     const { Canvas, Image } = require('canvas');
     const { MessageEmbed } = require("discord.js");
     const fs = require('fs');
@@ -10,7 +10,15 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     
     var canvas = new Canvas(width, height);
     var ctx = canvas.getContext('2d');
-    
+
+    ctx.font = '80px Courier New';
+    ctx.fillStyle = `rgb(254, 182, 247)`;
+    ctx.fillText(`${message.author.username}'s Character List`, 10, 20, 880);
+
+    ctx.font = '60px Courier New';
+    ctx.fillStyle = `rgb(182, 248, 254)`;
+    ctx.fillText(`Page ${startPage} / ${totalPages}`, 10, 1000, 880);
+
     let x = 1200;
     let y = 100;
 
