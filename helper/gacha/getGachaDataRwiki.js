@@ -1,4 +1,4 @@
-module.exports = async (client, href, charname, starlevel) => {
+module.exports = async (client, href, charname, jpcharname, starlevel) => {
     const cheerio = require('cheerio');
     const got = require("got");
     
@@ -9,11 +9,11 @@ module.exports = async (client, href, charname, starlevel) => {
         let $ = cheerio.load(response.body);
 
         let fullimages = $(findImg);
+        let titlestr = `キャラ/${'★'.repeat(starlevel)}/${jpcharname}`;
 
-        console.log(fullimages);
         for (let i = 0; i < fullimages.length; i++) {
-            console.log($(fullimages[i]));
-            if ($(fullimages[i]).attr('title').indexOf('icon') == -1) {
+            if (fullimages[i].attr('title') == titlestr) {
+                console.log("POGGER");
                 client.gachaData[starlevel + 1][charname].fullimageurl = fullimages[image].attr('src');
                 break;
             }
