@@ -13,8 +13,7 @@ module.exports = async (client, url) => {
         let links = $(findTable);
         let thumbs = $(findTempThumb);
 
-        //links.length
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < links.length; i++) {
             let currentLink = url + links[i].attribs.href.substring(14);
             let thumbnailurl = url.substring(0, url.length - 12) + $('img', thumbs[i]).attr('src').substring(2);
 
