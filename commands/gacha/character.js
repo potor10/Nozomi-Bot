@@ -17,9 +17,23 @@ module.exports = {
         if (args.length) {
             let character = args.shift().trim();
             
-            if (character in client.collectionData[message.author.id]) {
-                let starlevel = client.collectionData[message.author.id][character];
-                let charFullImg = client.gachaData[starlevel][character].fullimageurl;
+            let starlevel = -1;
+            let charname;
+
+            for (let i = 0; i < 3; i++) {
+                let characterKeys = Object.keys(client.gachaData[i + 1]);
+                const matchingKeys = characterKeys.filter(key => key.split(/,\s?/)[0].toLowerCase() == character.toLowerCase() || 
+                    key.split(/,\s?/)[1] == character);
+
+                if(matchingKeys.length != 0) {
+                    charname = matchingKeys[0];
+                    starlevel = i + 1;
+                    break;
+                }
+            }
+
+            if (starlevel != -1) {
+                let charFullImg = client.gachaData[starlevel][charname].fullimageurl;
     
                 let starstr = '★'.repeat(starlevel);
     
@@ -33,7 +47,7 @@ module.exports = {
                 
                 await message.channel.send(messageDisplay);
             } else {
-                let reminder = await message.reply(`You don't own ${character}`);
+                let reminder = await message.reply(`${character} is not a character`);
                 setTimeout(() => { reminder.delete();}, 5000);
             }
         } else {

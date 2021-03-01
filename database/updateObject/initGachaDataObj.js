@@ -61,5 +61,7 @@ module.exports = async () => {
         }
     }
 
+    console.log(gachaDataObj);
+
     return gachaDataObj;
 }
