@@ -15,7 +15,7 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
     let y = 100;
 
     let loadImage = require('../../helper/gacha/loadImage');
-    let backgroundImg = await loadImage(`../../img/hatsune_shiori.jpeg`);
+    let backgroundImg = await loadImage(`./img/hatsune_shiori.jpeg`);
     ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
     
     ctx.font = '40px serif';
