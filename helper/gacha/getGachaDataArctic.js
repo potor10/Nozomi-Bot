@@ -1,4 +1,4 @@
-module.exports = async (client, href) => {
+module.exports = async (client, href, thumbnailurl) => {
     const cheerio = require('cheerio');
     const got = require("got");
     
@@ -16,13 +16,14 @@ module.exports = async (client, href) => {
 
         let currentChar = client.gachaData[starlevel][charname] = {};
 
+        currentChar.thumbnailurl = thumbnailurl;
         currentChar.subimage = href + $('#rightcolumn > img').attr('src');
 
         const skills = $('.splitsection .skillbox');
 
         console.log(skills[0]);
 
-        currentChar.ubskillname = $(skills[0]).get(1).text().replaceAll('\n', '').trim();
+        currentChar.ubskillname = $(skills[0]).get().text().replaceAll('\n', '').trim();
         currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
 
         currentChar.skill1name = $(skills[1]).text().trim().replaceAll('\n', '').slice(0, -1);
