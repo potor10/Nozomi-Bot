@@ -10,6 +10,8 @@ module.exports = async (charname, starlevel, char) => {
 
     console.log(`LOG: Adding ${charname} To The Database`);
 
+    console.log(`${char}`);
+
     const query = `
         UPDATE CHARDB SET 
             thumbnailurl = '${char.thumbnailurl}', fullimageurl = '${char.fullimageurl}', subimageurl = '${char.subimageurl}', 
