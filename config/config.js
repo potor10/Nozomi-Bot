@@ -44,5 +44,7 @@ module.exports = {
         sizThumb : 121
     },
 
+    admin: 154775062178824192,
+
     filters: ['8D', 'gate', 'haas', 'phaser', 'treble', 'tremolo', 'vibrato', 'reverse', 'karaoke', 'flanger', 'mcompand', 'pulsator', 'subboost', 'bassboost', 'vaporwave', 'nightcore', 'normalizer', 'surrounding'],
 };

@@ -5,7 +5,7 @@ module.exports = {
     utilisation: '{prefix}resetgacha',
 
     async execute(client, message) {
-        if (message.author.id == 154775062178824192) {
+        if (message.author.id == client.config.admin) {
             let initChar = require('../../database/updateDatabase/initChar');
             await initChar();
 

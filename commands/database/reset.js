@@ -5,7 +5,7 @@ module.exports = {
     utilisation: '{prefix}reset',
 
     async execute(client, message) {
-        if (message.author.id == 154775062178824192) {
+        if (message.author.id == client.config.admin) {
 
             let initAll = require('../../database/updateDatabase/initAll');
             await initAll();

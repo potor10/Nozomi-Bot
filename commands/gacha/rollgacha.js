@@ -70,9 +70,8 @@ module.exports = {
                 for (let i = 0; i < 10; i++) {
                     const rarityRolled = Math.floor(Math.random() * 
                         (client.gacha.oneStarRate + client.gacha.twoStarRate + client.gacha.threeStarRate));
-
-                    // Rigged for mystic-
-                    if (rarityRolled < client.gacha.threeStarRate || message.author.id == 217685296903356426) {
+                        
+                    if (rarityRolled < client.gacha.threeStarRate) {
                         rollString += client.emotes.threeStarEmoji;
                         let rollImgData = await getRolledCharData(client, id, 3);
 
