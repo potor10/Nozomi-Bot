@@ -12,6 +12,7 @@ module.exports = async (client, href, charname, jpcharname, starlevel) => {
         let titlestr = `キャラ/${'★'.repeat(starlevel)}/${jpcharname}`;
 
         for (let i = 0; i < fullimages.length; i++) {
+            console.log($(fullimages[i]).attr('title'));
             if ($(fullimages[i]).attr('title') == titlestr) {
                 console.log("POGGER");
                 client.gachaData[starlevel + 1][charname].fullimageurl = $(fullimages[i]).attr('src');
