@@ -57,9 +57,9 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
                 .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
             
-            setTimeout(() => { 
-                rollResults.delete();
-                message.channel.send(combinedRoll);
+            setTimeout(async () => { 
+                await rollResults.delete();
+                await message.channel.send(combinedRoll);
                 client.userData[message.author.id].inroll = false
             }, 3000);
     });
