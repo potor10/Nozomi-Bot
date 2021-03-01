@@ -23,26 +23,26 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.subimage = href + $('#rightcolumn > img').attr('src');
 
         const skills = $('.splitsection .skillbox');
-        console.log(skills[0].children[1].data);
-        console.log(`${skills[0].children[1].data}`.replace(/\n/gi, '').trim());
 
-        //currentChar.ubskillname = skills[0].children[1].data.replaceAll('\n', '').trim();
-        currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
+        currentChar.ubskillname = skills[0].children[1].data.trim();
+        currentChar.ubskill = $('p', skills[0]).text().trim();
 
-        //currentChar.skill1name = skills[1].children[1].data.replaceAll('\n', '').trim();
-        //currentChar.skill1 = $('p', skills[1]).text().trim().slice(0, -1);
+        currentChar.skill1name = skills[1].children[1].data.trim();
+        currentChar.skill1 = $('p', skills[1]).text().trim();
 
-        //currentChar.skill2name = skills[2].children[1].data.replaceAll('\n', '').trim();
-        //currentChar.skill2 = $('p', skills[2]).text().trim().slice(0, -1);
+        currentChar.skill2name = skills[2].children[1].data.trim();
+        currentChar.skill2 = $('p', skills[2]).text().trim();
 
-        //currentChar.exskill = skills[3].children[1].data.replaceAll('\n', '').trim();
-        //currentChar.exskill = $('p', skills[3]).text().trim().slice(0, -1);
-
+        currentChar.exskill = skills[3].children[1].data.trim();
+        currentChar.exskill = $('p', skills[3]).text().trim();
 
         const stats1 = $('.splitsection > .lhalf');
         const stats2 = $('.splitsection > .rhalf');
 
-        console.log(stats1);
+        console.log(stats1.children);
+
+        currentChar.height = stats1.children[1].data.trim();
+        currentChar.birthday = stats1.children[4].data.trim();
         
         console.log(currentChar);
 
