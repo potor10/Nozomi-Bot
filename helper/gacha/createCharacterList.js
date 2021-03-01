@@ -18,13 +18,13 @@ module.exports = async (client, message, messageRows, messageDisplay, startPage,
     let backgroundImg = await loadImage(`./img/hatsune_shiori.jpeg`);
     ctx.drawImage(backgroundImg, 0 , 0, 1920, 1080);
 
-    ctx.font = '80px Courier New';
-    ctx.fillStyle = `rgb(254, 182, 247)`;
-    ctx.fillText(`${message.author.username}'s Character List`, 10, 20, 880);
+    ctx.font = '60px Courier New';
+    ctx.fillStyle = `#E71DD5`;
+    ctx.fillText(`${message.author.username}'s Character List`, 20, 80, 880);
 
     ctx.font = '60px Courier New';
-    ctx.fillStyle = `rgb(182, 248, 254)`;
-    ctx.fillText(`Page ${startPage} / ${totalPages}`, 10, 1000, 880);
+    ctx.fillStyle = `#1DDBE7`;
+    ctx.fillText(`Page ${startPage} / ${totalPages}`, 20, 1060, 880);
     
     ctx.font = '40px PT Sans Caption';
 
