@@ -23,7 +23,7 @@ module.exports = async (client, href, thumbnailurl) => {
 
         console.log(skills[0]);
 
-        currentChar.ubskillname = skills[0].children()[1].text().replaceAll('\n', '').trim();
+        currentChar.ubskillname = $(skills[0]).text().replaceAll('\n', '').trim();
         currentChar.ubskill = $('p', skills[0]).text().trim().slice(0, -1);
 
         /*
