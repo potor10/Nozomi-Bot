@@ -39,7 +39,7 @@ module.exports = async (client, href, thumbnailurl) => {
         const stats1 = $('.splitsection > .lhalf');
         const stats2 = $('.splitsection > .rhalf');
 
-        console.log(stats1.children);
+        console.log(stats1[0].children);
 
         currentChar.height = stats1.children[1].data.trim();
         currentChar.birthday = stats1.children[4].data.trim();
