@@ -16,7 +16,7 @@ module.exports = async (client, href) => {
         const starlevel = ($('.ltext > .centeredbox').text().match(/★/g) || []).length;
         console.log(starlevel);
 
-        let currentChar = client.gachaData[starlevel][charname];
+        let currentChar = client.gachaData[starlevel][charname] = {};
 
         currentChar.subimage = $('#rightcolumn > img').attr('src');
         console.log(currentChar.subimage);
