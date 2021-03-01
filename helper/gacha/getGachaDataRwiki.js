@@ -8,9 +8,9 @@ module.exports = async (client, href, charname, starlevel) => {
 		const response = await got(href);
         let $ = cheerio.load(response.body);
 
-        let fullimages = $(findImg);
+        let fullimages = $(findImg).attr('title');
 
-        console.log(fullimages.children());
+        console.log(fullimages);
         for (let i = 0; i < fullimages.length; i++) {
             console.log($(fullimages[i]));
             if ($(fullimages[i]).attr('title').indexOf('icon') == -1) {
