@@ -36,20 +36,19 @@ module.exports = async (client, href, thumbnailurl) => {
         currentChar.exskill = skills[3].children[1].data.trim();
         currentChar.exskill = $('p', skills[3]).text().trim();
 
-        console.log($('.splitsection > .lhalf > :not(strong):not(br)').text());
-        const stats1 = $('.splitsection > .lhalf > :not(strong):not(br)').text().trim().split(/\n\s?/);
-        const stats2 = $('.splitsection > .lhalf > :not(strong):not(br)').text().trim().split(/\n\s?/);
+        const stats1 = $('.splitsection > .lhalf').text().trim().split(/\n\s?/);
+        const stats2 = $('.splitsection > .rhalf').text().trim().split(/\n\s?/);
 
-        currentChar.height = stats1[1].trim();
-        currentChar.birthday = stats1[2].trim();
-        currentChar.age = stats1[3].trim();
-        currentChar.species = stats1[4].trim();
-        currentChar.likes = stats1[5].trim();
-        currentChar.cv = stats1[6].trim();
+        currentChar.height = stats1[1].trim().substring(stats1[1].trim().indexOf(':') + 2);
+        currentChar.birthday = stats1[2].trim().substring(stats1[2].trim().indexOf(':') + 2);
+        currentChar.age = stats1[3].trim().substring(stats1[3].trim().indexOf(':') + 2);
+        currentChar.species = stats1[4].trim().substring(stats1[4].trim().indexOf(':') + 2);
+        currentChar.likes = stats1[5].trim().substring(stats1[5].trim().indexOf(':') + 2);
+        currentChar.cv = stats1[6].trim().substring(stats1[6].trim().indexOf(':') + 2);
 
-        currentChar.realname = stats2[0].trim();
-        currentChar.weight = stats2[1].trim();
-        currentChar.bloodtype = stats2[2].trim();
+        currentChar.realname = stats2[0].trim().substring(stats2[0].trim().indexOf(':') + 2);
+        currentChar.weight = stats2[1].trim().substring(stats2[1].trim().indexOf(':') + 2);
+        currentChar.bloodtype = stats2[2].trim().substring(stats2[2].trim().indexOf(':') + 2);
 
         console.log(currentChar);
 
