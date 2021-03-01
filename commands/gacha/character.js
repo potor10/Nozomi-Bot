@@ -73,11 +73,13 @@ module.exports = {
                         { name: `Weight`, value: weight, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
 
-                        { name: `Species`, value: species, inline: true },
                         { name: `Birthday`, value: birthday, inline: true },
                         { name: `Age`, value: age, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
+
+                        { name: `Species`, value: species, inline: true },
                         { name: `Blood Type`, value: bloodtype, inline: true },
+                        { name: '\u200b', value: '\u200b', inline: true },
 
                         { name: `Likes`, value: likes, inline: false },
                         { name: `Guild`, value: guild, inline: false },
