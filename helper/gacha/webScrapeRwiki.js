@@ -30,7 +30,7 @@ module.exports = async (url, findTable, findImg) => {
 
         return returnArray;
     } catch (error) {
-        console.log(error.response.body);
+        console.log(error);
         //=> 'Internal server error ...'
     }
 }

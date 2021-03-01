@@ -21,7 +21,7 @@ module.exports = async (href, thumbnailurl, findImg, characterName) => {
 
         return characterInfo;
     } catch (error) {
-        console.log(error.response.body);
+        console.log(error);
         //=> 'Internal server error ...'
     }
 }

@@ -17,17 +17,17 @@ module.exports = async (charname, starlevel, char) => {
             skill2name = ${char.skill2name}, skill2 = ${char.skill2}, exskillname = ${char.exskillname}, exskill = ${char.exskill},
             height = ${char.height}, birthday = ${char.birthday}, age = ${char.age}, species = ${char.species}, guild = ${char.guild},
             likes = ${char.likes}, cv = ${char.cv}, realname = ${char.realname}, weight = ${char.weight}, bloodtype = ${char.bloodtype}
-            WHERE charname = '${char.charname}';
+            WHERE charname = '${charname}';
 
         INSERT INTO CHARDB (charname, thumbnailurl, fullimageurl, subimageurl, starlevel, 
             ubskillname, ubskill, skill1name, skill1, skill2name, skill2, exskillname, exskill,
             height, birthday, age, species, guild, likes, cv, realname, weight, bloodtype)
-            SELECT '${char.charname}', '${char.thumbnailurl}', '${char.fullimageurl}', '${char.subimageurl}', ${starlevel}, 
+            SELECT '${charname}', '${char.thumbnailurl}', '${char.fullimageurl}', '${char.subimageurl}', ${starlevel}, 
                 '${char.ubskillname}', '${char.ubskill}', '${char.skill1name}', '${char.skill1}', 
                 '${char.skill2name}', '${char.skill2}', '${char.exskillname}', '${char.exskill}',
                 '${char.height}', '${char.birthday}', '${char.age}', '${char.species}', '${char.guild}', 
                 '${char.likes}', '${char.cv}', '${char.realname}', '${char.weight}', '${char.bloodtype}' 
-            WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charname = '${char.charname}');
+            WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charname = '${charname}');
     `;
 
     console.log(query);
