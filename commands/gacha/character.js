@@ -25,8 +25,8 @@ module.exports = {
                 for (let j = 0; j < characterKeys.length; j++) {
                     if (characterKeys[j].split(/,\s?/)[0].toLowerCase() == character.toLowerCase() || 
                         characterKeys[j].split(/,\s?/)[1] == character) {
-                        charname = characterKeys[j].split(/,\s?/)[0];
-                        starlevel = i;
+                        charname = characterKeys[j];
+                        starlevel = i + 1;
                         break;
                     }
                 }
@@ -43,7 +43,7 @@ module.exports = {
     
                 let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                     .setAuthor(client.user.username, client.user.avatarURL())
-                    .setTitle(`${starstr} ${character}`)
+                    .setTitle(`${starstr} ${charname.split(/,\s?/)[0]}`)
                     .setDescription(`Owned By ${message.author.displayName||message.author.username}`)
                     .setImage(`${charFullImg}`)
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
