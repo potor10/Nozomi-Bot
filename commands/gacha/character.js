@@ -15,7 +15,7 @@ module.exports = {
             await message.channel.send(`Error in parsing arguments`);
         } 
         if (args.length) {
-            let character = args.shift().trim();
+            let character = args.join(" ").trim();
             
             let starlevel = -1;
             let charname;
