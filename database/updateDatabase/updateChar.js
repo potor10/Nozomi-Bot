@@ -18,9 +18,11 @@ module.exports = async (charname, starlevel, char) => {
             skill1name = '${char.skill1name.replace(/'/gi, '\'\'')}', skill1 = '${char.skill1.replace(/'/gi, '\'\'')}', 
             skill2name =' ${char.skill2name.replace(/'/gi, '\'\'')}', skill2 = '${char.skill2.replace(/'/gi, '\'\'')}', 
             exskillname = '${char.exskillname.replace(/'/gi, '\'\'')}', exskill = '${char.exskill.replace(/'/gi, '\'\'')}',
-            height = '${char.height}', birthday = '${char.birthday}', age = '${char.age}', species = '${char.species}', guild = '${char.guild}',
-            likes = '${char.likes.replace(/'/gi, '\'\'')}', 
-            cv = '${char.cv}', realname = '${char.realname}', weight = '${char.weight}', bloodtype = '${char.bloodtype}'
+            height = '${char.height.replace(/'/gi, '\'\'')}', birthday = '${char.birthday.replace(/'/gi, '\'\'')}', 
+            age = '${char.age.replace(/'/gi, '\'\'')}', species = '${char.species.replace(/'/gi, '\'\'')}', 
+            guild = '${char.guild.replace(/'/gi, '\'\'')}', likes = '${char.likes.replace(/'/gi, '\'\'')}', 
+            cv = '${char.cv.replace(/'/gi, '\'\'')}', realname = '${char.realname.replace(/'/gi, '\'\'')}', 
+            weight = '${char.weight.replace(/'/gi, '\'\'')}', bloodtype = '${char.bloodtype.replace(/'/gi, '\'\'')}'
             WHERE charname = '${charname}';
 
         INSERT INTO CHARDB (charname, thumbnailurl, fullimageurl, subimageurl, starlevel, 
@@ -31,9 +33,11 @@ module.exports = async (charname, starlevel, char) => {
                 '${char.skill1name.replace(/'/gi, '\'\'')}', '${char.skill1.replace(/'/gi, '\'\'')}', 
                 '${char.skill2name.replace(/'/gi, '\'\'')}', '${char.skill2.replace(/'/gi, '\'\'')}', 
                 '${char.exskillname.replace(/'/gi, '\'\'')}', '${char.exskill.replace(/'/gi, '\'\'')}',
-                '${char.height}', '${char.birthday}', '${char.age}', '${char.species}', '${char.guild}', 
-                '${char.likes.replace(/'/gi, '\'\'')}', 
-                '${char.cv}', '${char.realname}', '${char.weight}', '${char.bloodtype}' 
+                '${char.height.replace(/'/gi, '\'\'')}', '${char.birthday.replace(/'/gi, '\'\'')}', 
+                '${char.age.replace(/'/gi, '\'\'')}', '${char.species.replace(/'/gi, '\'\'')}', 
+                '${char.guild}.replace(/'/gi, '\'\'')', '${char.likes.replace(/'/gi, '\'\'')}', 
+                '${char.cv.replace(/'/gi, '\'\'')}', '${char.realname.replace(/'/gi, '\'\'')}', 
+                '${char.weight}.replace(/'/gi, '\'\'')', '${char.bloodtype}.replace(/'/gi, '\'\'')' 
             WHERE NOT EXISTS (SELECT 1 FROM CHARDB WHERE charname = '${charname}');
     `;
 
