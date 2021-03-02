@@ -33,13 +33,14 @@ module.exports = async (client, message, messageRows, messageDisplay) => {
         y += textHeight;
     }
 
-    const out = fs.createWriteStream('./charlist.png');
+    const out = fs.createWriteStream(`./charlist${message.author.id}.png`);
     const stream = canvas.createPNGStream();
     stream.pipe(out);
     out.on('finish', () =>  {
         console.log('LOG: The PNG agregate list was created.');
 
-        messageDisplay.attachFiles(['./charlist.png']).setImage('attachment://charlist.png');
+        messageDisplay.attachFiles([`./charlist${message.author.id}.png`])
+            .setImage(`attachment://charlist${message.author.id}.png`);
 
         message.channel.send(messageDisplay);
     });

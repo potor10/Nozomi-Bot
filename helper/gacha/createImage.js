@@ -35,7 +35,7 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
         }
     }
 
-    const out = fs.createWriteStream('./gacharoll.png');
+    const out = fs.createWriteStream(`./gacharoll${message.author.id}.png`);
     const stream = canvas.createPNGStream();
     stream.pipe(out);
     out.on('finish', () =>  {
@@ -52,8 +52,8 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                 .setDescription(amuletStr)
-                .attachFiles(['./gacharoll.png'])
-                .setImage('attachment://gacharoll.png')
+                .attachFiles([`./gacharoll${message.author.id}.png`])
+                .setImage(`attachment://gacharoll${message.author.id}.png`)
                 .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
             
