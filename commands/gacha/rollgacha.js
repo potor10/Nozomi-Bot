@@ -101,21 +101,40 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     }
                     embedRoll.setDescription(`${rollString}`);                    
-                }
+                } 
 
                 let embedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setDescription(``)
                     .setAuthor(client.user.username, client.user.avatarURL())
                     .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
                 if (has3Star) {
+                    const gachaStrings = [
+                        `Is it a 3 Star? ${client.emotes.threeStarEmoji}`,
+                        `Lucksack ${client.emotes.starLevelEmoji}`,
+                        `Probably Another Dupe ${client.emotes.amuletEmoji}`,
+                        `${client.emotes.nozomiBlushEmoji}`,
+                    ];
+                    const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
+                    
                     embedRoll.attachFiles([`./img/entry_lucky.gif`])
                         .setImage('attachment://entry_lucky.gif')
+                        .setDescription(`${gachaStrings[randomGachaString]}`);
                 } else {
+                    const gachaStrings = [
+                        `Nice Trash ${client.emotes.nozomiCoolEmoji}`,
+                        `At Least There Is One ${client.emotes.twoStarEmoji}`,
+                        `It's All Garbage ${client.emotes.oneStarEmoji}`,
+                        `Jewels In The Toilet ${client.emotes.jewelEmoji}`
+                    ];
+                    const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
+
                     embedRoll.attachFiles([`./img/entry_unlucky.gif`])
                         .setImage('attachment://entry_unlucky.gif')
+                        .setDescription(`${gachaStrings[randomGachaString]}`);
                 }
 
                 client.userData[id].amulets += amuletsObtained;
@@ -140,8 +159,8 @@ module.exports = {
                     .setTimestamp();
 
                 await message.channel.send(embedRoll);
-                setTimeout(() => { 
-                    embedRoll.delete();
+                setTimeout(async () => { 
+                    await embedRoll.delete();
                     await message.channel.send(combinedRoll);
                     client.userData[message.author.id].inroll = false;
                 }, 6640);

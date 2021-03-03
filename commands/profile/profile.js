@@ -34,7 +34,6 @@ module.exports = {
         let retrieveDamage = require('../../database/retrieveDatabase/retrieveDamage');
         let profileDamage = await retrieveDamage(client, id, date);
 
-        const randomStatus = Math.floor(Math.random() * 5);
         const statusStrings = [
             `A Dapper Fellow ${client.emotes.nozomiCoolEmoji}`,
             `Empty In Mana ${client.emotes.manaEmoji}`,
@@ -42,6 +41,7 @@ module.exports = {
             `Pulling Literal Garbage ${client.emotes.oneStarEmoji}`,
             `Out Of Shape ${client.emotes.staminaEmoji}`
         ];
+        const randomStatus = Math.floor(Math.random() * statusStrings.length);
 
         let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
         let currentCB = getClanBattleId(new Date());
