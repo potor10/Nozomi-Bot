@@ -102,7 +102,7 @@ module.exports = {
                     }                   
                 } 
 
-                let embedRoll = new MessageEmbed()
+                let preRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                     .setAuthor(client.user.username, client.user.avatarURL())
                     .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
@@ -118,7 +118,7 @@ module.exports = {
                     ];
                     const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
                     
-                    embedRoll.attachFiles([`./img/entry_lucky.gif`])
+                    preRoll.attachFiles([`./img/entry_lucky.gif`])
                         .setImage('attachment://entry_lucky.gif')
                         .setDescription(`${gachaStrings[randomGachaString]}`);
                 } else {
@@ -130,7 +130,7 @@ module.exports = {
                     ];
                     const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
 
-                    embedRoll.attachFiles([`./img/entry_unlucky.gif`])
+                    preRoll.attachFiles([`./img/entry_unlucky.gif`])
                         .setImage('attachment://entry_unlucky.gif')
                         .setDescription(`${gachaStrings[randomGachaString]}`);
                 }
@@ -146,7 +146,7 @@ module.exports = {
                     amuletStr += ` and have obtained ${newUnits} new characters!`
                 }
 
-                let combinedRoll = new MessageEmbed()
+                let embedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                     .setAuthor(client.user.username, client.user.avatarURL())
                     .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
@@ -156,10 +156,10 @@ module.exports = {
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
-                await message.channel.send(embedRoll);
+                let preRoll = await message.channel.send(preRoll);
                 setTimeout(async () => { 
-                    await embedRoll.delete();
-                    await message.channel.send(combinedRoll);
+                    await preRoll.delete();
+                    await message.channel.send(embedRoll);
                     client.userData[message.author.id].inroll = false;
                 }, 6640);
             } else {
