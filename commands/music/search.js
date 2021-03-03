@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['sr'],
     category: 'Music',
     utilisation: '{prefix}search [name/URL]',
+    description: 'Search for a given song.',
 
     execute(client, message, args) {
         if (!message.member.voice.channel) return message.channel.send(`${client.emotes.error} - You're not in a voice channel !`);

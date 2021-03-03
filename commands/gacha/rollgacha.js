@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Gacha',
     utilisation: '{prefix}rollgacha',
+    description: 'Plays the Gacha.',
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");

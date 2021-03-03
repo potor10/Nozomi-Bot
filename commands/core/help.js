@@ -36,38 +36,7 @@ module.exports = {
 
             if (!command) return message.channel.send(`${client.emotes.error} - I did not find this command !`);
 
-            let description_text = ``;
-            switch (command) {
-                case message.client.commands.get('profile'):
-                    description_text += `Obtain profile information.\n`;
-                    break;
-                case message.client.commands.get('getattacks'):
-                    description_text += `Obtain attack information on a specific date.\n`;
-                    break;
-                case message.client.commands.get('getclanbattle'):
-                    description_text += `Obtain Clan Battle information on a specific month.\n`;
-                    break;
-                case message.client.commands.get('clanbattletimeline'):
-                    description_text += `Obtain a directory of all available Clan Battles and when they occured.\n`;
-                    break;
-                case message.client.commands.get('daily'):
-                    description_text += `Grants you gems daily.\n`;
-                    break;
-                case message.client.commands.get('rollgacha'):
-                    description_text += `Plays the Gacha.\n`;
-                    break;
-                case message.client.commands.get('characters'):
-                    description_text += `View the characters you've obtained from gacha.\n`;
-                    break;
-                case message.client.commands.get('character'):
-                    description_text += `View full art of a character you've obtained from gacha.\n`;
-                    break;
-                case message.client.commands.get('scanimage'):
-                    description_text += `Make sure to upload a screenshot of the game as an attachment. \n`;
-                    description_text += `Example images provided below.\n`;
-                    break;
-            }
-            description_text += 'Mandatory arguments `[]`, optional arguments `<>`.';
+            let description_text = `${command.description}\nMandatory arguments \`[]\`, optional arguments \`<>\`.`;
 
             message.channel.send({
                 embed: {

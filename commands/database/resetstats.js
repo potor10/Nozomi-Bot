@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Database',
     utilisation: '{prefix}resetstats',
+    description: 'Reset user stats database',
 
     async execute(client, message) {
         if (message.author.id == client.config.admin) {

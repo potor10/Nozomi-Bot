@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Core',
     utilisation: '{prefix}say [words]',
+    description: 'Says a message.',
 
     async execute(client, message, args) {
         const sayMessage = args.join(" ");

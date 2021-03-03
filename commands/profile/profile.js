@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Profile',
     utilisation: '{prefix}profile <@user>',
+    description: 'Obtain profile information.',
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");

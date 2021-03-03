@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['filters'],
     category: 'Music',
     utilisation: '{prefix}w-filters',
+    description: 'Displays which filters are currently active.',
 
     execute(client, message) {
         if (!message.member.voice.channel) return message.channel.send(`${client.emotes.error} - You're not in a voice channel !`);
@@ -21,7 +22,7 @@ module.exports = {
         message.channel.send({
             embed: {
                 color: 'ORANGE',
-                footer: { text: 'This bot uses a Github project made by Zerio (ZerioDev/Music-bot)' },
+                footer: { text: `${client.config.discord.footerText}` },
                 fields: [
                     { name: 'Filters', value: filtersStatuses[0].join('\n'), inline: true },
                     { name: '** **', value: filtersStatuses[1].join('\n'), inline: true },

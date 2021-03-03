@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['np'],
     category: 'Music',
     utilisation: '{prefix}nowplaying',
+    description: 'Gives the name of the current song.',
 
     execute(client, message) {
         if (!message.member.voice.channel) return message.channel.send(`${client.emotes.error} - You're not in a voice channel !`);
@@ -20,7 +21,7 @@ module.exports = {
             embed: {
                 color: 'RED',
                 author: { name: track.title },
-                footer: { text: 'This bot uses a Github project made by Zerio (ZerioDev/Music-bot)' },
+                footer: { text: `${client.config.discord.footerText}` },
                 fields: [
                     { name: 'Channel', value: track.author, inline: true },
                     { name: 'Requested by', value: track.requestedBy.username, inline: true },

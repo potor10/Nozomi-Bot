@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Database',
     utilisation: '{prefix}reset',
+    description: 'Reset all databases but gacha',
 
     async execute(client, message) {
         if (message.author.id == client.config.admin) {

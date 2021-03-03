@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Clan Battle',
     utilisation: '{prefix}setattack [attempt number] [damage] [month] [date] [year]',
+    description: 'Set the damage of an existing attack attempt.',
 
     async execute(client, message, args) {        
         if (!Array.isArray(args)) {

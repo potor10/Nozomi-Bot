@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Admin',
     utilisation: '{prefix}give character <@user>',
+    description: 'Gives characters',
 
     async execute(client, message, args) {
         if (!Array.isArray(args)) {

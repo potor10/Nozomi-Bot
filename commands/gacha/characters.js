@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Gacha',
     utilisation: '{prefix}characters <page number>',
+    description: 'View the characters you have obtained from gacha.',
 
     async execute(client, message, args) {       
         const { MessageEmbed } = require("discord.js");

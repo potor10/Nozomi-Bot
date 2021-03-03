@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Profile',
     utilisation: '{prefix}daily',
+    description: 'Grants you gems daily. Resets at 12:00 AM UTC.',
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");

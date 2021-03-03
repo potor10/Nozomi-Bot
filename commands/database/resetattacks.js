@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Database',
     utilisation: '{prefix}resetattacks',
+    description: 'Reset attack database',
 
     async execute(client, message) {
         if (message.author.id == client.config.admin) {

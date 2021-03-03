@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'OCR',
     utilisation: '{prefix}scanimage <# of visible attempts> [image attachment]',
+    description: 'Make sure to upload a screenshot of the game as an attachment. \nExample images provided below.\n',
 
     async execute(client, message, args) {
         const maxAttempts = 3;

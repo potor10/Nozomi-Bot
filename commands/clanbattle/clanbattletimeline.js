@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Clan Battle',
     utilisation: '{prefix}clanbattletimeline <page number>',
+    description: 'Obtain a directory of all available Clan Battles and when they occured.',
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
@@ -20,13 +21,17 @@ module.exports = {
         }
         
         let parseFirstArgAsInt = require('../../helper/discord/parseFirstArgAsInt');
-        let startPage = await parseFirstArgAsInt(args, 1);
+        let startPage = await parseFirstArgAsInt(args, -1);
         let displayPerPage = 10;
 
         let totalPages = Math.ceil(cbKeys.length / displayPerPage);
         if (totalPages <= 0) { totalPages = 1; }
         if (startPage < 1 || startPage > totalPages ) {
-            startPage = 1;
+            if (currentClanBattleId != -1) {
+                startPage = Math.floor(currentClanBattleId / displayPerPage) + 1;
+            } else {
+                startPage = 1;
+            }
         }
 
         console.log(`LOG: Retrieving Clan Battle information from page ${startPage}`);

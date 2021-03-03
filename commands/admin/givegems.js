@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Admin',
     utilisation: '{prefix}givegems amount <@user>',
+    description: 'Gives gems',
 
     async execute(client, message, args) {
         if (!Array.isArray(args)) {
