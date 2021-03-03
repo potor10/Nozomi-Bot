@@ -118,8 +118,7 @@ module.exports = {
                     ];
                     const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
                     
-                    preRoll.attachFiles([`./img/entry_lucky.gif`])
-                        .setImage('attachment://entry_lucky.gif')
+                    preRoll.setImage('https://imgur.com/a/Ozgtrdf')
                         .setDescription(`${gachaStrings[randomGachaString]}`);
                 } else {
                     const gachaStrings = [
@@ -130,8 +129,7 @@ module.exports = {
                     ];
                     const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
 
-                    preRoll.attachFiles([`./img/entry_unlucky.gif`])
-                        .setImage('attachment://entry_unlucky.gif')
+                    preRoll.setImage('https://imgur.com/IWc7b79')
                         .setDescription(`${gachaStrings[randomGachaString]}`);
                 }
 
@@ -161,7 +159,7 @@ module.exports = {
                     await preRollMessage.delete();
                     await message.channel.send(embedRoll);
                     client.userData[message.author.id].inroll = false;
-                }, 8000);
+                }, 10000);
             } else {
                 if (client.userData[id].inroll) {
                     let reminder = new MessageEmbed()
