@@ -118,7 +118,8 @@ module.exports = {
                     ];
                     const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
                     
-                    preRoll.setImage('https://imgur.com/a/Ozgtrdf')
+                    preRoll.attachFiles([`./img/entry_lucky.gif`])
+                        .setImage('attachment://entry_lucky.gif')
                         .setDescription(`${gachaStrings[randomGachaString]}`);
                 } else {
                     const gachaStrings = [
@@ -129,7 +130,8 @@ module.exports = {
                     ];
                     const randomGachaString = Math.floor(Math.random() * gachaStrings.length);
 
-                    preRoll.setImage('https://imgur.com/IWc7b79')
+                    preRoll.attachFiles([`./img/entry_unlucky.gif`])
+                        .setImage('attachment://entry_unlucky.gif')
                         .setDescription(`${gachaStrings[randomGachaString]}`);
                 }
 
