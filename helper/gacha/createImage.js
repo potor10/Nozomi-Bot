@@ -11,6 +11,8 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
     const x_padding = 19;
     const y_padding = 17;
 
+    ctx.drawImage(client.gachaBG, client.gachaBG.width, client.gachaBG.height);
+
     let x = x_start;
     let y = y_start + y_padding;
     
