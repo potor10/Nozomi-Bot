@@ -47,7 +47,6 @@ module.exports = {
                 client.userData[id].jewels -= jewelCost;
                 client.userData[id].inroll = true;
 
-                const pulledChars = [];
                 let rollString = '';
 
                 let embedRoll = new MessageEmbed()
@@ -123,7 +122,27 @@ module.exports = {
                 client.userData[id].amulets += amuletsObtained;
 
                 let createImage = require('../../helper/gacha/createImage');
-                createImage(client, message, obtainedImages, amuletsObtained, newUnits, isDupe, emojiText);
+                await createImage(client, message, obtainedImages, isDupe);
+
+                let amuletStr = `You have earned ${amuletsObtained} ${client.emotes.amuletEmoji}`;
+
+                if (newUnits > 0) {
+                    amuletStr += ` and have obtained ${newUnits} new characters!`
+                }
+
+                let combinedRoll = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                    .setDescription(amuletStr)
+                    .attachFiles([`./gacharoll${message.author.id}.png`])
+                    .setImage(`attachment://gacharoll${message.author.id}.png`)
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
+                    .setTimestamp();
+
+                await emojiText.edit(combinedRoll);
+                client.userData[message.author.id].inroll = false;
+                
             } else {
                 if (client.userData[id].inroll) {
                     let reminder = new MessageEmbed()
