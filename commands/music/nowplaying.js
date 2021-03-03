@@ -4,6 +4,7 @@ module.exports = {
     category: 'Music',
     utilisation: '{prefix}nowplaying',
     description: 'Gives the name of the current song.',
+    adminonly: false,
 
     execute(client, message) {
         if (!message.member.voice.channel) return message.channel.send(`${client.emotes.error} - You're not in a voice channel !`);

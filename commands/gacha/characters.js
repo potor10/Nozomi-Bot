@@ -4,6 +4,7 @@ module.exports = {
     category: 'Gacha',
     utilisation: '{prefix}characters <page number>',
     description: 'View the characters you have obtained from gacha.',
+    adminonly: false,
 
     async execute(client, message, args) {       
         const { MessageEmbed } = require("discord.js");

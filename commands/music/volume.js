@@ -4,6 +4,7 @@ module.exports = {
     category: 'Music',
     utilisation: '{prefix}volume [1-100]',
     description: 'Changes volume of music playback.',
+    adminonly: false,
 
     execute(client, message, args) {
         if (!message.member.voice.channel) return message.channel.send(`${client.emotes.error} - You're not in a voice channel !`);

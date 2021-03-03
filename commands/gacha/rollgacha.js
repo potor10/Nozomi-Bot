@@ -4,6 +4,7 @@ module.exports = {
     category: 'Gacha',
     utilisation: '{prefix}rollgacha',
     description: 'Plays the Gacha.',
+    adminonly: false,
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");

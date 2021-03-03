@@ -2,7 +2,9 @@ module.exports = {
     name: 'help',
     aliases: ['h'],
     category: 'Core',
-    utilisation: '{prefix}help',
+    utilisation: '{prefix}help <command>',
+    description: 'Get help on how to use the bot',
+    adminonly: false,
 
     execute(client, message, args) {
         if (!args[0]) {

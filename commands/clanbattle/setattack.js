@@ -4,6 +4,7 @@ module.exports = {
     category: 'Clan Battle',
     utilisation: '{prefix}setattack [attempt number] [damage] [month] [date] [year]',
     description: 'Set the damage of an existing attack attempt. You can use .setattack 4 to add a 4th attack if you have done one',
+    adminonly: false,
 
     async execute(client, message, args) {        
         if (!Array.isArray(args)) {

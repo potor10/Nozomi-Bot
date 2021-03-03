@@ -4,6 +4,7 @@ module.exports = {
     category: 'Clan Battle',
     utilisation: '{prefix}clanbattletimeline <page number>',
     description: 'Obtain a directory of all available Clan Battles and when they occured.',
+    adminonly: false,
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");

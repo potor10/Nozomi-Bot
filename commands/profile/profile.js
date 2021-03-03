@@ -4,6 +4,7 @@ module.exports = {
     category: 'Profile',
     utilisation: '{prefix}profile <@user>',
     description: 'Obtain profile information.',
+    adminonly: false,
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");

@@ -4,6 +4,7 @@ module.exports = {
     category: 'Core',
     utilisation: '{prefix}ping',
     description: 'pong!',
+    adminonly: false,
 
     async execute(client, message) {
         // Calculates ping between sending a message and editing it, giving a nice round-trip latency.

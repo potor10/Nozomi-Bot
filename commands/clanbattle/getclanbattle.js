@@ -6,6 +6,7 @@ module.exports = {
     category: 'Clan Battle',
     utilisation: '{prefix}getclanbattle [clan battle number] <@user>\n' + `{prefix}getclanbattle [month] [date] [year] <@user>`,
     description: 'Obtain Clan Battle information on a specific month.',
+    adminonly: false,
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");

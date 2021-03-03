@@ -4,6 +4,7 @@ module.exports = {
     category: 'Core',
     utilisation: '{prefix}say [words]',
     description: 'Says a message.',
+    adminonly: false,
 
     async execute(client, message, args) {
         const sayMessage = args.join(" ");

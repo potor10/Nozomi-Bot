@@ -4,6 +4,7 @@ module.exports = {
     category: 'Clan Battle',
     utilisation: '{prefix}getattacks [month] [date] [year] <@user>',
     description: 'Obtain attack information on a specific date.',
+    ownerOnly: false,
 
     async execute(client, message, args) {
         const { MessageEmbed } = require("discord.js");
