@@ -3,7 +3,7 @@ module.exports = {
     aliases: [],
     category: 'Clan Battle',
     utilisation: '{prefix}setattack [attempt number] [damage] [month] [date] [year]',
-    description: 'Set the damage of an existing attack attempt.',
+    description: 'Set the damage of an existing attack attempt. You can use .setattack 4 to add a 4th attack if you have done one',
 
     async execute(client, message, args) {        
         if (!Array.isArray(args)) {
@@ -57,7 +57,7 @@ module.exports = {
         await updateAttackAttempt(message.author.id, inputDate, attemptnumber, attemptdamage);
 
         let updatedmessage = await message.channel.send(`Updated ${message.author.username}'s Attack on ` +
-            `${new Date(parseDate).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} \n` +
+            `${new Date(parseDate).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}. ` +
             `Set Attempt ${attemptnumber} damage to ${attemptdamage}`); 
         setTimeout(() => { updatedmessage.delete();}, 5000);
     },
