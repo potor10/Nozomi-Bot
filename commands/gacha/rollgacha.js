@@ -8,6 +8,7 @@ module.exports = {
 
     async execute(client, message) {
         const { MessageEmbed } = require("discord.js");
+        const { performance } = require('perf_hooks');
         
         let createUserIfNotExist = require('../../helper/profile/createUserIfNotExist');
         createUserIfNotExist(client, message.author.id);
@@ -143,11 +144,7 @@ module.exports = {
                     amuletStr += ` and have obtained ${newUnits} new characters!`
                 }
 
-                let preRollMessage = await message.channel.send(preRoll);
-
                 let createImage = require('../../helper/gacha/createImage');
-                let startTime = performance.now();
-
                 let embedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
                     .setAuthor(client.user.username, client.user.avatarURL())
@@ -158,6 +155,9 @@ module.exports = {
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
+                let preRollMessage = await message.channel.send(preRoll);
+
+                let startTime = performance.now();
                 createImage(client, message, obtainedImages, isDupe).then(() => {
                     let endTime = performance.now();
                     setTimeout(async () => { 
