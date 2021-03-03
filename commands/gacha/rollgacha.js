@@ -160,12 +160,12 @@ module.exports = {
                 let startTime = performance.now();
                 createImage(client, message, obtainedImages, isDupe).then(() => {
                     let endTime = performance.now();
-                    console.log(endTime-startTime);
+
                     setTimeout(async () => { 
                         await preRollMessage.delete();
                         await message.channel.send(embedRoll);
                         client.userData[message.author.id].inroll = false;
-                    }, 10000 - (startTime - endTime));
+                    }, 10000 - (endTime - startTime));
                 });
                 
             } else {

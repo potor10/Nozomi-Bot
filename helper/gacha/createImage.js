@@ -46,10 +46,10 @@ module.exports = async (client, message, obtainedImages, isDupe) => {
     const out = fs.createWriteStream(`./gacharoll${message.author.id}.png`);
     const stream = canvas.createPNGStream();
     stream.pipe(out);
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         out.on('finish', () =>  {
-                console.log('LOG: The PNG agregate file was created.');
-                resolve('Image Created');
+            console.log('LOG: The PNG agregate file was created.');
+            resolve('Image Created');
         });
     });
 }
