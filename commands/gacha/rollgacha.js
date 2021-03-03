@@ -111,7 +111,10 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     }
                     embedRoll.setDescription(`${rollString}`);
-                    await emojiText.edit(embedRoll);
+
+                    if ((i+1) % 5 == 0 || i+1 == 10) {
+                        await emojiText.edit(embedRoll);
+                    }
                     
                 }
 

@@ -13,9 +13,34 @@ module.exports = async () => {
     
         CREATE TABLE CHARDB (
             charname varchar NOT NULL,
+
             thumbnailurl varchar NOT NULL,
             fullimageurl varchar NOT NULL,
-            starlevel int NOT NULL
+            subimageurl varchar NOT NULL,
+            starlevel int NOT NULL,
+
+            ubskillname varchar NOT NULL,
+            ubskill varchar NOT NULL,
+
+            skill1name varchar NOT NULL,
+            skill1 varchar NOT NULL,
+
+            skill2name varchar NOT NULL,
+            skill2 varchar NOT NULL,
+
+            exskillname varchar NOT NULL,
+            exskill varchar NOT NULL,
+
+            height varchar NOT NULL,
+            birthday varchar NOT NULL,
+            age varchar NOT NULL,
+            species varchar NOT NULL,
+            guild varchar NOT NULL,
+            likes varchar NOT NULL,
+            cv varchar NOT NULL,
+            realname varchar NOT NULL,
+            weight varchar NOT NULL,
+            bloodtype varchar NOT NULL
         );
     `
 

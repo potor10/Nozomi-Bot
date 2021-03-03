@@ -3,46 +3,39 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
     const { MessageEmbed } = require("discord.js");
     const fs = require('fs');
     
-    let sizThumb = 121;
-    let sizOverlay = 40;
-
-    let loadImage = require('./loadImage');
-    let amuletSRC = await loadImage(
-        `https://media.discordapp.net/emojis/811495998450565140.png?width=${sizOverlay}&height=${sizOverlay}`);
-    
-    var canvas = new Canvas(sizThumb * 5, sizThumb * 2);
+    var canvas = new Canvas(client.gacha.sizThumb * 5, client.gacha.sizThumb * 2);
     var ctx = canvas.getContext('2d');
     
     let x = 0;
     let y = 0;
     
     for (let i = 0; i < obtainedImages.length; i++) {
-        ctx.drawImage(obtainedImages[i], x, y, sizThumb, sizThumb);
+        ctx.drawImage(obtainedImages[i], x, y, client.gacha.sizThumb, client.gacha.sizThumb);
 
-        x+= sizThumb;
+        x+= client.gacha.sizThumb;
         if (i == 4) {
             x = 0;
-            y += sizThumb;
+            y += client.gacha.sizThumb;
         }
     }
 
-    x = sizThumb - sizOverlay;
-    y = sizThumb - sizOverlay;
+    x = client.gacha.sizThumb - client.gacha.sizOverlay;
+    y = client.gacha.sizThumb - client.gacha.sizOverlay;
     ctx.globalAlpha = 0.8;
 
     for (let i = 0; i < isDupe.length; i++) {
         if (isDupe[i]) {
-            ctx.drawImage(amuletSRC, x, y, sizOverlay, sizOverlay);
+            ctx.drawImage(client.amuletSRC, x, y, client.gacha.sizOverlay, client.gacha.sizOverlay);
         }
 
-        x+= sizThumb;
+        x+= client.gacha.sizThumb;
         if (i == 4) {
-            x = sizThumb - sizOverlay;
-            y += sizThumb;
+            x = client.gacha.sizThumb - client.gacha.sizOverlay;
+            y += client.gacha.sizThumb;
         }
     }
 
-    const out = fs.createWriteStream('./test.png');
+    const out = fs.createWriteStream(`./gacharoll${message.author.id}.png`);
     const stream = canvas.createPNGStream();
     stream.pipe(out);
     out.on('finish', () =>  {
@@ -59,14 +52,14 @@ module.exports = async (client, message, obtainedImages, amuletsObtained, newUni
                 .setAuthor(client.user.username, client.user.avatarURL())
                 .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
                 .setDescription(amuletStr)
-                .attachFiles(['./test.png'])
-                .setImage('attachment://test.png')
+                .attachFiles([`./gacharoll${message.author.id}.png`])
+                .setImage(`attachment://gacharoll${message.author.id}.png`)
                 .setFooter(client.config.discord.footerText, client.user.avatarURL())
                 .setTimestamp();
             
-            setTimeout(() => { 
-                rollResults.delete();
-                message.channel.send(combinedRoll);
+            setTimeout(async () => { 
+                await rollResults.delete();
+                await message.channel.send(combinedRoll);
                 client.userData[message.author.id].inroll = false
             }, 3000);
     });
