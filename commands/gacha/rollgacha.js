@@ -161,7 +161,7 @@ module.exports = {
                     await preRollMessage.delete();
                     await message.channel.send(embedRoll);
                     client.userData[message.author.id].inroll = false;
-                }, 6640);
+                }, 8000);
             } else {
                 if (client.userData[id].inroll) {
                     let reminder = new MessageEmbed()
