@@ -137,14 +137,16 @@ module.exports = {
 
                 client.userData[id].amulets += amuletsObtained;
 
-                let createImage = require('../../helper/gacha/createImage');
-                await createImage(client, message, obtainedImages, isDupe);
-
                 let amuletStr = `You have earned ${amuletsObtained} ${client.emotes.amuletEmoji}`;
 
                 if (newUnits > 0) {
                     amuletStr += ` and have obtained ${newUnits} new characters!`
                 }
+
+                let preRollMessage = await message.channel.send(preRoll);
+
+                let createImage = require('../../helper/gacha/createImage');
+                let startTime = performance.now();
 
                 let embedRoll = new MessageEmbed()
                     .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
@@ -156,12 +158,15 @@ module.exports = {
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
-                let preRollMessage = await message.channel.send(preRoll);
-                setTimeout(async () => { 
-                    await preRollMessage.delete();
-                    await message.channel.send(embedRoll);
-                    client.userData[message.author.id].inroll = false;
-                }, 10000);
+                createImage(client, message, obtainedImages, isDupe).then(() => {
+                    let endTime = performance.now();
+                    setTimeout(async () => { 
+                        await preRollMessage.delete();
+                        await message.channel.send(embedRoll);
+                        client.userData[message.author.id].inroll = false;
+                    }, 10000 - (startTime - endTime));
+                });
+                
             } else {
                 if (client.userData[id].inroll) {
                     let reminder = new MessageEmbed()
