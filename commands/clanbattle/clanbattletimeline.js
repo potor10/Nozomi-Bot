@@ -37,9 +37,11 @@ module.exports = {
 
         console.log(`LOG: Retrieving Clan Battle information from page ${startPage}`);
 
+        let cbthumb = 'https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/155987841_148239183832156_2839587873359787990_n.jpg?_nc_cat=105&ccb=3&_nc_sid=8ae9d6&_nc_ohc=xMWd-2ALLigAX-0qTlA&_nc_ht=scontent-lax3-1.cdninstagram.com&oh=6eaf97200b39c360ebe6e3ad51ce5280&oe=606393DA';
+
         let messageDisplay = new MessageEmbed().setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
             .setAuthor(client.user.username, client.user.avatarURL())
-            .setThumbnail("https://static.wikia.nocookie.net/princess-connect/images/5/5b/11-25-20CB.jpg")
+            .setThumbnail(cbthumb)
             .setTitle(`Clan Battle Timeline`)
             .setDescription(`page ${startPage} / ${totalPages}`)
             .setFooter(client.config.discord.footerText, client.user.avatarURL())

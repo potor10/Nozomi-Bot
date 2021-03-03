@@ -21,6 +21,8 @@ module.exports = {
             .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${client.emotes.jewelEmoji}`)
             .setDescription(`React To Confirm`)
             .attachFiles([`./img/entry_lucky.gif`])
+            .setImage('attachment://entry_lucky.gif')
+            .setImage('https://i.ytimg.com/vi/YCBRKVycRvw/maxresdefault.jpg')
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
         
