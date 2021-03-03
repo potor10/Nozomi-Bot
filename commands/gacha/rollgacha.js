@@ -20,6 +20,7 @@ module.exports = {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${client.emotes.jewelEmoji}`)
             .setDescription(`React To Confirm`)
+            .attachFiles([`./img/entry_lucky.gif`, `./img/entry_unlucky.gif`])
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
         
@@ -137,6 +138,7 @@ module.exports = {
                     .setDescription(amuletStr)
                     .attachFiles([`./gacharoll${message.author.id}.png`])
                     .setImage(`attachment://gacharoll${message.author.id}.png`)
+                    .setImage(`attachment://entry_lucky.gif`)
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
