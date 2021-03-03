@@ -24,6 +24,9 @@ module.exports = {
         };
         
         let date = new Date();
+        date = new Date(date.toLocaleString('en-US', {timezone: 'PST'}));
+        date.setHours(date.getHours() - 5);
+
         date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
 
         let retrieveDamage = require('../../database/retrieveDatabase/retrieveDamage');

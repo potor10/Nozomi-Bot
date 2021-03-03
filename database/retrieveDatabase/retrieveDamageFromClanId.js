@@ -9,7 +9,7 @@ module.exports = async (id, clanId) => {
     pgdb.connect();
 
     const query = `
-        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
+        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage) + SUM(attempt4damage)), 0) as total
             FROM ATTACKS WHERE cbid = ${clanId} AND uid = '${id}';
         
         SELECT * FROM ATTACKS WHERE cbid = ${clanId} AND uid = '${id}';

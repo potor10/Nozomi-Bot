@@ -65,11 +65,15 @@ module.exports = {
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
         
-        let totalDamage = obtainedAttacks.attempt1damage + obtainedAttacks.attempt2damage + obtainedAttacks.attempt3damage;
+        let totalDamage = obtainedAttacks.attempt1damage + obtainedAttacks.attempt2damage + obtainedAttacks.attempt3damage + obtainedAttacks.attempt4damage;
         damageMessage.addField(`Total Damage Dealt ${client.emotes.swordBigAttackEmoji}`, totalDamage);
         damageMessage.addField(`Attempt 1 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage, true);
         damageMessage.addField(`Attempt 2 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage, true);
         damageMessage.addField(`Attempt 3 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage, true);
+
+        if (obtainedAttacks.attempt4damage != 0) {
+            damageMessage.addField(`Attempt 4 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt4damage, false);
+        }
 
         await message.channel.send(damageMessage);
         

@@ -111,6 +111,10 @@ module.exports = {
             damageMessage.addField(`Attempt 1 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt1damage}`, true);
             damageMessage.addField(`Attempt 2 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt2damage}`, true);
             damageMessage.addField(`Attempt 3 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt3damage}`, true);
+
+            if (obtainedAttempts[i].attempt4damage != 0) {
+                damageMessage.addField(`Attempt 4 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttempts[i].attempt4damage, false);
+            }
         }
         
 

@@ -12,13 +12,13 @@ module.exports = async (client, id, date) => {
     let currentClanBattleId = await getClanBattleId(new Date());
 
     const query = `
-        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
+        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage) + SUM(attempt4damage)), 0) as total
             FROM ATTACKS WHERE cbid = ${currentClanBattleId} AND uid = '${id}';
 
-        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
+        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage) + SUM(attempt4damage)), 0) as total
             FROM ATTACKS WHERE attackdate = '${date}' AND uid = '${id}';
 
-        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage)), 0) as total
+        SELECT COALESCE((SUM(attempt1damage) + SUM(attempt2damage) + SUM(attempt3damage) + SUM(attempt4damage)), 0) as total
             FROM ATTACKS WHERE uid = '${id}';
     `;
 

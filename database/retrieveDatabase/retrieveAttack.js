@@ -20,6 +20,7 @@ module.exports = async (id, date) => {
             output.attempt1damage = 0;
             output.attempt2damage = 0;
             output.attempt3damage = 0;
+            output.attempt4damage = 0;
         }
     } catch (err) {
         console.log(err.stack);
