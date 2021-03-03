@@ -110,10 +110,16 @@ module.exports = {
                 `From Clan Battle #${searchCBid}`);
             damageMessage.addField(`Attempt 1 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt1damage}`, true);
             damageMessage.addField(`Attempt 2 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt2damage}`, true);
+
+            if (obtainedAttempts[i].attempt4damage != 0) {
+                damageMessage.addField('\u200b','\u200b', true);
+            }
+
             damageMessage.addField(`Attempt 3 ${client.emotes.swordSmallAttackEmoji}`, `${obtainedAttempts[i].attempt3damage}`, true);
 
             if (obtainedAttempts[i].attempt4damage != 0) {
-                damageMessage.addField(`Attempt 4 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttempts[i].attempt4damage, false);
+                damageMessage.addField(`Attempt 4 ${client.emotes.swordSmallAttackEmoji}`, obtainedAttempts[i].attempt4damage, true);
+                damageMessage.addField('\u200b','\u200b', true);
             }
         }
         

@@ -69,10 +69,16 @@ module.exports = {
         damageMessage.addField(`Total Damage Dealt ${client.emotes.swordBigAttackEmoji}`, totalDamage);
         damageMessage.addField(`Attempt 1 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt1damage, true);
         damageMessage.addField(`Attempt 2 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt2damage, true);
+
+        if (obtainedAttacks.attempt4damage != 0) {
+            damageMessage.addField('\u200b','\u200b', true);
+        }
+        
         damageMessage.addField(`Attempt 3 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt3damage, true);
 
         if (obtainedAttacks.attempt4damage != 0) {
             damageMessage.addField(`Attempt 4 Dealt ${client.emotes.swordSmallAttackEmoji}`, obtainedAttacks.attempt4damage, false);
+            damageMessage.addField('\u200b','\u200b', true);
         }
 
         await message.channel.send(damageMessage);

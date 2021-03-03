@@ -55,7 +55,9 @@ module.exports = {
         let updateAttackAttempt = require('../../database/updateDatabase/updateAttackAttempt');
         await updateAttackAttempt(message.author.id, inputDate, attemptnumber, attemptdamage);
 
-        let updatedmessage = await message.channel.send(``); 
+        let updatedmessage = await message.channel.send(`Updated ${message.author.username}'s Attack on ` +
+            `${new Date(parseDate).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})} \n` +
+            `Set Attempt ${attemptnumber} damage to ${attemptdamage}`); 
         setTimeout(() => { updatedmessage.delete();}, 5000);
     },
 };
