@@ -20,9 +20,6 @@ module.exports = {
             .setAuthor(client.user.username, client.user.avatarURL())
             .setTitle(`Rolling x10 On This Gacha Will Cost **${jewelCost}** ${client.emotes.jewelEmoji}`)
             .setDescription(`React To Confirm`)
-            .attachFiles([`./img/entry_lucky.gif`])
-            .setImage('attachment://entry_lucky.gif')
-            .setImage('https://i.ytimg.com/vi/YCBRKVycRvw/maxresdefault.jpg')
             .setFooter(client.config.discord.footerText, client.user.avatarURL())
             .setTimestamp();
         
@@ -50,17 +47,9 @@ module.exports = {
                 client.userData[id].jewels -= jewelCost;
                 client.userData[id].inroll = true;
 
-                let rollString = '';
+                await emojiText.delete();
 
-                let embedRoll = new MessageEmbed()
-                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
-                    .setAuthor(client.user.username, client.user.avatarURL())
-                    .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
-                    .setDescription(`${rollString}`)
-                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
-                    .setTimestamp();
-
-                await emojiText.edit(embedRoll);
+                let has3Star = false;
                 
                 let silverCount = 0;
                 let amuletsObtained = 0;
@@ -76,7 +65,7 @@ module.exports = {
                         (client.gacha.oneStarRate + client.gacha.twoStarRate + client.gacha.threeStarRate));
 
                     if (rarityRolled < client.gacha.threeStarRate) {
-                        rollString += client.emotes.threeStarEmoji;
+                        has3Star = true;
                         let rollImgData = await getRolledCharData(client, id, 3);
 
                         obtainedImages.push(rollImgData[0]);
@@ -88,7 +77,6 @@ module.exports = {
 
                         amuletsObtained += rollImgData[2];
                     } else if (rarityRolled < (client.gacha.threeStarRate + client.gacha.twoStarRate) || silverCount == 9) {
-                        rollString += client.emotes.twoStarEmoji;
                         let rollImgData = await getRolledCharData(client, id, 2);
 
                         obtainedImages.push(rollImgData[0]);
@@ -101,8 +89,6 @@ module.exports = {
                         amuletsObtained += rollImgData[2];
                     } else {
                         silverCount++;
-
-                        rollString += client.emotes.oneStarEmoji;
                         let rollImgData = await getRolledCharData(client, id, 1);
 
                         obtainedImages.push(rollImgData[0]);
@@ -114,12 +100,22 @@ module.exports = {
                         
                         amuletsObtained += rollImgData[2];
                     }
-                    embedRoll.setDescription(`${rollString}`);
+                    embedRoll.setDescription(`${rollString}`);                    
+                }
 
-                    if ((i+1) % 5 == 0 || i+1 == 10) {
-                        await emojiText.edit(embedRoll);
-                    }
-                    
+                let embedRoll = new MessageEmbed()
+                    .setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`)
+                    .setAuthor(client.user.username, client.user.avatarURL())
+                    .setTitle(`${message.author.displayName||message.author.username}'s x10 Gacha Roll`)
+                    .setFooter(client.config.discord.footerText, client.user.avatarURL())
+                    .setTimestamp();
+
+                if (has3Star) {
+                    embedRoll.attachFiles([`./img/entry_lucky.gif`])
+                        .setImage('attachment://entry_lucky.gif')
+                } else {
+                    embedRoll.attachFiles([`./img/entry_unlucky.gif`])
+                        .setImage('attachment://entry_unlucky.gif')
                 }
 
                 client.userData[id].amulets += amuletsObtained;
@@ -140,13 +136,15 @@ module.exports = {
                     .setDescription(amuletStr)
                     .attachFiles([`./gacharoll${message.author.id}.png`])
                     .setImage(`attachment://gacharoll${message.author.id}.png`)
-                    .setImage(`attachment://entry_lucky.gif`)
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
-                await emojiText.edit(combinedRoll);
-                client.userData[message.author.id].inroll = false;
-                
+                await message.channel.send(embedRoll);
+                setTimeout(() => { 
+                    embedRoll.delete();
+                    await message.channel.send(combinedRoll);
+                    client.userData[message.author.id].inroll = false;
+                }, 6640);
             } else {
                 if (client.userData[id].inroll) {
                     let reminder = new MessageEmbed()
