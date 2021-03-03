@@ -156,9 +156,9 @@ module.exports = {
                     .setFooter(client.config.discord.footerText, client.user.avatarURL())
                     .setTimestamp();
 
-                let preRoll = await message.channel.send(preRoll);
+                let preRollMessage = await message.channel.send(preRoll);
                 setTimeout(async () => { 
-                    await preRoll.delete();
+                    await preRollMessage.delete();
                     await message.channel.send(embedRoll);
                     client.userData[message.author.id].inroll = false;
                 }, 6640);
