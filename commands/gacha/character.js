@@ -58,7 +58,7 @@ module.exports = {
                 let skill1name = client.gachaData[starlevel][charname].skill1name;
                 let skill1 = client.gachaData[starlevel][charname].skill1;
                 let skill2name = client.gachaData[starlevel][charname].skill2name;
-                let skill2 = client.gachaData[starlevel][charname].skill1;
+                let skill2 = client.gachaData[starlevel][charname].skill2;
                 let exskillname = client.gachaData[starlevel][charname].exskillname;
                 let exskill = client.gachaData[starlevel][charname].exskill;
 
