@@ -19,7 +19,7 @@ module.exports = async (client, message, values, rectangles) => {
     const let3Month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     let idxDate = -1;
 
-    for (i = 0; i < let3Month.length; i++) {
+    for (let i = 0; i < let3Month.length; i++) {
         if (values[1].indexOf(let3Month[i]) != -1) {
             idxDate = values[1].indexOf(let3Month[i]);
             break;
@@ -27,8 +27,12 @@ module.exports = async (client, message, values, rectangles) => {
     }
 
     if (idxDate != -1) {
-        date = Date.parse(`${values[1].substring(idxDate, values[1].indexOf('~'))} ${new Date().getUTCFullYear()}`);
-        console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substring(idxDate, values[1].indexOf('~'))} ${new Date().getUTCFullYear()}`);
+        let dateStr = values[1].substr(idxDate, 6);
+        while (dateStr.length > 0 && isNaN(Date.parse(`${dateStr} ${new Date().getUTCFullYear()}`))) {
+            dateStr = dateStr.slice(0, -1);
+        }
+        date = Date.parse(`${dateStr} ${new Date().getUTCFullYear()}`);
+        console.log(`LOG: Date Parsed, Found ${date} from ${dateStr} ${new Date().getUTCFullYear()}`);
         
         let newdate = new Date(date);
 
