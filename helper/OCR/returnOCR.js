@@ -22,7 +22,7 @@ module.exports = async (client, message, attempts, maxAttempts) => {
         let origAspect = 2208 / 1242;
         let padding = 0;
         if (aspect > origAspect) {
-            padding = Math.floor((origAspect - aspect) * width / 2);
+            padding = Math.floor((aspect - origAspect) * width / 2);
             width = width - (padding * 2);
         }
 
