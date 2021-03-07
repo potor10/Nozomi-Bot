@@ -27,8 +27,8 @@ module.exports = async (client, message, values, rectangles) => {
     }
 
     if (idxDate != -1) {
-        date = Date.parse(`${values[1].substr(idxDate, values[1].indexOf('~'))} ${new Date().getUTCFullYear()}`);
-        console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substr(idxDate, values[1].indexOf('~'))} ${new Date().getUTCFullYear()}`);
+        date = Date.parse(`${values[1].substring(idxDate, values[1].indexOf('~'))} ${new Date().getUTCFullYear()}`);
+        console.log(`LOG: Date Parsed, Found ${date} from ${values[1].substring(idxDate, values[1].indexOf('~'))} ${new Date().getUTCFullYear()}`);
         
         let newdate = new Date(date);
 
