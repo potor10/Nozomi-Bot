@@ -18,6 +18,12 @@ module.exports = async (client, message, attempts, maxAttempts) => {
             height = Math.floor(height * ratio);
         }
 
+        let newURL = `${attachment.url}?width=${width}&height=${height}`;
+        newURL = newURL.replace(`cdn`, `media`);
+        newURL = newURL.replace(`com`, `net`);
+
+        console.log(`LOG: Found image with URL ${newURL}`);
+
         let aspect = width / height;
         let origAspect = 2208 / 1242;
         let padding = 0;
@@ -58,12 +64,6 @@ module.exports = async (client, message, attempts, maxAttempts) => {
             height: Math.floor(25/280 * height),
         },
         ];
-          
-        let newURL = `${attachment.url}?width=${width}&height=${height}`;
-        newURL = newURL.replace(`cdn`, `media`);
-        newURL = newURL.replace(`com`, `net`);
-
-        console.log(`LOG: Found image with URL ${newURL}`);
 
         await worker.load();
         await worker.loadLanguage('eng');
