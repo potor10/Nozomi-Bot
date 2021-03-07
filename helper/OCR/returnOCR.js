@@ -47,19 +47,19 @@ module.exports = async (client, message, attempts, maxAttempts) => {
         {
             left: Math.floor(430/500 * width) + padding,
             top: Math.floor(75/280 * height),
-            width: Math.floor(40/500 * width),
+            width: Math.floor(45/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
             left: Math.floor(430/500 * width) + padding,
             top: Math.floor(130/280 * height),
-            width: Math.floor(40/500 * width),
+            width: Math.floor(45/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
             left: Math.floor(430/500 * width) + padding,
             top: Math.floor(190/280 * height),
-            width: Math.floor(40/500 * width),
+            width: Math.floor(45/500 * width),
             height: Math.floor(25/280 * height),
         },
         ];
