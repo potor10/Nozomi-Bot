@@ -24,11 +24,10 @@ module.exports = async (client, message, attempts, maxAttempts) => {
 
         console.log(`LOG: Found image with URL ${newURL}`);
 
-        let aspect = width / height;
-        let origAspect = 2208 / 1242;
+        let aspect = height / 1242;
         let padding = 0;
-        if (aspect > origAspect) {
-            padding = Math.floor((aspect - origAspect) * width / 2);
+        if (aspect * 2208 < width) {
+            padding = Math.floor((width - (aspect * 2208)) / 2);
             width = width - (padding * 2);
         }
 
