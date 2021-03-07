@@ -31,7 +31,7 @@ module.exports = async (client, message, attempts, maxAttempts) => {
             left: Math.floor(1647/2208 * width) + padding,
             top: Math.floor(70/1242 * height),
             width: Math.floor(187/2208 * width),
-            height: Math.floor(40/1242 * height),
+            height: Math.floor(50/1242 * height),
         },
         {
             left: Math.floor(220/500 * width) + padding,
@@ -74,6 +74,8 @@ module.exports = async (client, message, attempts, maxAttempts) => {
 
         for (let i = 0; i < rectangles.length + attempts - maxAttempts; i++) {
             const { data: { text } } = await worker.recognize(newURL, {rectangle: rectangles[i]} );
+            console.log(`LOG: Scanning, dimension: (${rectangles[i].left}, ${rectangles[i].top}, ${rectangles[i].width}, ${rectangles[i].height})`);
+
             if (i==0 && text.indexOf("Trial Run") == -1) {
                 isClan = false;
                 console.log(`LOG: Image was not detected as clan war image`);
