@@ -44,7 +44,7 @@ module.exports = {
         const randomStatus = Math.floor(Math.random() * statusStrings.length);
 
         let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
-        let currentCB = getClanBattleId(new Date());
+        let currentCB = getClanBattleId(date);
         let cbDmgTitle = `This Clan Battle ${client.emotes.blueSwordEmoji} `;
         let cbDmgValue = profileDamage[0];
 

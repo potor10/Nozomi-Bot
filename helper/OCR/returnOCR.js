@@ -18,33 +18,41 @@ module.exports = async (client, message, attempts, maxAttempts) => {
             height = Math.floor(height * ratio);
         }
 
+        let aspect = width / height;
+        let origAspect = 2208 / 1242;
+        let padding = 0;
+        if (aspect > origAspect) {
+            padding = Math.floor((origAspect - aspect) * width / 2);
+            width = width - (padding * 2);
+        }
+
         const rectangles = [
         {
-            left: Math.floor(1647/2208 * width),
+            left: Math.floor(1647/2208 * width) + padding,
             top: Math.floor(70/1242 * height),
             width: Math.floor(187/2208 * width),
             height: Math.floor(40/1242 * height),
         },
         {
-            left: Math.floor(220/500 * width),
+            left: Math.floor(220/500 * width) + padding,
             top: Math.floor(50/280 * height),
             width: Math.floor(170/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
-            left: Math.floor(430/500 * width),
+            left: Math.floor(430/500 * width) + padding,
             top: Math.floor(75/280 * height),
             width: Math.floor(40/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
-            left: Math.floor(430/500 * width),
+            left: Math.floor(430/500 * width) + padding,
             top: Math.floor(130/280 * height),
             width: Math.floor(40/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
-            left: Math.floor(430/500 * width),
+            left: Math.floor(430/500 * width) + padding,
             top: Math.floor(190/280 * height),
             width: Math.floor(40/500 * width),
             height: Math.floor(25/280 * height),

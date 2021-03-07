@@ -14,7 +14,14 @@ module.exports = {
         let cbKeys = Object.keys(cbData);
 
         let getClanBattleId = require('../../helper/clanbattle/getClanBattleId');
-        let currentClanBattleId = getClanBattleId(new Date());
+
+        let date = new Date();
+        date = new Date(date.toLocaleString('en-US', {timezone: 'PST'}));
+        date.setHours(date.getHours() - 5);
+
+        date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
+
+        let currentClanBattleId = getClanBattleId(date);
     
         if (!Array.isArray(args)) {
             message.channel.send("Error parsing arguments");
