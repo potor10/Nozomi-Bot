@@ -19,8 +19,6 @@ module.exports = {
         date = new Date(date.toLocaleString('en-US', {timezone: 'PST'}));
         date.setHours(date.getHours() - 5);
 
-        date = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
-
         let currentClanBattleId = getClanBattleId(date);
     
         if (!Array.isArray(args)) {
