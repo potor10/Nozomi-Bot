@@ -8,7 +8,7 @@ module.exports = async (client, message, attempts, maxAttempts) => {
 
         let height = attachment.height;
         let width = attachment.width;
-        if (height > 1000 || width > 1000) {
+        if (height > 500 || width > 800) {
             const maxWidth = 800;
             const maxHeight = 500;
 
@@ -24,41 +24,50 @@ module.exports = async (client, message, attempts, maxAttempts) => {
 
         console.log(`LOG: Found image with URL ${newURL}`);
 
-        let aspect = height / 1242;
-        let padding = 0;
-        if (aspect * 2208 < width) {
-            padding = Math.floor((width - (aspect * 2208)) / 2);
-            width = width - (padding * 2);
+        let aspectx = width / 2208;
+        let aspecty = height / 1242;
+
+        let paddingx = 0;
+        let paddingy = 0;
+
+        if (aspecty * 2208 < width) {
+            paddingx = Math.floor((width - (aspecty * 2208)) / 2);
+            width = width - (paddingx * 2);
+        }
+        
+        if (aspectx * 1242 < height) {
+            paddingy = Math.floor((height - (aspectx * 1242)) / 2);
+            height = height - (paddingy * 2);
         }
 
         const rectangles = [
         {
-            left: Math.floor(1647/2208 * width) + padding,
-            top: Math.floor(70/1242 * height),
+            left: Math.floor(1647/2208 * width) + paddingx,
+            top: Math.floor(70/1242 * height) + paddingy,
             width: Math.floor(187/2208 * width),
             height: Math.floor(50/1242 * height),
         },
         {
-            left: Math.floor(220/500 * width) + padding,
-            top: Math.floor(50/280 * height),
+            left: Math.floor(220/500 * width) + paddingx,
+            top: Math.floor(50/280 * height) + paddingy,
             width: Math.floor(170/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
-            left: Math.floor(430/500 * width) + padding,
-            top: Math.floor(75/280 * height),
+            left: Math.floor(430/500 * width) + paddingx,
+            top: Math.floor(75/280 * height) + paddingy,
             width: Math.floor(45/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
-            left: Math.floor(430/500 * width) + padding,
-            top: Math.floor(130/280 * height),
+            left: Math.floor(430/500 * width) + paddingx,
+            top: Math.floor(130/280 * height) + paddingy,
             width: Math.floor(45/500 * width),
             height: Math.floor(25/280 * height),
         },
         {
-            left: Math.floor(430/500 * width) + padding,
-            top: Math.floor(190/280 * height),
+            left: Math.floor(430/500 * width) + paddingx,
+            top: Math.floor(190/280 * height) + paddingy,
             width: Math.floor(45/500 * width),
             height: Math.floor(25/280 * height),
         },

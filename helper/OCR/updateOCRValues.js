@@ -5,7 +5,16 @@ module.exports = async (client, message, values, rectangles) => {
 
     for (let i = 2; i < rectangles.length; i++) {
         if (i < values.length) {
-            intAttacks.unshift(parseInt(values[i].split('\n', 1)[0].trim(), 10));
+            let intString = values[i].split('\n', 1)[0].replace(/\D/g,'');
+            let parsedDamage = parseInt(intString, 10);
+            if (isNaN(parsedDamage)) {
+                let reminder = await message.reply(`error parsing damage values, try using a higher image resolution next time!`);
+                console.log(`LOG: Values: ${values[i]} failed to parse`);
+                setTimeout(() => { reminder.delete();}, 5000);
+                return;
+            }
+            intAttacks.unshift(parsedDamage);
+
         } else {
             intAttacks.push(0);
         }
