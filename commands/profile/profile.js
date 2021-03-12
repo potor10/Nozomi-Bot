@@ -29,7 +29,7 @@ module.exports = {
         date = new Date(date.toLocaleString('en-US', {timezone: 'PST'}));
         date.setHours(date.getHours() - 5);
 
-        let dateStr = date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1)  + '-' + pad(date.getUTCDate());
+        let dateStr = date.getFullYear() + '-' + pad(date.getMonth() + 1)  + '-' + pad(date.getDate());
 
         let retrieveDamage = require('../../database/retrieveDatabase/retrieveDamage');
         let profileDamage = await retrieveDamage(client, id, dateStr);
