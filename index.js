@@ -1,7 +1,7 @@
 /**
  * @description Rad Dream Bot
  * @author Potor10 
- * @summary An Autistic Discord Bot For Princess Connect
+ * @summary A Discord Bot For Princess Connect
  */
 
 
