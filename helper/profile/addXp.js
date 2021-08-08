@@ -45,9 +45,9 @@ module.exports = async (client, message) => {
                 .setTimestamp();
 
             if (message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultLevelUpResponseChannel)) { 
-                await message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultLevelUpResponseChannel).send(levelUpMessage);
+                // await message.guild.channels.cache.find(channel => channel.name === client.config.discord.defaultLevelUpResponseChannel).send(levelUpMessage);
             } else {
-                await message.channel.send(levelUpMessage);
+                // await message.channel.send(levelUpMessage);
             }
 
             console.log(`LOG: ${message.author.username} (${id}) has leveled up to ${curLevel}`);
